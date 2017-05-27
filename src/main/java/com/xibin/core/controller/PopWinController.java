@@ -28,6 +28,12 @@ public class PopWinController {
 	SqlSessionFactory factory;
 	@Autowired
 	HttpSession session;
+	/**
+	 * 带分页的放大镜弹出框公用查询方法
+	 * @param request
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping("/query")
 	@ResponseBody
 	public PageEntity<?> query(HttpServletRequest request,Model model){
