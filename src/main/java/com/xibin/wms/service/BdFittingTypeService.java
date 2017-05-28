@@ -12,7 +12,7 @@ public interface BdFittingTypeService {
 	
 	public List<BdFittingType> getAllFittingTypeByPage(Map map);
 	
-	public int removeFittingType(int id);
+	public int removeFittingType(int id,String fittingTypeCode)  throws BusinessException; 
 	
 	public BdFittingType saveFittingType (BdFittingType model) throws BusinessException;
 	

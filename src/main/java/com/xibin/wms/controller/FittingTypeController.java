@@ -7,12 +7,16 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.sun.swing.internal.plaf.metal.resources.metal_zh_TW;
 import com.xibin.core.exception.BusinessException;
 import com.xibin.core.page.pojo.Page;
 import com.xibin.core.page.pojo.PageEntity;
@@ -35,7 +39,7 @@ public class FittingTypeController {
 		//配置分页参数
 		page.setPageNo(Integer.parseInt(request.getParameter("page")));
 		page.setPageSize(Integer.parseInt(request.getParameter("size")));
-		Map map = new HashMap<>();
+		Map map = JSONObject.parseObject(request.getParameter("conditions"));
 		map.put("page", page);
 		List<BdFittingType> userList = fittingTypeService.getAllFittingTypeByPage(map);
 		pageEntity.setList(userList);
@@ -45,11 +49,47 @@ public class FittingTypeController {
 	  
 	  @RequestMapping("/removeFittingType")
 	  @ResponseBody
-	  public int removeFittingType(HttpServletRequest request,Model model){
+	  public Message removeFittingType(HttpServletRequest request,Model model){
+		Message message = new Message();
 		int id = Integer.parseInt(request.getParameter("id"));
-	    return this.fittingTypeService.removeFittingType(id);
+		String fittingTypeCode = request.getParameter("fittingTypeCode");
+	    try {
+			this.fittingTypeService.removeFittingType(id,fittingTypeCode);
+		} catch (BusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			message.setMsg(e.getMessage());
+			message.setCode(0);
+			return message;
+		}
+		message.setCode(200);
+		message.setMsg("删除成功");
+		return message;
 	  }
 
+	  @RequestMapping("/batchRemove")
+	  @ResponseBody
+	  public Message batchRemove(@RequestParam("ids") int [] ids,@RequestParam("fittingTypeCodes") String [] fittingTypeCodes){
+		Message message = new Message();
+		StringBuffer stringBuffer = new StringBuffer();
+		for(int i = 0;i<ids.length;i++){
+			try {
+				this.fittingTypeService.removeFittingType(ids[i],fittingTypeCodes[i]);
+			} catch (BusinessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				stringBuffer.append(e.getMessage()+"</br>");
+			}
+		}
+		if(stringBuffer.length()>0){
+			message.setMsg(stringBuffer.toString());
+			message.setCode(0);
+			return message;
+		}
+		message.setCode(200);
+		message.setMsg("全部删除成功");
+	    return message;
+	  }
 	  
 	  @RequestMapping("/saveFittingType")
 	  @ResponseBody

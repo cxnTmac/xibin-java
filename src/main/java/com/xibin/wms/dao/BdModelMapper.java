@@ -13,5 +13,7 @@ public interface BdModelMapper extends BaseMapper{
     
     List<BdModel> selectAllByPage(Map map);
     
-    List<BdModel> selectByKey(@Param("modelCode")String modelCode);
+    List<BdModel> selectByKey(@Param("modelCode")String modelCode,@Param("companyId")String companyId);
+    
+    List<BdModel> selectByExample(BdModel example);
 }

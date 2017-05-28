@@ -19,7 +19,22 @@
     modifier, rec_ver, company_id
   </sql>
   
-  
+  <!-- 条件 -->
+  <sql id="findByConditionWhere">
+      WHERE 1=1
+          <if test="id!=null and id!=''"> AND id = #{id}</if>
+          <if test="modelCode!=null and modelCode!=''"> AND model_code LIKE CONCAT('%','${modelCode}','%')</if>
+          <if test="modelName!=null and modelName!=''"> AND model_name LIKE CONCAT('%','${modelName}','%')</if>
+          <if test="companyId!=null and companyId!=''"> AND company_id = #{companyId}</if>
+  </sql>
+   <!-- 条件 -->
+  <sql id="findByExampleWhere">
+      WHERE 1=1
+          <if test="id!=null and id!=''"> AND id = #{id}</if>
+          <if test="modelCode!=null and modelCode!=''"> AND model_code ='${modelCode}'</if>
+          <if test="modelName!=null and modelName!=''"> AND model_name ='${modelName}'</if>
+          <if test="companyId!=null and companyId!=''"> AND company_id = #{companyId}</if>
+  </sql>
   <!-- 【固定】：按主键查询 -->
   <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String">
   	  select
@@ -112,11 +127,20 @@
     select 
     <include refid="Base_Column_List" />
     from bd_model
+    <include refid="findByConditionWhere" />
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.xibin.wms.pojo.BdModel">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_fitting_type
+    <include refid="findByExampleWhere" />
   </select>
   <select id="selectByKey" resultMap="BaseResultMap" resultType="java.util.List"  parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from bd_model
     where model_code = #{modelCode,jdbcType=VARCHAR}
+    and 
+    company_id = #{companyId,jdbcType=INTEGER}
   </select>
 </mapper>

@@ -18,7 +18,22 @@
     id, fitting_type_code, fitting_type_name, fitting_type_status, fitting_type_remark, 
     create_time, creator, modify_time, modifier, rec_ver, company_id
   </sql>
-  
+  <!-- 条件 -->
+  <sql id="findByExampleWhere">
+      WHERE 1=1
+          <if test="id!=null and id!=''"> AND id = #{id}</if>
+          <if test="fittingTypeCode!=null and fittingTypeCode!=''"> AND fitting_type_code LIKE CONCAT('%','${fittingTypeCode}','%')</if>
+          <if test="fittingTypeName!=null and fittingTypeName!=''"> AND fitting_type_name LIKE CONCAT('%','${fittingTypeName}','%')</if>
+          <if test="companyId!=null and companyId!=''"> AND company_id = #{companyId}</if>
+  </sql>
+  <!-- 条件 -->
+  <sql id="findByConditionWhere">
+      WHERE 1=1
+          <if test="id!=null and id!=''"> AND id = #{id}</if>
+          <if test="fittingTypeCode!=null and fittingTypeCode!=''"> AND fitting_type_code = ${fittingTypeCode}</if>
+          <if test="fittingTypeName!=null and fittingTypeName!=''"> AND fitting_type_name = ${fittingTypeName}</if>
+          <if test="companyId!=null and companyId!=''"> AND company_id = #{companyId}</if>
+  </sql>
   <!-- 【固定】：按主键查询 -->
   <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String">
   	  select
@@ -109,10 +124,18 @@
     from bd_fitting_type
     where id = #{id,jdbcType=INTEGER}
   </select>
+   
   <select id="selectAllByPage" resultMap="BaseResultMap" parameterType="Map">
     select 
     <include refid="Base_Column_List" />
     from bd_fitting_type
+    <include refid="findByConditionWhere" />
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.xibin.wms.pojo.BdFittingType">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_fitting_type
+    <include refid="findByExampleWhere" />
   </select>
   <select id="selectByKey" resultMap="BaseResultMap" resultType="java.util.List"  parameterType="java.lang.String" >
     select 

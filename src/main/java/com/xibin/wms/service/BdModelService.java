@@ -12,7 +12,7 @@ public interface BdModelService {
 		
 		public List<BdModel> getAllModelByPage(Map map);
 		
-		public int removeModel(int id);
+		public int removeModel(int id,String modelCode) throws BusinessException;
 		
 		public BdModel saveModel (BdModel model) throws BusinessException;
 		

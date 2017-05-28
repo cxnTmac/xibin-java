@@ -33,285 +33,178 @@
     def1, def2, def3, def4, def5, create_time, creator, modify_time, modifier, rec_ver, 
     company_id
   </sql>
+  <!-- 条件 -->
+  <sql id="findByConditionWhere">
+      WHERE 1=1
+          <if test="id!=null and id!=''"> AND id = #{id}</if>
+          <if test="fittingSkuCode!=null and fittingSkuCode!=''"> AND fitting_sku_code LIKE CONCAT('%','${fittingSkuCode}','%')</if>
+          <if test="fittingTypeName!=null and fittingTypeName!=''"> AND fitting_sku_name LIKE CONCAT('%','${fittingSkuName}','%')</if>
+          <if test="companyId!=null and companyId!=''"> AND company_id = #{companyId}</if>
+  </sql>
+  <!-- 条件 -->
+  <sql id="findByExampleWhere">
+      WHERE 1=1
+          <if test="id!=null and id!=''"> AND id = #{id}</if>
+          <if test="fittingSkuCode!=null and fittingSkuCode!=''"> AND fitting_sku_code  = #{fittingSkuCode}</if>
+          <if test="fittingSkuName!=null and fittingSkuName!=''"> AND fitting_sku_name = #{fittingSkuName}</if>
+          <if test="modelCode!=null and modelCode!=''"> AND model_code = #{modelCode}</if>
+          <if test="fittingTypeCode!=null and fittingTypeCode!=''"> AND fitting_type_code = #{fittingTypeCode}</if>
+          <if test="companyId!=null and companyId!=''"> AND company_id = #{companyId}</if>
+  </sql>
+  <!-- 【固定】：按主键查询 -->
+  <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	  select
+      <include refid="Base_Column_List"/>
+      from bd_fitting_sku
+      WHERE id in
+      <foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+	           #{item}
+	  </foreach>
+  </select>
+  
+  <!-- 【固定】：插入记录（支持一条及多条） -->
+  <insert id="insert" parameterType="java.util.Collection">
+  	INSERT INTO bd_fitting_sku
+          (id, fitting_sku_code, fitting_sku_name, fitting_sku_status, fitting_sku_remark, manufacturer, 
+    materialquality, package_code, uom_desc, price, model_code, fitting_type_code, type, 
+    def1, def2, def3, def4, def5, create_time, creator, modify_time, modifier, rec_ver, 
+    company_id)
+       VALUES
+  		<foreach collection="list" item="item" index="index" separator=",">
+	   		(#{item.id}, #{item.fittingSkuCode}, #{item.fittingSkuName}, 
+      #{item.fittingSkuStatus}, #{item.fittingSkuRemark},#{item.manufacturer}, 
+      #{item.materialquality}, #{item.packageCode}, #{item.uomDesc}, 
+      #{item.price}, #{item.modelCode}), #{item.fittingTypeCode}),#{item.type}), #{item.createTime}, 
+      #{item.creator}, #{item.modifyTime}, #{item.modifier}, 
+      #{item.recVer}, #{item.companyId})
+  		</foreach>
+  </insert>
+  
+  <!-- 【固定】：删除记录 -->
+  <delete id="delete" parameterType="java.lang.reflect.Array">
+      DELETE FROM bd_fitting_sku WHERE ID in 
+   <foreach collection="array" index="index" item="item" open="(" separator="," close=")">  
+           #{item}   
+   </foreach>
+  </delete>
+  
+  <!-- 【固定】：更新记录（支持一条及多条） -->
+  <update id="update" parameterType="java.util.Collection">
+	UPDATE bd_fitting_sku
+	<trim prefix="set" suffixOverrides=",">
+		<!-- 更新的字段集合 -->
+		<trim prefix="fitting_sku_code =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.fittingSkuCode}
+             </foreach>
+		</trim>
+		<trim prefix="fitting_sku_name =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.fittingSkuName}
+             </foreach>
+		</trim>
+		<trim prefix="fitting_sku_status =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.fittingSkuStatus}
+             </foreach>
+		</trim>
+		<trim prefix="fitting_sku_remark =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.fittingSkuRemark}
+             </foreach>
+		</trim>
+		
+		
+		<trim prefix="manufacturer =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.manufacturer}
+             </foreach>
+		</trim>
+		<trim prefix="materialquality =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.materialquality}
+             </foreach>
+		</trim>
+		<trim prefix="package_code =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.packageCode}
+             </foreach>
+		</trim>
+		<trim prefix="uom_desc =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.uomDesc}
+             </foreach>
+		</trim>
+		
+		<trim prefix="price =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.price}
+             </foreach>
+		</trim>
+		<trim prefix="model_code =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.modelCode}
+             </foreach>
+		</trim>
+		<trim prefix="fitting_type_code =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.fittingTypeCode}
+             </foreach>
+		</trim>
+		<trim prefix="type =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.type}
+             </foreach>
+		</trim>
+		
+		<trim prefix="modifier =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.modifier}
+             </foreach>
+		</trim>
+		<trim prefix="modify_time =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.modifyTime}
+             </foreach>
+		</trim>
+		<trim prefix="rec_ver =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.recVer}
+             </foreach>
+		</trim>
+	</trim>
+	WHERE
+	<foreach collection="list" separator="or" item="item" index="index" >
+		<if test="item.id!=null">
+		(ID=#{item.id}) AND (REC_VER=#{item.recVer}-1)
+		</if>
+	</foreach>	
+  </update>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from bd_fitting_sku
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from bd_fitting_sku
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.xibin.wms.pojo.BdFittingSku" >
-    insert into bd_fitting_sku (id, fitting_sku_code, fitting_sku_name, 
-      fitting_sku_status, fitting_sku_remark, manufacturer, 
-      materialquality, package_code, uom_desc, 
-      price, model_code, fitting_type_code, 
-      type, def1, def2, def3, 
-      def4, def5, create_time, 
-      creator, modify_time, modifier, 
-      rec_ver, company_id)
-    values (#{id,jdbcType=INTEGER}, #{fittingSkuCode,jdbcType=VARCHAR}, #{fittingSkuName,jdbcType=VARCHAR}, 
-      #{fittingSkuStatus,jdbcType=VARCHAR}, #{fittingSkuRemark,jdbcType=VARCHAR}, #{manufacturer,jdbcType=VARCHAR}, 
-      #{materialquality,jdbcType=VARCHAR}, #{packageCode,jdbcType=VARCHAR}, #{uomDesc,jdbcType=VARCHAR}, 
-      #{price,jdbcType=DOUBLE}, #{modelCode,jdbcType=VARCHAR}, #{fittingTypeCode,jdbcType=VARCHAR}, 
-      #{type,jdbcType=VARCHAR}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, 
-      #{def4,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{creator,jdbcType=INTEGER}, #{modifyTime,jdbcType=TIMESTAMP}, #{modifier,jdbcType=INTEGER}, 
-      #{recVer,jdbcType=INTEGER}, #{companyId,jdbcType=INTEGER})
-  </insert>
-  <insert id="insertSelective" parameterType="com.xibin.wms.pojo.BdFittingSku" >
-    insert into bd_fitting_sku
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="fittingSkuCode != null" >
-        fitting_sku_code,
-      </if>
-      <if test="fittingSkuName != null" >
-        fitting_sku_name,
-      </if>
-      <if test="fittingSkuStatus != null" >
-        fitting_sku_status,
-      </if>
-      <if test="fittingSkuRemark != null" >
-        fitting_sku_remark,
-      </if>
-      <if test="manufacturer != null" >
-        manufacturer,
-      </if>
-      <if test="materialquality != null" >
-        materialquality,
-      </if>
-      <if test="packageCode != null" >
-        package_code,
-      </if>
-      <if test="uomDesc != null" >
-        uom_desc,
-      </if>
-      <if test="price != null" >
-        price,
-      </if>
-      <if test="modelCode != null" >
-        model_code,
-      </if>
-      <if test="fittingTypeCode != null" >
-        fitting_type_code,
-      </if>
-      <if test="type != null" >
-        type,
-      </if>
-      <if test="def1 != null" >
-        def1,
-      </if>
-      <if test="def2 != null" >
-        def2,
-      </if>
-      <if test="def3 != null" >
-        def3,
-      </if>
-      <if test="def4 != null" >
-        def4,
-      </if>
-      <if test="def5 != null" >
-        def5,
-      </if>
-      <if test="createTime != null" >
-        create_time,
-      </if>
-      <if test="creator != null" >
-        creator,
-      </if>
-      <if test="modifyTime != null" >
-        modify_time,
-      </if>
-      <if test="modifier != null" >
-        modifier,
-      </if>
-      <if test="recVer != null" >
-        rec_ver,
-      </if>
-      <if test="companyId != null" >
-        company_id,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="fittingSkuCode != null" >
-        #{fittingSkuCode,jdbcType=VARCHAR},
-      </if>
-      <if test="fittingSkuName != null" >
-        #{fittingSkuName,jdbcType=VARCHAR},
-      </if>
-      <if test="fittingSkuStatus != null" >
-        #{fittingSkuStatus,jdbcType=VARCHAR},
-      </if>
-      <if test="fittingSkuRemark != null" >
-        #{fittingSkuRemark,jdbcType=VARCHAR},
-      </if>
-      <if test="manufacturer != null" >
-        #{manufacturer,jdbcType=VARCHAR},
-      </if>
-      <if test="materialquality != null" >
-        #{materialquality,jdbcType=VARCHAR},
-      </if>
-      <if test="packageCode != null" >
-        #{packageCode,jdbcType=VARCHAR},
-      </if>
-      <if test="uomDesc != null" >
-        #{uomDesc,jdbcType=VARCHAR},
-      </if>
-      <if test="price != null" >
-        #{price,jdbcType=DOUBLE},
-      </if>
-      <if test="modelCode != null" >
-        #{modelCode,jdbcType=VARCHAR},
-      </if>
-      <if test="fittingTypeCode != null" >
-        #{fittingTypeCode,jdbcType=VARCHAR},
-      </if>
-      <if test="type != null" >
-        #{type,jdbcType=VARCHAR},
-      </if>
-      <if test="def1 != null" >
-        #{def1,jdbcType=VARCHAR},
-      </if>
-      <if test="def2 != null" >
-        #{def2,jdbcType=VARCHAR},
-      </if>
-      <if test="def3 != null" >
-        #{def3,jdbcType=VARCHAR},
-      </if>
-      <if test="def4 != null" >
-        #{def4,jdbcType=VARCHAR},
-      </if>
-      <if test="def5 != null" >
-        #{def5,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null" >
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="creator != null" >
-        #{creator,jdbcType=INTEGER},
-      </if>
-      <if test="modifyTime != null" >
-        #{modifyTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="modifier != null" >
-        #{modifier,jdbcType=INTEGER},
-      </if>
-      <if test="recVer != null" >
-        #{recVer,jdbcType=INTEGER},
-      </if>
-      <if test="companyId != null" >
-        #{companyId,jdbcType=INTEGER},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xibin.wms.pojo.BdFittingSku" >
-    update bd_fitting_sku
-    <set >
-      <if test="fittingSkuCode != null" >
-        fitting_sku_code = #{fittingSkuCode,jdbcType=VARCHAR},
-      </if>
-      <if test="fittingSkuName != null" >
-        fitting_sku_name = #{fittingSkuName,jdbcType=VARCHAR},
-      </if>
-      <if test="fittingSkuStatus != null" >
-        fitting_sku_status = #{fittingSkuStatus,jdbcType=VARCHAR},
-      </if>
-      <if test="fittingSkuRemark != null" >
-        fitting_sku_remark = #{fittingSkuRemark,jdbcType=VARCHAR},
-      </if>
-      <if test="manufacturer != null" >
-        manufacturer = #{manufacturer,jdbcType=VARCHAR},
-      </if>
-      <if test="materialquality != null" >
-        materialquality = #{materialquality,jdbcType=VARCHAR},
-      </if>
-      <if test="packageCode != null" >
-        package_code = #{packageCode,jdbcType=VARCHAR},
-      </if>
-      <if test="uomDesc != null" >
-        uom_desc = #{uomDesc,jdbcType=VARCHAR},
-      </if>
-      <if test="price != null" >
-        price = #{price,jdbcType=DOUBLE},
-      </if>
-      <if test="modelCode != null" >
-        model_code = #{modelCode,jdbcType=VARCHAR},
-      </if>
-      <if test="fittingTypeCode != null" >
-        fitting_type_code = #{fittingTypeCode,jdbcType=VARCHAR},
-      </if>
-      <if test="type != null" >
-        type = #{type,jdbcType=VARCHAR},
-      </if>
-      <if test="def1 != null" >
-        def1 = #{def1,jdbcType=VARCHAR},
-      </if>
-      <if test="def2 != null" >
-        def2 = #{def2,jdbcType=VARCHAR},
-      </if>
-      <if test="def3 != null" >
-        def3 = #{def3,jdbcType=VARCHAR},
-      </if>
-      <if test="def4 != null" >
-        def4 = #{def4,jdbcType=VARCHAR},
-      </if>
-      <if test="def5 != null" >
-        def5 = #{def5,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null" >
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="creator != null" >
-        creator = #{creator,jdbcType=INTEGER},
-      </if>
-      <if test="modifyTime != null" >
-        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="modifier != null" >
-        modifier = #{modifier,jdbcType=INTEGER},
-      </if>
-      <if test="recVer != null" >
-        rec_ver = #{recVer,jdbcType=INTEGER},
-      </if>
-      <if test="companyId != null" >
-        company_id = #{companyId,jdbcType=INTEGER},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.xibin.wms.pojo.BdFittingSku" >
-    update bd_fitting_sku
-    set fitting_sku_code = #{fittingSkuCode,jdbcType=VARCHAR},
-      fitting_sku_name = #{fittingSkuName,jdbcType=VARCHAR},
-      fitting_sku_status = #{fittingSkuStatus,jdbcType=VARCHAR},
-      fitting_sku_remark = #{fittingSkuRemark,jdbcType=VARCHAR},
-      manufacturer = #{manufacturer,jdbcType=VARCHAR},
-      materialquality = #{materialquality,jdbcType=VARCHAR},
-      package_code = #{packageCode,jdbcType=VARCHAR},
-      uom_desc = #{uomDesc,jdbcType=VARCHAR},
-      price = #{price,jdbcType=DOUBLE},
-      model_code = #{modelCode,jdbcType=VARCHAR},
-      fitting_type_code = #{fittingTypeCode,jdbcType=VARCHAR},
-      type = #{type,jdbcType=VARCHAR},
-      def1 = #{def1,jdbcType=VARCHAR},
-      def2 = #{def2,jdbcType=VARCHAR},
-      def3 = #{def3,jdbcType=VARCHAR},
-      def4 = #{def4,jdbcType=VARCHAR},
-      def5 = #{def5,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      creator = #{creator,jdbcType=INTEGER},
-      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
-      modifier = #{modifier,jdbcType=INTEGER},
-      rec_ver = #{recVer,jdbcType=INTEGER},
-      company_id = #{companyId,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+  <select id="selectAllByPage" resultMap="BaseResultMap" parameterType="Map">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_fitting_sku
+    <include refid="findByConditionWhere" />
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.xibin.wms.pojo.BdFittingType">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_fitting_sku
+    <include refid="findByExampleWhere" />
+  </select>
+  <select id="selectByKey" resultMap="BaseResultMap" resultType="java.util.List"  parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bd_fitting_sku
+    where sku_code = #{skuCode,jdbcType=VARCHAR}
+    and 
+    company_id = #{companyId,jdbcType=INTEGER}
+  </select>
 </mapper>

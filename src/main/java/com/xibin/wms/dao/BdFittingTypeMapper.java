@@ -14,5 +14,7 @@ public interface BdFittingTypeMapper extends BaseMapper{
     
     List<BdFittingType> selectAllByPage(Map map);
     
-    List<BdFittingType> selectByKey(@Param("fittingTypeCode")String fittingTypeCode,@Param("companyId")int companyId);
+    List<BdFittingType> selectByKey(@Param("fittingTypeCode")String fittingTypeCode,@Param("companyId")String companyId);
+    
+    List<BdFittingType> selectByExample(BdFittingType example);
 }

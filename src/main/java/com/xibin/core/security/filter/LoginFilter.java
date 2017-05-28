@@ -45,11 +45,12 @@ public class LoginFilter implements Filter{
 			return;
 		}
 		HttpSession session = request.getSession();
-		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
+		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY); 
 		if(null!=userDetails){
 			chain.doFilter(req, res);
 			return;
 		}
+		response.setStatus(401);
 		return;
 	}
 

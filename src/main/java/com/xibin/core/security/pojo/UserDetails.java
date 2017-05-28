@@ -8,20 +8,20 @@ public class UserDetails implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 5118240189727799180L;
-	private int userId;
+	private Integer userId;
 	//用户名
 	private String userName;
 	//公司ID
-	private int companyId;
+	private Integer companyId;
 	private String companyName;
 	//仓库ID
-	private int warehouseId;
+	private Integer warehouseId;
 	private String warehouseName;
 	
-	public int getUserId() {
+	public Integer getUserId() {
 		return userId;
 	}
-	public void setUserId(int userId) {
+	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
 	public String getUserName() {
@@ -30,16 +30,16 @@ public class UserDetails implements Serializable {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-	public int getCompanyId() {
+	public Integer getCompanyId() {
 		return companyId;
 	}
-	public void setCompanyId(int companyId) {
+	public void setCompanyId(Integer companyId) {
 		this.companyId = companyId;
 	}
-	public int getWarehouseId() {
+	public Integer getWarehouseId() {
 		return warehouseId;
 	}
-	public void setWarehouseId(int warehouseId) {
+	public void setWarehouseId(Integer warehouseId) {
 		this.warehouseId = warehouseId;
 	}
 	public String getCompanyName() {
