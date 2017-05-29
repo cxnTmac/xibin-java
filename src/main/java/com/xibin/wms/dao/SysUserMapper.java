@@ -5,10 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.xibin.core.page.pojo.Page;
-import com.xibin.core.page.pojo.Page;
 import com.xibin.wms.pojo.SysUser;
-import com.xibin.wms.query.SysUserQueryCondition;
 
 public interface SysUserMapper {
     int deleteByPrimaryKey(Integer id);

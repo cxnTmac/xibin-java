@@ -3,10 +3,7 @@ package com.xibin.wms.service;
 import java.util.List;
 import java.util.Map;
 
-import com.xibin.core.page.pojo.Page;
-import com.xibin.core.page.pojo.Page;
 import com.xibin.wms.pojo.SysUser;
-import com.xibin.wms.query.SysUserQueryCondition;
 
 public interface UserService {
 	public SysUser getUserById(int userId);

@@ -2,7 +2,9 @@ package com.xibin.wms.pojo;
 
 import java.util.Date;
 
-public class BdFittingSku {
+import com.xibin.core.daosupport.BaseModel;
+
+public class BdFittingSku extends BaseModel{
     private Integer id;
 
     private String fittingSkuCode;

@@ -11,7 +11,6 @@ import com.xibin.core.page.pojo.Page;
 import com.xibin.core.page.pojo.Page;
 import com.xibin.wms.dao.SysUserMapper;
 import com.xibin.wms.pojo.SysUser;
-import com.xibin.wms.query.SysUserQueryCondition;
 import com.xibin.wms.service.UserService;
 @Service
 public class UserServiceImpl implements UserService {

@@ -19,12 +19,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.xibin.core.costants.Constants;
 import com.xibin.core.page.pojo.Page;
-import com.xibin.core.page.pojo.Page;
 import com.xibin.core.page.pojo.PageEntity;
 import com.xibin.core.pojo.Message;
 import com.xibin.core.security.pojo.UserDetails;
 import com.xibin.wms.pojo.SysUser;
-import com.xibin.wms.query.SysUserQueryCondition;
 import com.xibin.wms.service.UserService;
  
 @Controller

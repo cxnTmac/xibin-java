@@ -61,7 +61,7 @@ public abstract class BaseManagerImpl {
 			Integer id = baseModel.getId();
 			baseModel.setModifier(userId);
 			baseModel.setModifyTime(now);
-			if (id==0) {
+			if (id==null||id==0) {
 				baseModel.setCreator(userId);
 				baseModel.setCreateTime(now);
 				baseModel.setRecVer(1);
