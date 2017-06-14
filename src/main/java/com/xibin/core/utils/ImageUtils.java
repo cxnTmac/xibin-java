@@ -61,7 +61,7 @@ public class ImageUtils {
         encoder.encode(image);
         out.close();
     }
-    public static void resizeAndSave(int dw,int dh,File originFile,String destFileName) throws IOException{  
+    public static File resizeAndSave(int dw,int dh,File originFile,String destFileName) throws IOException{  
     	Image img = ImageIO.read(originFile);      // 构造Image对象  
         int width = img.getWidth(null);    // 得到源图宽  
         int height = img.getHeight(null);  // 得到源图长  
@@ -71,6 +71,7 @@ public class ImageUtils {
         JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
         encoder.encode(image);
         out.close();
+        return destFile;
     }
     
 }

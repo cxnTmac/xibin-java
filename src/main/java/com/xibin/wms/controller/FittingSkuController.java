@@ -22,8 +22,10 @@ import com.xibin.core.page.pojo.Page;
 import com.xibin.core.page.pojo.PageEntity;
 import com.xibin.core.pojo.Message;
 import com.xibin.wms.pojo.BdFittingSku;
+import com.xibin.wms.pojo.BdFittingSkuPic;
 import com.xibin.wms.pojo.BdFittingType;
 import com.xibin.wms.query.BdFittingSkuQueryItem;
+import com.xibin.wms.service.BdFittingSkuPicService;
 import com.xibin.wms.service.BdFittingSkuService;
 import com.xibin.wms.service.BdFittingTypeService;
 
@@ -32,6 +34,8 @@ import com.xibin.wms.service.BdFittingTypeService;
 public class FittingSkuController {
 	@Resource
 	private BdFittingSkuService fittingSkuService;
+	@Resource
+	private BdFittingSkuPicService fittingSkuPicService;
 	
 	@RequestMapping("/showAllFittingSku")
 	@ResponseBody
@@ -48,8 +52,40 @@ public class FittingSkuController {
 		pageEntity.setList(list);
 		pageEntity.setSize(page.getTotalRecord());
 	    return  pageEntity;
-	 }
-	  
+	}
+	
+	@RequestMapping("/getFittingTypeSkuBySkuCode")
+	@ResponseBody
+	public BdFittingSkuQueryItem getFittingTypeSkuBySkuCode(HttpServletRequest request,Model model){
+		String fittingSkuCode = request.getParameter("fittingSkuCode");
+		List<BdFittingSkuQueryItem> list = fittingSkuService.selectByKey(fittingSkuCode);
+		if(!list.isEmpty()){
+			return list.get(0);
+		}
+		return new BdFittingSkuQueryItem();
+	}
+	@RequestMapping("/MshowAllFittingSku")
+	@ResponseBody
+	public PageEntity<BdFittingSkuQueryItem> MshowAllFittingSku(HttpServletRequest request,Model model){ 
+		// 开始分页  
+		PageEntity<BdFittingSkuQueryItem> pageEntity = new PageEntity<BdFittingSkuQueryItem>();
+		Page<?> page = new Page();
+		//配置分页参数
+		page.setPageNo(Integer.parseInt(request.getParameter("page")));
+		page.setPageSize(Integer.parseInt(request.getParameter("size")));
+		Map map = JSONObject.parseObject(request.getParameter("conditions"));
+		map.put("page", page);
+		List<BdFittingSkuQueryItem> list = fittingSkuService.MgetAllFittingSkuByPageWithOnePic(map);
+		pageEntity.setList(list);
+		pageEntity.setSize(page.getTotalRecord());
+		return  pageEntity;
+	}
+	@RequestMapping("/getFittingSkuPic")
+	@ResponseBody
+	public List<BdFittingSkuPic> getFittingSkuPic(HttpServletRequest request,Model model){ 
+		String fittingSkuCode = request.getParameter("fittingSkuCode");
+		return fittingSkuPicService.selectByFittingSkuCode(fittingSkuCode);
+	}
 	  @RequestMapping("/removeFittingSku")
 	  @ResponseBody
 	  public Message removeFittingSku(HttpServletRequest request,Model model){
@@ -113,6 +149,18 @@ public class FittingSkuController {
 			message.setMsg(e.getMessage());
 		}
 		return message;
+	  }
+	  
+	  @RequestMapping("/removeFittingSkuPic")
+	  @ResponseBody
+	  public Message removeFittingSkuPic(@RequestParam("idNormal") int idNoromal,@RequestParam("idZip") int idZip,@RequestParam("fittingSkuCode") String fittingSkuCode){
+		Message message = new Message();
+		this.fittingSkuPicService.removeFittingSkuPic(idNoromal,idZip);
+		message.setCode(200);
+		message.setMsg("删除成功");
+		List<BdFittingSkuPic> results = fittingSkuPicService.selectByFittingSkuCode(fittingSkuCode);
+		message.setData(results);
+	    return message;
 	  }
 	  
 }

@@ -40,13 +40,15 @@
     <result column="price" property="price" jdbcType="DOUBLE" />
     <result column="model_code" property="modelCode" jdbcType="VARCHAR" />
     <result column="fitting_type_code" property="fittingTypeCode" jdbcType="VARCHAR" />
-    <result column="fitting_type_name" property="fittingTypeCode" jdbcType="VARCHAR" />
+    <result column="fitting_type_name" property="fittingTypeName" jdbcType="VARCHAR" />
     <result column="type" property="type" jdbcType="VARCHAR" />
     <result column="def1" property="def1" jdbcType="VARCHAR" />
     <result column="def2" property="def2" jdbcType="VARCHAR" />
     <result column="def3" property="def3" jdbcType="VARCHAR" />
     <result column="def4" property="def4" jdbcType="VARCHAR" />
     <result column="def5" property="def5" jdbcType="VARCHAR" />
+    <result column="fitting_sku_pic_url" property="fittingSkuPicUrl" jdbcType="VARCHAR" />
+    <result column="fitting_sku_pic_name" property="fittingSkuPicName" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
     <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
@@ -54,6 +56,7 @@
     <result column="rec_ver" property="recVer" jdbcType="INTEGER" />
     <result column="company_id" property="companyId" jdbcType="INTEGER" />
   </resultMap>
+  
   <sql id="Base_Column_List">
     bfs.id, bfs.fitting_sku_code, bfs.fitting_sku_name, bfs.fitting_sku_status, bfs.fitting_sku_remark, bfs.manufacturer, 
     bfs.materialquality, bfs.package_code, bfs.uom_desc, bfs.price, bfs.model_code, bfs.fitting_type_code, bfs.type, 
@@ -64,19 +67,21 @@
   <sql id="findByConditionWhere">
       WHERE 1=1
           <if test="id!=null and id!=''"> AND id = #{id}</if>
-          <if test="fittingSkuCode!=null and fittingSkuCode!=''"> AND fitting_sku_code LIKE CONCAT('%','${fittingSkuCode}','%')</if>
-          <if test="fittingTypeName!=null and fittingTypeName!=''"> AND fitting_sku_name LIKE CONCAT('%','${fittingSkuName}','%')</if>
-          <if test="companyId!=null and companyId!=''"> AND company_id = #{companyId}</if>
+          <if test="fittingSkuCode!=null and fittingSkuCode!=''"> AND bfs.fitting_sku_code LIKE CONCAT('%','${fittingSkuCode}','%')</if>
+          <if test="fittingTypeName!=null and fittingTypeName!=''"> AND bfs.fitting_sku_name LIKE CONCAT('%','${fittingSkuName}','%')</if>
+          <if test="modelCode!=null and modelCode!=''"> AND bfs.model_code = #{modelCode}</if>
+          <if test="fittingTypeCode!=null and fittingTypeCode!=''"> AND bfs.fitting_type_code = #{fittingTypeCode}</if>
+          <if test="companyId!=null and companyId!=''"> AND bfs.company_id = #{companyId}</if>
   </sql>
   <!-- 条件 -->
   <sql id="findByExampleWhere">
       WHERE 1=1
           <if test="id!=null and id!=''"> AND id = #{id}</if>
-          <if test="fittingSkuCode!=null and fittingSkuCode!=''"> AND fitting_sku_code  = #{fittingSkuCode}</if>
-          <if test="fittingSkuName!=null and fittingSkuName!=''"> AND fitting_sku_name = #{fittingSkuName}</if>
-          <if test="modelCode!=null and modelCode!=''"> AND model_code = #{modelCode}</if>
-          <if test="fittingTypeCode!=null and fittingTypeCode!=''"> AND fitting_type_code = #{fittingTypeCode}</if>
-          <if test="companyId!=null and companyId!=''"> AND company_id = #{companyId}</if>
+          <if test="fittingSkuCode!=null and fittingSkuCode!=''"> AND bfs.fitting_sku_code  = #{fittingSkuCode}</if>
+          <if test="fittingSkuName!=null and fittingSkuName!=''"> AND bfs.fitting_sku_name = #{fittingSkuName}</if>
+          <if test="modelCode!=null and modelCode!=''"> AND bfs.model_code = #{modelCode}</if>
+          <if test="fittingTypeCode!=null and fittingTypeCode!=''"> AND bfs.fitting_type_code = #{fittingTypeCode}</if>
+          <if test="companyId!=null and companyId!=''"> AND bfs.company_id = #{companyId}</if>
   </sql>
   <!-- 【固定】：按主键查询 -->
   <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String">
@@ -200,6 +205,11 @@
                      when (ID=#{item.id}) then #{item.recVer}
              </foreach>
 		</trim>
+		<trim prefix="company_id =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.companyId}
+             </foreach>
+		</trim>
 	</trim>
 	WHERE
 	<foreach collection="list" separator="or" item="item" index="index" >
@@ -229,12 +239,34 @@
     from bd_fitting_sku bfs
     <include refid="findByExampleWhere" />
   </select>
-  <select id="selectByKey" resultMap="BaseResultMap" resultType="java.util.List"  parameterType="java.lang.String" >
+  <select id="selectByKey" resultMap="QueryResultMap" resultType="java.util.List"  parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
+    ,bft.fitting_type_name
     from bd_fitting_sku bfs
-    where fitting_sku_code = #{fittingSkuCode,jdbcType=VARCHAR}
+    left join bd_fitting_type bft on bfs.fitting_type_code = bft.fitting_type_code
+    where bfs.fitting_sku_code = #{fittingSkuCode,jdbcType=VARCHAR}
     and 
-    company_id = #{companyId,jdbcType=INTEGER}
+    bfs.company_id = #{companyId,jdbcType=INTEGER}
+  </select>
+  <select id="selectALLByPageWithOnePic" resultMap="QueryResultMap" parameterType="Map" >
+    select 
+    <include refid="Base_Column_List" />
+	,bfsp.fitting_sku_pic_url,
+	bfsp.fitting_sku_pic_name
+    FROM bd_fitting_sku bfs
+    LEFT JOIN 
+    bd_fitting_type bft 
+    ON 
+    bfs.fitting_type_code = bft.fitting_type_code
+    LEFT JOIN
+	bd_fitting_sku_pic bfsp
+	ON
+	bfs.fitting_sku_code = bfsp.fitting_sku_code
+	AND 
+	bfsp.type = 'ZIP'
+	<include refid="findByConditionWhere"/>
+	GROUP BY bfs.fitting_sku_code
+    
   </select>
 </mapper>

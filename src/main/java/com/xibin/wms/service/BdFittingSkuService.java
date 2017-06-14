@@ -10,11 +10,13 @@ import com.xibin.wms.query.BdFittingSkuQueryItem;
 public interface BdFittingSkuService {
 	public BdFittingSku getFittingSkuById(int userId);
 	
+	public List<BdFittingSkuQueryItem> MgetAllFittingSkuByPageWithOnePic(Map map);
+	
 	public List<BdFittingSkuQueryItem> getAllFittingSkuByPage(Map map);
 	
 	public int removeFittingSku(int id,String fittingTypeCode)  throws BusinessException; 
 	
 	public BdFittingSku saveFittingSku (BdFittingSku model) throws BusinessException;
 	
-	public List<BdFittingSku> selectByKey(String fittingTypeCode);
+	public List<BdFittingSkuQueryItem> selectByKey(String fittingTypeCode);
 }

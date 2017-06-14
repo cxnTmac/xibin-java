@@ -46,6 +46,10 @@ public class BdFittingSkuQueryItem implements Serializable {
     private String def4;
 
     private String def5;
+    
+    private String fittingSkuPicUrl;
+    
+    private String fittingSkuPicName;
 
     private Date createTime;
 
@@ -209,6 +213,22 @@ public class BdFittingSkuQueryItem implements Serializable {
 
 	public void setDef5(String def5) {
 		this.def5 = def5;
+	}
+	
+	public String getFittingSkuPicUrl() {
+		return fittingSkuPicUrl;
+	}
+
+	public void setFittingSkuPicUrl(String fittingSkuPicUrl) {
+		this.fittingSkuPicUrl = fittingSkuPicUrl;
+	}
+
+	public String getFittingSkuPicName() {
+		return fittingSkuPicName;
+	}
+
+	public void setFittingSkuPicName(String fittingSkuPicName) {
+		this.fittingSkuPicName = fittingSkuPicName;
 	}
 
 	public Date getCreateTime() {

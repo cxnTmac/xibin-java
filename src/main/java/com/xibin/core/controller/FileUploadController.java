@@ -1,11 +1,15 @@
 package com.xibin.core.controller;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -21,21 +25,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.xibin.core.costants.CodeMaster;
 import com.xibin.core.costants.Constants;
 import com.xibin.core.pojo.Message;
 import com.xibin.core.security.pojo.UserDetails;
 import com.xibin.core.utils.ImageUtils;
+import com.xibin.wms.pojo.BdFittingSkuPic;
+import com.xibin.wms.service.BdFittingSkuPicService;
 
 
 @Controller
 @RequestMapping(value = "/file", produces = {"application/json;charset=UTF-8"})
 public class FileUploadController {
 	@Autowired
-	SqlSessionFactory factory;
-	@Autowired
 	HttpSession session;
-	
-	public static final String WEBPICUPLOADURL = "C:\\Users\\cxn\\WebstormProjects\\xibin-web\\static";
+	@Autowired
+	BdFittingSkuPicService bdFittingSkuPicService;
 	@RequestMapping("/uploadFittingSkuPics")  
 	@ResponseBody
     public Message uploadFittingSkuPics(@RequestParam MultipartFile[] pics, HttpServletRequest request) throws IOException{
@@ -47,7 +52,6 @@ public class FileUploadController {
 			FileUtils.copyInputStreamToFile(pic.getInputStream(), new File(realPath, pic.getOriginalFilename())); 
 		}
 		return message;
-		
 	}
 	
 	@RequestMapping(value="/uploadFittingSkuPic",consumes="multipart/form-data",method = RequestMethod.POST)  
@@ -57,13 +61,33 @@ public class FileUploadController {
 		String fittingSkuCode = request.getParameter("fittingSkuCode");
 		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
 		//String realPath = request.getSession().getServletContext().getRealPath("/WEB-INF/upload/FittingSkuPic/"+fittingSkuCode+"-"+userDetails.getCompanyId());
-		String realPath = WEBPICUPLOADURL+"\\fittingSku\\"+fittingSkuCode+"-"+userDetails.getCompanyId().toString();
+		String realPath = Constants.WEBPICUPLOADURL+"\\fittingSku\\"+fittingSkuCode+"-"+userDetails.getCompanyId().toString();
+		String weburl = Constants.WEBRUL+"\\fittingSku\\"+fittingSkuCode+"-"+userDetails.getCompanyId().toString();
 		try {
 			File originFile = new File(realPath, pic.getOriginalFilename());
 			String fileName = pic.getOriginalFilename().substring(0,pic.getOriginalFilename().lastIndexOf("."));
 			String destFileName = realPath+"\\"+fileName+"-zip"+".jpg";
 			FileUtils.copyInputStreamToFile(pic.getInputStream(), originFile);
-			ImageUtils.resizeAndSave(250, 250, originFile, destFileName);
+			BufferedImage sourceImg = ImageIO.read(new FileInputStream(originFile));
+			BdFittingSkuPic modelPic = new BdFittingSkuPic();
+			modelPic.setCompanyId(userDetails.getCompanyId());
+			modelPic.setFittingSkuPicName(pic.getOriginalFilename());
+			modelPic.setFittingSkuCode(fittingSkuCode);
+			modelPic.setFittingSkuPicUrl(weburl+"\\"+pic.getOriginalFilename());
+			modelPic.setType(CodeMaster.PIC_TYPE_NORMAL);
+			modelPic.setWidth(sourceImg.getWidth());
+			modelPic.setHeight(sourceImg.getHeight());
+			bdFittingSkuPicService.saveFittingSkuPic(modelPic);
+			BufferedImage zipImg = ImageIO.read(new FileInputStream(ImageUtils.resizeAndSave(250, 250, originFile, destFileName)));
+			BdFittingSkuPic modelPicZip = new BdFittingSkuPic();
+			modelPicZip.setCompanyId(userDetails.getCompanyId());
+			modelPicZip.setFittingSkuPicName(pic.getOriginalFilename());
+			modelPicZip.setFittingSkuCode(fittingSkuCode);
+			modelPicZip.setFittingSkuPicUrl(weburl+"\\"+fileName+"-zip"+".jpg");
+			modelPicZip.setType(CodeMaster.PIC_TYPE_ZIP);
+			modelPicZip.setWidth(zipImg.getWidth(null));
+			modelPicZip.setHeight(zipImg.getHeight(null));
+			bdFittingSkuPicService.saveFittingSkuPic(modelPicZip);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

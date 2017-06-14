@@ -108,6 +108,11 @@
                      when (ID=#{item.id}) then #{item.recVer}
              </foreach>
 		</trim>
+		<trim prefix="company_id =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.companyId}
+             </foreach>
+		</trim>
 	</trim>
 	WHERE
 	<foreach collection="list" separator="or" item="item" index="index" >

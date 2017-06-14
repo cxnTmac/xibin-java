@@ -1,5 +1,6 @@
 package com.xibin.wms.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class FittingTypeController {
 	
 	@RequestMapping("/showAllFittingType")
 	@ResponseBody
-	public PageEntity<BdFittingType> showAllUser(HttpServletRequest request,Model model){ 
+	public PageEntity<BdFittingType> showAllFittingType(HttpServletRequest request,Model model){ 
 	    // 开始分页  
 		PageEntity<BdFittingType> pageEntity = new PageEntity<BdFittingType>();
 		Page<?> page = new Page();
@@ -46,7 +47,20 @@ public class FittingTypeController {
 		pageEntity.setSize(page.getTotalRecord());
 	    return  pageEntity;
 	 }
-	  
+	@RequestMapping("/MshowAllFittingTypeWithOutPage")
+	@ResponseBody
+	public List<JSONObject> showAllFittingTypeWithOutPage(HttpServletRequest request,Model model){
+		Map map = new HashMap<>();
+		List<BdFittingType> typeList = fittingTypeService.getAllFittingTypeByPage(map);
+		List<JSONObject> jsonList = new ArrayList<JSONObject>();
+		for(BdFittingType type:typeList){
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("fittingTypeCode", type.getFittingTypeCode());
+			jsonObject.put("fittingTypeName", type.getFittingTypeName());
+			jsonList.add(jsonObject);
+		}
+		return jsonList;
+	}
 	  @RequestMapping("/removeFittingType")
 	  @ResponseBody
 	  public Message removeFittingType(HttpServletRequest request,Model model){

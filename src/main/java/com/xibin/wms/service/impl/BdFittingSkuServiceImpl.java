@@ -37,7 +37,12 @@ public class BdFittingSkuServiceImpl extends BaseManagerImpl implements BdFittin
 		// TODO Auto-generated method stub
 		return bdFittingSkuMapper.selectAllByPage(map);
 	}
-
+	
+	@Override
+	public List<BdFittingSkuQueryItem> MgetAllFittingSkuByPageWithOnePic(Map map) {
+		// TODO Auto-generated method stub
+		return bdFittingSkuMapper.selectALLByPageWithOnePic(map);
+	}
 	@Override
 	public int removeFittingSku(int id,String fittingSkuCode) throws BusinessException {
 		// TODO Auto-generated method stub
@@ -56,7 +61,7 @@ public class BdFittingSkuServiceImpl extends BaseManagerImpl implements BdFittin
 		// TODO Auto-generated method stub
 		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
 		model.setCompanyId(userDetails.getCompanyId());
-		List<BdFittingSku> list = bdFittingSkuMapper.selectByKey(model.getFittingSkuCode(),model.getCompanyId().toString());
+		List<BdFittingSkuQueryItem> list = bdFittingSkuMapper.selectByKey(model.getFittingSkuCode(),model.getCompanyId().toString());
 		if(list.size()>0&&model.getId()==0){
 			throw new BusinessException("编码：["+model.getFittingSkuCode()+"] 已存在，不能重复！");
 		}
@@ -65,7 +70,7 @@ public class BdFittingSkuServiceImpl extends BaseManagerImpl implements BdFittin
 
 
 	@Override
-	public List<BdFittingSku> selectByKey(String skuCode) {
+	public List<BdFittingSkuQueryItem> selectByKey(String skuCode) {
 		// TODO Auto-generated method stub
 		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
 		return bdFittingSkuMapper.selectByKey(skuCode,userDetails.getCompanyId().toString());
