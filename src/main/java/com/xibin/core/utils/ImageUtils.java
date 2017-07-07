@@ -3,9 +3,6 @@ import java.io.*;
 import java.awt.*;  
 import java.awt.image.*;  
 import javax.imageio.ImageIO;
-
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
 public class ImageUtils {
      
     /** 
@@ -57,8 +54,9 @@ public class ImageUtils {
         BufferedImage image = resizeFix(dw,dh,width,height,img);
         File destFile = new File(destFileName);
         FileOutputStream out = new FileOutputStream(destFile);
-        JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
-        encoder.encode(image);
+        ImageIO.write(image, "jpg", out);  
+//      JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+//      encoder.encode(image);
         out.close();
     }
     public static File resizeAndSave(int dw,int dh,File originFile,String destFileName) throws IOException{  
@@ -68,8 +66,9 @@ public class ImageUtils {
         BufferedImage image = resizeFix(dw,dh,width,height,img);
         File destFile = new File(destFileName);
         FileOutputStream out = new FileOutputStream(destFile);
-        JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
-        encoder.encode(image);
+        ImageIO.write(image, "jpg", out);
+//      JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+//      encoder.encode(image);
         out.close();
         return destFile;
     }

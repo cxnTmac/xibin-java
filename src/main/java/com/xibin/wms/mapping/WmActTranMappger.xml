@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xibin.wms.dao.WmActTranMapper" >
+  <resultMap id="BaseResultMap" type="com.xibin.wms.pojo.WmActTran" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="tran_id" property="tranId" jdbcType="VARCHAR" />
+    <result column="tran_type" property="tranType" jdbcType="VARCHAR" />
+    <result column="order_type" property="orderType" jdbcType="VARCHAR" />
+    <result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+    <result column="line_no" property="lineNo" jdbcType="VARCHAR" />
+    <result column="task_id" property="taskId" jdbcType="VARCHAR" />
+    <result column="task_line_no" property="taskLineNo" jdbcType="VARCHAR" />
+    <result column="tran_op" property="tranOp" jdbcType="INTEGER" />
+    <result column="tran_time" property="tranTime" jdbcType="TIMESTAMP" />
+    <result column="fm_sku" property="fmSku" jdbcType="VARCHAR" />
+    <result column="fm_lot" property="fmLot" jdbcType="VARCHAR" />
+    <result column="fm_loc" property="fmLoc" jdbcType="VARCHAR" />
+    <result column="fm_qty_op" property="fmQtyOp" jdbcType="DOUBLE" />
+    <result column="fm_qty_before" property="fmQtyBefore" jdbcType="DOUBLE" />
+    <result column="fm_qty_after" property="fmQtyAfter" jdbcType="DOUBLE" />
+    <result column="to_sku" property="toSku" jdbcType="VARCHAR" />
+    <result column="to_lot" property="toLot" jdbcType="VARCHAR" />
+    <result column="to_loc" property="toLoc" jdbcType="VARCHAR" />
+    <result column="to_qty_op" property="toQtyOp" jdbcType="DOUBLE" />
+    <result column="to_qty_before" property="toQtyBefore" jdbcType="DOUBLE" />
+    <result column="to_qty_after" property="toQtyAfter" jdbcType="DOUBLE" />
+    <result column="creator" property="creator" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="INTEGER" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="rec_ver" property="recVer" jdbcType="INTEGER" />
+    <result column="company_id" property="companyId" jdbcType="INTEGER" />
+    <result column="warehouse_id" property="warehouseId" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="QueryResultMap" type="com.xibin.wms.query.WmActTranQueryItem" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="tran_id" property="tranId" jdbcType="VARCHAR" />
+    <result column="tran_type" property="tranType" jdbcType="VARCHAR" />
+    <result column="order_type" property="orderType" jdbcType="VARCHAR" />
+    <result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+    <result column="line_no" property="lineNo" jdbcType="VARCHAR" />
+    <result column="task_id" property="taskId" jdbcType="VARCHAR" />
+    <result column="task_line_no" property="taskLineNo" jdbcType="VARCHAR" />
+    <result column="tran_op" property="tranOp" jdbcType="INTEGER" />
+    <result column="tran_time" property="tranTime" jdbcType="TIMESTAMP" />
+    <result column="fm_sku" property="fmSku" jdbcType="VARCHAR" />
+    <result column="fm_sku_name" property="fmSkuName" jdbcType="VARCHAR" />
+    <result column="fm_lot" property="fmLot" jdbcType="VARCHAR" />
+    <result column="fm_loc" property="fmLoc" jdbcType="VARCHAR" />
+    <result column="fm_qty_op" property="fmQtyOp" jdbcType="DOUBLE" />
+    <result column="fm_qty_before" property="fmQtyBefore" jdbcType="DOUBLE" />
+    <result column="fm_qty_after" property="fmQtyAfter" jdbcType="DOUBLE" />
+    <result column="to_sku" property="toSku" jdbcType="VARCHAR" />
+    <result column="to_sku_name" property="toSkuName" jdbcType="VARCHAR" />
+    <result column="to_lot" property="toLot" jdbcType="VARCHAR" />
+    <result column="to_loc" property="toLoc" jdbcType="VARCHAR" />
+    <result column="to_qty_op" property="toQtyOp" jdbcType="DOUBLE" />
+    <result column="to_qty_before" property="toQtyBefore" jdbcType="DOUBLE" />
+    <result column="to_qty_after" property="toQtyAfter" jdbcType="DOUBLE" />
+    <result column="creator" property="creator" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="INTEGER" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="rec_ver" property="recVer" jdbcType="INTEGER" />
+    <result column="company_id" property="companyId" jdbcType="INTEGER" />
+    <result column="warehouse_id" property="warehouseId" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    wat.id,
+	wat.tran_id,
+	wat.tran_type,
+	wat.order_type,
+	wat.order_no,
+	wat.line_no,
+	wat.task_id,
+	wat.task_line_no,
+	wat.tran_op,
+	wat.tran_time,
+	wat.fm_sku,
+	wat.fm_lot,
+	wat.fm_loc,
+	wat.fm_qty_op,
+	wat.fm_qty_before,
+	wat.fm_qty_after,
+	wat.to_sku,
+	wat.to_lot,
+	wat.to_loc,
+	wat.to_qty_op,
+	wat.to_qty_before,
+	wat.to_qty_after,
+	wat.creator,
+	wat.create_time,
+	wat.modifier,
+	wat.modify_time,
+	wat.rec_ver,
+	wat.company_id,
+	wat.warehouse_id
+  </sql>
+  
+  <!-- 条件 -->
+  <sql id="findByConditionWhere">
+      WHERE 1=1
+          <if test="id!=null and id!=''"> AND wat.id = #{id}</if>
+          <if test="tranId!=null and tranId!=''"> AND wat.tran_id LIKE CONCAT('%', '${tranId}','%')</if>
+          <if test="orderType!=null and orderType!=''"> AND wat.order_type  = #{orderType}</if>
+          <if test="tranType!=null and tranType!=''"> AND wat.tran_type  = #{tranType}</if>
+          <if test="orderNo!=null and orderNo!=''"> AND wat.order_no LIKE CONCAT('%', '${orderNo}','%')</if>
+          <if test="taskId!=null and taskId!=''"> AND wat.task_id LIKE CONCAT('%', '${taskId}','%')</if>
+          <if test="companyId!=null and companyId!=''"> AND wat.company_id = #{companyId}</if>
+          <if test="warehouseId!=null and warehouseId!=''"> AND wat.warehouse_id = #{warehouseId}</if>
+          <if test="tranTimeFm!=null and tranTimeFm!=''"> AND wat.tran_time &gt;= #{tranTimeFm}</if>
+          <if test="tranTimeTo!=null and tranTimeTo!=''"> AND wat.tran_time &lt;= #{tranTimeTo}</if>
+  </sql>
+  <!-- 条件 -->
+  <sql id="findByExampleWhere">
+      WHERE 1=1
+          <if test="id!=null and id!=''"> AND wat.id = #{id}</if>
+          <if test="tranId!=null and tranId!=''"> AND wat.tran_id = #{tranId}</if>
+          <if test="orderType!=null and orderType!=''"> AND wat.order_type  = #{orderType}</if>
+          <if test="orderNo!=null and orderNo!=''"> AND wat.order_no = #{orderNo}</if>
+          <if test="tranType!=null and tranType!=''"> AND wat.tran_type  = #{tranType}</if>
+          <if test="taskId!=null and taskId!=''"> AND wat.task_id  = #{taskId}</if>
+          <if test="companyId!=null and companyId!=''"> AND wat.company_id = #{companyId}</if>
+          <if test="warehouseId!=null and warehouseId!=''"> AND wat.warehouse_id = #{warehouseId}</if>
+  </sql>
+  
+  
+  <!-- 【固定】：按主键查询 -->
+  <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	  select
+      <include refid="Base_Column_List"/>
+      from wm_act_tran wat
+      WHERE id in
+      <foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+	           #{item}
+	  </foreach>
+  </select>
+  
+  <!-- 【固定】：插入记录（支持一条及多条） -->
+  <insert id="insert" parameterType="java.util.Collection">
+  	INSERT INTO wm_act_tran
+          (id,tran_id,tran_type,order_type,order_no,line_no,task_id,task_line_no,tran_op,tran_time,fm_sku,fm_lot,fm_loc,fm_qty_op,
+	fm_qty_before,fm_qty_after,to_sku,to_lot,to_loc,to_qty_op,to_qty_before,to_qty_after,
+	creator,create_time,modifier,modify_time,rec_ver,company_id,warehouse_id)
+       VALUES
+  		<foreach collection="list" item="item" index="index" separator=",">
+	   		(#{item.id}, #{item.tranId},#{item.tranType}, #{item.orderType},#{item.orderNo},#{item.lineNo},#{item.taskId},#{item.taskLineNo},
+      #{item.tranOp},#{item.tranTime},#{item.fmSku},#{item.fmLot},#{item.fmLoc},#{item.fmQtyOp},#{item.fmQtyBefore},#{item.fmQtyAfter},
+      #{item.toSku},#{item.toLot},#{item.toLoc},#{item.toQtyOp},#{item.toQtyBefore},#{item.toQtyAfter},
+      #{item.creator},#{item.createTime}, #{item.modifier},  #{item.modifyTime},#{item.recVer}, #{item.companyId},#{item.warehouseId})
+  		</foreach>
+  </insert>
+  
+  <!-- 【固定】：删除记录 -->
+  <delete id="delete" parameterType="java.lang.reflect.Array">
+      DELETE FROM wm_act_tran WHERE id in 
+   <foreach collection="array" index="index" item="item" open="(" separator="," close=")">  
+           #{item}   
+   </foreach>
+  </delete>
+  
+  <!-- 【固定】：更新记录（支持一条及多条） -->
+  <update id="update" parameterType="java.util.Collection">
+	UPDATE wm_act_tran
+	<trim prefix="set" suffixOverrides=",">
+		<!-- 更新的字段集合 -->
+		<trim prefix="tran_id =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.tranId}
+             </foreach>
+		</trim>
+		<trim prefix="tran_type =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.tranType}
+             </foreach>
+		</trim>
+		<trim prefix="order_type =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.orderType}
+             </foreach>
+		</trim>
+		<trim prefix="order_no =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.orderNo}
+             </foreach>
+		</trim>
+		<trim prefix="line_no =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.lineNo}
+             </foreach>
+		</trim>
+		<trim prefix="task_id =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.taskId}
+             </foreach>
+		</trim>
+		<trim prefix="task_line_no =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.taskLineNo}
+             </foreach>
+		</trim>
+		<trim prefix="tran_op =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.tranOp}
+             </foreach>
+		</trim>
+		<trim prefix="tran_time =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.tranTime}
+             </foreach>
+		</trim>
+		<trim prefix="fm_sku =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.fmSku}
+             </foreach>
+		</trim>
+		<trim prefix="fm_lot =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.fmLot}
+             </foreach>
+		</trim>
+		<trim prefix="fm_loc =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.fmLoc}
+             </foreach>
+		</trim>
+		<trim prefix="fm_qty_op =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.fmQtyOp}
+             </foreach>
+		</trim>
+		<trim prefix="fm_qty_before =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.fmQtyBefore}
+             </foreach>
+		</trim>
+		<trim prefix="fm_qty_after =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.fmQtyAfter}
+             </foreach>
+		</trim>
+		
+		<trim prefix="to_sku =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.toSku}
+             </foreach>
+		</trim>
+		<trim prefix="to_lot =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.toLot}
+             </foreach>
+		</trim>
+		<trim prefix="to_loc =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.toLoc}
+             </foreach>
+		</trim>
+		<trim prefix="to_qty_op =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.toQtyOp}
+             </foreach>
+		</trim>
+		<trim prefix="to_qty_before =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.toQtyBefore}
+             </foreach>
+		</trim>
+		<trim prefix="to_qty_after =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.toQtyAfter}
+             </foreach>
+		</trim>
+		<trim prefix="modifier =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.modifier}
+             </foreach>
+		</trim>
+		<trim prefix="modify_time =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.modifyTime}
+             </foreach>
+		</trim>
+		<trim prefix="rec_ver =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.recVer}
+             </foreach>
+		</trim>
+		<trim prefix="company_id =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.companyId}
+             </foreach>
+		</trim>
+		<trim prefix="warehouse_id =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.warehouseId}
+             </foreach>
+		</trim>
+	</trim>
+	WHERE
+	<foreach collection="list" separator="or" item="item" index="index" >
+		<if test="item.id!=null">
+		(ID=#{item.id}) AND (REC_VER=#{item.recVer}-1)
+		</if>
+	</foreach>	
+  </update>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from wm_act_tran wat
+    where wat.id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAllByPage" resultMap="QueryResultMap" parameterType="Map">
+    select 
+    <include refid="Base_Column_List" />
+    ,bfs1.fitting_sku_name as fm_sku_name,
+    bfs2.fitting_sku_name as to_sku_name
+    from wm_act_tran wat
+    left join bd_fitting_sku bfs1 on
+    wat.fm_sku = bfs1.fitting_sku_code
+    and 
+    wat.company_id = bfs1.company_id
+    left join bd_fitting_sku bfs2 on
+    wat.to_sku = bfs2.fitting_sku_code
+    and 
+    wat.company_id = bfs2.company_id
+    <include refid="findByConditionWhere" />
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.xibin.wms.pojo.BdLoc">
+    select 
+    <include refid="Base_Column_List" />
+    from wm_act_tran wat
+    <include refid="findByExampleWhere" />
+  </select>
+  
+  <select id="selectByKey" resultMap="QueryResultMap" resultType="java.util.List"  parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,bfs1.fitting_sku_name as fm_sku_name,
+    bfs2.fitting_sku_name as to_sku_name
+    from wm_act_tran wat
+    left join bd_fitting_sku bfs1 on
+    wat.fm_sku = bfs1.fitting_sku_code
+    and 
+    wat.company_id = bfs1.company_id
+    left join bd_fitting_sku bfs2 on
+    wat.to_sku = bfs2.fitting_sku_code
+    and 
+    wat.company_id = bfs2.company_id
+    where 
+    wat.tran_id = #{tranId,jdbcType=VARCHAR}
+    and 
+    wat.company_id = #{companyId,jdbcType=INTEGER}
+    and
+    wat.warehouse_id = #{warehouseId,jdbcType=INTEGER}
+  </select>
+</mapper>

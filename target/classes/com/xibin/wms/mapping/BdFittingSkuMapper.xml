@@ -72,6 +72,8 @@
           <if test="modelCode!=null and modelCode!=''"> AND bfs.model_code = #{modelCode}</if>
           <if test="fittingTypeCode!=null and fittingTypeCode!=''"> AND bfs.fitting_type_code = #{fittingTypeCode}</if>
           <if test="companyId!=null and companyId!=''"> AND bfs.company_id = #{companyId}</if>
+          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> AND bfs.fitting_sku_name LIKE CONCAT('%','${fuzzyCondition}','%')</if>
+          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> OR bfs.model_code LIKE CONCAT('%','${fuzzyCondition}','%')</if>
   </sql>
   <!-- 条件 -->
   <sql id="findByExampleWhere">

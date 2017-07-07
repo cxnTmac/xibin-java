@@ -2,16 +2,22 @@ package com.xibin.wms.pojo;
 
 import java.util.Date;
 
-public class WmInboundHeader {
+import com.xibin.core.daosupport.BaseModel;
+
+public class WmInboundHeader extends BaseModel{
     private Integer id;
 
     private String orderNo;
 
     private String supplierCode;
+    
+    private String status;
 
     private Date orderTime;
 
     private Integer auditOp;
+    
+    private String auditStatus;
 
     private Date auditTime;
 
@@ -21,11 +27,11 @@ public class WmInboundHeader {
 
     private Integer creator;
 
-    private Date createtime;
+    private Date createTime;
 
     private Integer modifier;
 
-    private Date modifytime;
+    private Date modifyTime;
 
     private Integer recVer;
 
@@ -33,123 +39,143 @@ public class WmInboundHeader {
 
     private Integer warehouseId;
 
-    public Integer getId() {
-        return id;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public String getOrderNo() {
-        return orderNo;
-    }
+	public String getOrderNo() {
+		return orderNo;
+	}
 
-    public void setOrderNo(String orderNo) {
-        this.orderNo = orderNo == null ? null : orderNo.trim();
-    }
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
 
-    public String getSupplierCode() {
-        return supplierCode;
-    }
+	public String getSupplierCode() {
+		return supplierCode;
+	}
 
-    public void setSupplierCode(String supplierCode) {
-        this.supplierCode = supplierCode == null ? null : supplierCode.trim();
-    }
+	public void setSupplierCode(String supplierCode) {
+		this.supplierCode = supplierCode;
+	}
+	
+	
+	
+	public String getStatus() {
+		return status;
+	}
 
-    public Date getOrderTime() {
-        return orderTime;
-    }
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
-    public void setOrderTime(Date orderTime) {
-        this.orderTime = orderTime;
-    }
+	public String getAuditStatus() {
+		return auditStatus;
+	}
 
-    public Integer getAuditOp() {
-        return auditOp;
-    }
+	public void setAuditStatus(String auditStatus) {
+		this.auditStatus = auditStatus;
+	}
 
-    public void setAuditOp(Integer auditOp) {
-        this.auditOp = auditOp;
-    }
+	public Date getOrderTime() {
+		return orderTime;
+	}
 
-    public Date getAuditTime() {
-        return auditTime;
-    }
+	public void setOrderTime(Date orderTime) {
+		this.orderTime = orderTime;
+	}
 
-    public void setAuditTime(Date auditTime) {
-        this.auditTime = auditTime;
-    }
+	public Integer getAuditOp() {
+		return auditOp;
+	}
 
-    public String getInboundType() {
-        return inboundType;
-    }
+	public void setAuditOp(Integer auditOp) {
+		this.auditOp = auditOp;
+	}
 
-    public void setInboundType(String inboundType) {
-        this.inboundType = inboundType == null ? null : inboundType.trim();
-    }
+	public Date getAuditTime() {
+		return auditTime;
+	}
 
-    public String getRemark() {
-        return remark;
-    }
+	public void setAuditTime(Date auditTime) {
+		this.auditTime = auditTime;
+	}
 
-    public void setRemark(String remark) {
-        this.remark = remark == null ? null : remark.trim();
-    }
+	public String getInboundType() {
+		return inboundType;
+	}
 
-    public Integer getCreator() {
-        return creator;
-    }
+	public void setInboundType(String inboundType) {
+		this.inboundType = inboundType;
+	}
 
-    public void setCreator(Integer creator) {
-        this.creator = creator;
-    }
+	public String getRemark() {
+		return remark;
+	}
 
-    public Date getCreatetime() {
-        return createtime;
-    }
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
 
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
-    }
+	public Integer getCreator() {
+		return creator;
+	}
 
-    public Integer getModifier() {
-        return modifier;
-    }
+	public void setCreator(Integer creator) {
+		this.creator = creator;
+	}
 
-    public void setModifier(Integer modifier) {
-        this.modifier = modifier;
-    }
+	public Date getCreateTime() {
+		return createTime;
+	}
 
-    public Date getModifytime() {
-        return modifytime;
-    }
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
 
-    public void setModifytime(Date modifytime) {
-        this.modifytime = modifytime;
-    }
+	public Integer getModifier() {
+		return modifier;
+	}
 
-    public Integer getRecVer() {
-        return recVer;
-    }
+	public void setModifier(Integer modifier) {
+		this.modifier = modifier;
+	}
 
-    public void setRecVer(Integer recVer) {
-        this.recVer = recVer;
-    }
+	public Date getModifyTime() {
+		return modifyTime;
+	}
 
-    public Integer getCompanyId() {
-        return companyId;
-    }
+	public void setModifyTime(Date modifyTime) {
+		this.modifyTime = modifyTime;
+	}
 
-    public void setCompanyId(Integer companyId) {
-        this.companyId = companyId;
-    }
+	public Integer getRecVer() {
+		return recVer;
+	}
 
-    public Integer getWarehouseId() {
-        return warehouseId;
-    }
+	public void setRecVer(Integer recVer) {
+		this.recVer = recVer;
+	}
 
-    public void setWarehouseId(Integer warehouseId) {
-        this.warehouseId = warehouseId;
-    }
+	public Integer getCompanyId() {
+		return companyId;
+	}
+
+	public void setCompanyId(Integer companyId) {
+		this.companyId = companyId;
+	}
+
+	public Integer getWarehouseId() {
+		return warehouseId;
+	}
+
+	public void setWarehouseId(Integer warehouseId) {
+		this.warehouseId = warehouseId;
+	}
+
+   
 }

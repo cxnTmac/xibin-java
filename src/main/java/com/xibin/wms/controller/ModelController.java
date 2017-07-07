@@ -54,7 +54,16 @@ public class ModelController {
 		pageEntity.setSize(page.getTotalRecord());
 	    return  pageEntity;
 	 }
-	  
+	@RequestMapping("/MshowAllModel")
+	@ResponseBody
+	public List<BdModel> MshowAllModel(HttpServletRequest request,Model model){ 
+	    // 开始分页  
+		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
+		Map map = JSONObject.parseObject(request.getParameter("conditions"));
+		map.put("companyId", userDetails.getCompanyId());
+		List<BdModel> userList = bdModelService.getAllModelByPage(map);
+	    return  userList;
+	 }
 	  @RequestMapping("/removeModel")
 	  @ResponseBody
 	  public Message removeFittingType(HttpServletRequest request,Model model){

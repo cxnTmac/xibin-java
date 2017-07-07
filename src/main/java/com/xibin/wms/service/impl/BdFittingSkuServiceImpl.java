@@ -8,6 +8,8 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.xibin.core.costants.Constants;
 import com.xibin.core.daosupport.BaseManagerImpl;
@@ -18,6 +20,7 @@ import com.xibin.wms.dao.BdFittingSkuMapper;
 import com.xibin.wms.pojo.BdFittingSku;
 import com.xibin.wms.query.BdFittingSkuQueryItem;
 import com.xibin.wms.service.BdFittingSkuService;
+@Transactional(propagation = Propagation.REQUIRED)
 @Service
 public class BdFittingSkuServiceImpl extends BaseManagerImpl implements BdFittingSkuService {
 	@Autowired

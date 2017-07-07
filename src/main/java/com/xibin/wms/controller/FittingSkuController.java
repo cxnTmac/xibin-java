@@ -54,6 +54,7 @@ public class FittingSkuController {
 	    return  pageEntity;
 	}
 	
+	
 	@RequestMapping("/getFittingTypeSkuBySkuCode")
 	@ResponseBody
 	public BdFittingSkuQueryItem getFittingTypeSkuBySkuCode(HttpServletRequest request,Model model){
@@ -86,9 +87,9 @@ public class FittingSkuController {
 		String fittingSkuCode = request.getParameter("fittingSkuCode");
 		return fittingSkuPicService.selectByFittingSkuCode(fittingSkuCode);
 	}
-	  @RequestMapping("/removeFittingSku")
-	  @ResponseBody
-	  public Message removeFittingSku(HttpServletRequest request,Model model){
+	@RequestMapping("/removeFittingSku")
+	@ResponseBody
+	public Message removeFittingSku(HttpServletRequest request,Model model){
 		Message message = new Message();
 		int id = Integer.parseInt(request.getParameter("id"));
 		String fittingSkuCode = request.getParameter("fittingSkuCode");
@@ -104,7 +105,7 @@ public class FittingSkuController {
 		message.setCode(200);
 		message.setMsg("删除成功");
 		return message;
-	  }
+	}
 
 	  @RequestMapping("/batchRemove")
 	  @ResponseBody

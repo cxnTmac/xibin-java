@@ -18,11 +18,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.xibin.core.costants.Constants;
+import com.xibin.core.exception.BusinessException;
 import com.xibin.core.page.pojo.Page;
 import com.xibin.core.page.pojo.PageEntity;
 import com.xibin.core.pojo.Message;
 import com.xibin.core.security.pojo.UserDetails;
+import com.xibin.wms.pojo.BdFittingSku;
 import com.xibin.wms.pojo.SysUser;
+import com.xibin.wms.query.SysUserQueryItem;
 import com.xibin.wms.service.UserService;
  
 @Controller
@@ -41,9 +44,9 @@ public class UserController {
   
   @RequestMapping("/showAllUser")
   @ResponseBody
-  public PageEntity<SysUser> showAllUser(HttpServletRequest request,Model model){ 
+  public PageEntity<SysUserQueryItem> showAllUser(HttpServletRequest request,Model model){ 
     // 开始分页  
-	PageEntity<SysUser> pageEntity = new PageEntity<SysUser>();
+	PageEntity<SysUserQueryItem> pageEntity = new PageEntity<SysUserQueryItem>();
 	UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
 	
 	Page page = new Page();
@@ -52,7 +55,7 @@ public class UserController {
 	Map map = JSONObject.parseObject(request.getParameter("conditions"));
 	map.put("page",page);
 	map.put("companyId", userDetails.getCompanyId());
-	List<SysUser> userList = userService.getAllUserByPage(map);
+	List<SysUserQueryItem> userList = userService.getAllUserByPage(map);
 	pageEntity.setList(userList);
 	//pageEntity.setSize(page.getTotalRecord());
     return  pageEntity;
@@ -68,18 +71,23 @@ public class UserController {
   
   @RequestMapping("/saveUser")
   @ResponseBody
-  public int saveUser(HttpServletRequest request,Model model){
+  public Message saveUser(HttpServletRequest request,Model model){
+	Message message = new Message();
 	String userStr = request.getParameter("user");
 	SysUser user = JSON.parseObject(userStr, SysUser.class);
-	return this.userService.saveUser(user);
-  }
-  
-  @RequestMapping("/updateUser")
-  @ResponseBody
-  public int updateUser(HttpServletRequest request,Model model){
-	String userStr = request.getParameter("user");
-	SysUser user = JSON.parseObject(userStr, SysUser.class);
-	return this.userService.updateByPrimaryKey(user);
+	SysUser result = new SysUser();
+	try {
+		result = this.userService.saveUser(user);
+		message.setCode(200);
+		message.setData(result);
+		message.setMsg("操作成功！");
+	} catch (BusinessException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		message.setCode(0);
+		message.setMsg(e.getMessage());
+	}
+	return message;
   }
   
   @RequestMapping("/login")
@@ -93,6 +101,7 @@ public class UserController {
 			UserDetails userDetails = new UserDetails();
 			userDetails.setUserName(list.get(0).getUserName());
 			userDetails.setCompanyId(list.get(0).getCompanyId());
+			userDetails.setWarehouseId(1);
 			userDetails.setUserId(list.get(0).getId());
 			session.setAttribute(Constants.SESSION_USER_KEY, userDetails);
 			message.setCode(200);

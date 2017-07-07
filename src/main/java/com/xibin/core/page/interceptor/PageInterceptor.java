@@ -303,10 +303,11 @@ public class PageInterceptor implements Interceptor {
             pstmt = connection.prepareStatement(countSql);
             parameterHandler.setParameters(pstmt);
             rs = pstmt.executeQuery();
-            if (rs.next()) {
-                long totalRecord = rs.getLong(1);
-                page.setTotalRecord(totalRecord);
+            long totalRecord = 0;
+            while(rs.next()){
+            	totalRecord = totalRecord + rs.getLong(1);
             }
+            page.setTotalRecord(totalRecord);
         } finally {
             if (rs != null)
                 try {

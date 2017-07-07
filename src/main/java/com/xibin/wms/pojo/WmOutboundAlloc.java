@@ -2,12 +2,20 @@ package com.xibin.wms.pojo;
 
 import java.util.Date;
 
-public class WmOutboundAlloc {
+import com.xibin.core.daosupport.BaseModel;
+
+public class WmOutboundAlloc extends BaseModel{
     private Integer id;
 
     private String orderNo;
 
     private String lineNo;
+    
+    private String allocId;
+    
+    private String status;
+    
+    private String buyerCode;
 
     private String skuCode;
 
@@ -16,16 +24,26 @@ public class WmOutboundAlloc {
     private Double outboundPrice;
 
     private String allocLocCode;
+    
+    private String toLocCode;
+    
+    private Integer pickOp;
+    
+    private Date pickTime;
+    
+    private Integer shipOp;
+    
+    private Date shipTime;
 
     private String remark;
 
     private Integer creator;
 
-    private Date createtime;
+    private Date createTime;
 
     private Integer modifier;
 
-    private Date modifytime;
+    private Date modifyTime;
 
     private Integer recVer;
 
@@ -33,123 +51,191 @@ public class WmOutboundAlloc {
 
     private Integer warehouseId;
 
-    public Integer getId() {
-        return id;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public String getOrderNo() {
-        return orderNo;
-    }
+	public String getOrderNo() {
+		return orderNo;
+	}
 
-    public void setOrderNo(String orderNo) {
-        this.orderNo = orderNo == null ? null : orderNo.trim();
-    }
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
 
-    public String getLineNo() {
-        return lineNo;
-    }
+	public String getStatus() {
+		return status;
+	}
 
-    public void setLineNo(String lineNo) {
-        this.lineNo = lineNo == null ? null : lineNo.trim();
-    }
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
-    public String getSkuCode() {
-        return skuCode;
-    }
+	public String getLineNo() {
+		return lineNo;
+	}
 
-    public void setSkuCode(String skuCode) {
-        this.skuCode = skuCode == null ? null : skuCode.trim();
-    }
+	public void setLineNo(String lineNo) {
+		this.lineNo = lineNo;
+	}
 
-    public Double getOutboundNum() {
-        return outboundNum;
-    }
+	public String getSkuCode() {
+		return skuCode;
+	}
 
-    public void setOutboundNum(Double outboundNum) {
-        this.outboundNum = outboundNum;
-    }
+	public void setSkuCode(String skuCode) {
+		this.skuCode = skuCode;
+	}
 
-    public Double getOutboundPrice() {
-        return outboundPrice;
-    }
+	public Double getOutboundNum() {
+		return outboundNum;
+	}
 
-    public void setOutboundPrice(Double outboundPrice) {
-        this.outboundPrice = outboundPrice;
-    }
+	public void setOutboundNum(Double outboundNum) {
+		this.outboundNum = outboundNum;
+	}
 
-    public String getAllocLocCode() {
-        return allocLocCode;
-    }
+	public Double getOutboundPrice() {
+		return outboundPrice;
+	}
 
-    public void setAllocLocCode(String allocLocCode) {
-        this.allocLocCode = allocLocCode == null ? null : allocLocCode.trim();
-    }
+	public void setOutboundPrice(Double outboundPrice) {
+		this.outboundPrice = outboundPrice;
+	}
 
-    public String getRemark() {
-        return remark;
-    }
+	public String getAllocLocCode() {
+		return allocLocCode;
+	}
 
-    public void setRemark(String remark) {
-        this.remark = remark == null ? null : remark.trim();
-    }
+	public void setAllocLocCode(String allocLocCode) {
+		this.allocLocCode = allocLocCode;
+	}
 
-    public Integer getCreator() {
-        return creator;
-    }
+	public String getRemark() {
+		return remark;
+	}
 
-    public void setCreator(Integer creator) {
-        this.creator = creator;
-    }
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
 
-    public Date getCreatetime() {
-        return createtime;
-    }
+	public Integer getCreator() {
+		return creator;
+	}
 
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
-    }
+	public void setCreator(Integer creator) {
+		this.creator = creator;
+	}
 
-    public Integer getModifier() {
-        return modifier;
-    }
+	public Date getCreateTime() {
+		return createTime;
+	}
 
-    public void setModifier(Integer modifier) {
-        this.modifier = modifier;
-    }
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
 
-    public Date getModifytime() {
-        return modifytime;
-    }
+	public Integer getModifier() {
+		return modifier;
+	}
 
-    public void setModifytime(Date modifytime) {
-        this.modifytime = modifytime;
-    }
+	public void setModifier(Integer modifier) {
+		this.modifier = modifier;
+	}
 
-    public Integer getRecVer() {
-        return recVer;
-    }
+	public Date getModifyTime() {
+		return modifyTime;
+	}
 
-    public void setRecVer(Integer recVer) {
-        this.recVer = recVer;
-    }
+	public void setModifyTime(Date modifyTime) {
+		this.modifyTime = modifyTime;
+	}
 
-    public Integer getCompanyId() {
-        return companyId;
-    }
+	public Integer getRecVer() {
+		return recVer;
+	}
 
-    public void setCompanyId(Integer companyId) {
-        this.companyId = companyId;
-    }
+	public void setRecVer(Integer recVer) {
+		this.recVer = recVer;
+	}
 
-    public Integer getWarehouseId() {
-        return warehouseId;
-    }
+	public Integer getCompanyId() {
+		return companyId;
+	}
 
-    public void setWarehouseId(Integer warehouseId) {
-        this.warehouseId = warehouseId;
-    }
+	public void setCompanyId(Integer companyId) {
+		this.companyId = companyId;
+	}
+
+	public Integer getWarehouseId() {
+		return warehouseId;
+	}
+
+	public void setWarehouseId(Integer warehouseId) {
+		this.warehouseId = warehouseId;
+	}
+
+	public String getAllocId() {
+		return allocId;
+	}
+
+	public void setAllocId(String allocId) {
+		this.allocId = allocId;
+	}
+
+	public String getBuyerCode() {
+		return buyerCode;
+	}
+
+	public void setBuyerCode(String buyerCode) {
+		this.buyerCode = buyerCode;
+	}
+
+	public Integer getPickOp() {
+		return pickOp;
+	}
+
+	public void setPickOp(Integer pickOp) {
+		this.pickOp = pickOp;
+	}
+
+	public Date getPickTime() {
+		return pickTime;
+	}
+
+	public void setPickTime(Date pickTime) {
+		this.pickTime = pickTime;
+	}
+
+	public Integer getShipOp() {
+		return shipOp;
+	}
+
+	public void setShipOp(Integer shipOp) {
+		this.shipOp = shipOp;
+	}
+
+	public Date getShipTime() {
+		return shipTime;
+	}
+
+	public void setShipTime(Date shipTime) {
+		this.shipTime = shipTime;
+	}
+
+	public String getToLocCode() {
+		return toLocCode;
+	}
+
+	public void setToLocCode(String toLocCode) {
+		this.toLocCode = toLocCode;
+	}
+	
+	
+
+    
 }

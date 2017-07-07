@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.io.FileUtils;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +30,7 @@ import com.xibin.core.costants.CodeMaster;
 import com.xibin.core.costants.Constants;
 import com.xibin.core.pojo.Message;
 import com.xibin.core.security.pojo.UserDetails;
+import com.xibin.core.utils.CustomizedPropertyConfigurer;
 import com.xibin.core.utils.ImageUtils;
 import com.xibin.wms.pojo.BdFittingSkuPic;
 import com.xibin.wms.service.BdFittingSkuPicService;
@@ -57,23 +59,26 @@ public class FileUploadController {
 	@RequestMapping(value="/uploadFittingSkuPic",consumes="multipart/form-data",method = RequestMethod.POST)  
 	@ResponseBody
     public Message uploadFittingSkuPic(HttpServletRequest request,@RequestParam("file") MultipartFile pic){
+		String webPicUploadUrl = (String) CustomizedPropertyConfigurer.getContextProperty("webPicUploadUrl");
+		String webPicUploadWithOutHost = (String) CustomizedPropertyConfigurer.getContextProperty("webUrl");
 		Message message = new Message();
 		String fittingSkuCode = request.getParameter("fittingSkuCode");
 		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
 		//String realPath = request.getSession().getServletContext().getRealPath("/WEB-INF/upload/FittingSkuPic/"+fittingSkuCode+"-"+userDetails.getCompanyId());
-		String realPath = Constants.WEBPICUPLOADURL+"\\fittingSku\\"+fittingSkuCode+"-"+userDetails.getCompanyId().toString();
-		String weburl = Constants.WEBRUL+"\\fittingSku\\"+fittingSkuCode+"-"+userDetails.getCompanyId().toString();
+		String realPath = webPicUploadUrl+"/fittingSku/"+fittingSkuCode+"-"+userDetails.getCompanyId().toString();
+		System.out.println("图片上传路径："+realPath);
+		String weburl = webPicUploadWithOutHost+"/fittingSku/"+fittingSkuCode+"-"+userDetails.getCompanyId().toString();
 		try {
 			File originFile = new File(realPath, pic.getOriginalFilename());
 			String fileName = pic.getOriginalFilename().substring(0,pic.getOriginalFilename().lastIndexOf("."));
-			String destFileName = realPath+"\\"+fileName+"-zip"+".jpg";
+			String destFileName = realPath+"/"+fileName+"-zip"+".jpg";
 			FileUtils.copyInputStreamToFile(pic.getInputStream(), originFile);
 			BufferedImage sourceImg = ImageIO.read(new FileInputStream(originFile));
 			BdFittingSkuPic modelPic = new BdFittingSkuPic();
 			modelPic.setCompanyId(userDetails.getCompanyId());
 			modelPic.setFittingSkuPicName(pic.getOriginalFilename());
 			modelPic.setFittingSkuCode(fittingSkuCode);
-			modelPic.setFittingSkuPicUrl(weburl+"\\"+pic.getOriginalFilename());
+			modelPic.setFittingSkuPicUrl(weburl+"/"+pic.getOriginalFilename());
 			modelPic.setType(CodeMaster.PIC_TYPE_NORMAL);
 			modelPic.setWidth(sourceImg.getWidth());
 			modelPic.setHeight(sourceImg.getHeight());
@@ -83,7 +88,7 @@ public class FileUploadController {
 			modelPicZip.setCompanyId(userDetails.getCompanyId());
 			modelPicZip.setFittingSkuPicName(pic.getOriginalFilename());
 			modelPicZip.setFittingSkuCode(fittingSkuCode);
-			modelPicZip.setFittingSkuPicUrl(weburl+"\\"+fileName+"-zip"+".jpg");
+			modelPicZip.setFittingSkuPicUrl(weburl+"/"+fileName+"-zip"+".jpg");
 			modelPicZip.setType(CodeMaster.PIC_TYPE_ZIP);
 			modelPicZip.setWidth(zipImg.getWidth(null));
 			modelPicZip.setHeight(zipImg.getHeight(null));

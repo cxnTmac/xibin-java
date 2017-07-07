@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xibin.wms.dao.BdCustomerMapper" >
+  <resultMap id="BaseResultMap" type="com.xibin.wms.pojo.BdCustomer" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="customer_code" property="customerCode" jdbcType="VARCHAR" />
+    <result column="customer_name" property="customerName" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="customer_type" property="customerType" jdbcType="VARCHAR" />
+    <result column="customer_tel" property="customerTel" jdbcType="VARCHAR" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="county" property="county" jdbcType="VARCHAR" />
+    <result column="customer_address" property="customerAddress" jdbcType="VARCHAR" />
+    <result column="customer_email" property="customerEmail" jdbcType="VARCHAR" />
+    <result column="contact_name" property="contactName" jdbcType="VARCHAR" />
+    <result column="contact_tel" property="contactTel" jdbcType="VARCHAR" />
+    <result column="contact_email" property="contactEmail" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="INTEGER" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="rec_ver" property="recVer" jdbcType="INTEGER" />
+    <result column="company_id" property="companyId" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <resultMap id="QueryResultMap" type="com.xibin.wms.query.BdCustomerQueryItem" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="customer_code" property="customerCode" jdbcType="VARCHAR" />
+    <result column="customer_name" property="customerName" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="customer_type" property="customerType" jdbcType="VARCHAR" />
+    <result column="customer_tel" property="customerTel" jdbcType="VARCHAR" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="county" property="county" jdbcType="VARCHAR" />
+    <result column="customer_address" property="customerAddress" jdbcType="VARCHAR" />
+    <result column="customer_email" property="customerEmail" jdbcType="VARCHAR" />
+    <result column="contact_name" property="contactName" jdbcType="VARCHAR" />
+    <result column="contact_tel" property="contactTel" jdbcType="VARCHAR" />
+    <result column="contact_email" property="contactEmail" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="INTEGER" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="rec_ver" property="recVer" jdbcType="INTEGER" />
+    <result column="company_id" property="companyId" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, customer_code, customer_name, status, customer_type, customer_tel,customer_email,province,city,county,customer_address,contact_name,contact_tel,contact_email,
+    remark,creator,create_time, modifier, modify_time,rec_ver, company_id
+  </sql>
+  
+  <!-- 条件 -->
+  <sql id="findByConditionWhere">
+      WHERE 1=1
+          <if test="id!=null and id!=''"> AND bc.id = #{id}</if>
+          <if test="customerCode!=null and customerCode!=''"> AND bc.customer_code LIKE CONCAT('%', '${customerCode}','%')</if>
+          <if test="customerName!=null and customerName!=''"> AND bc.customer_name LIKE CONCAT('%','${customerName}','%')</if>
+          <if test="status!=null and status!=''"> AND bc.status  = #{status}</if>
+          <if test="customerType!=null and customerType!=''"> AND bc.customer_type LIKE CONCAT('%','${customerType}','%')</if>
+          <if test="province!=null and province!=''"> AND bc.province  = #{province}</if>
+          <if test="city!=null and city!=''"> AND bc.status  = #{city}</if>
+          <if test="county!=null and county!=''"> AND bc.county  = #{county}</if>
+          <if test="companyId!=null and companyId!=''"> AND bc.company_id = #{companyId}</if>
+          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> AND bc.customer_code LIKE CONCAT('%','${fuzzyCondition}','%')</if>
+          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> OR bc.customer_name LIKE CONCAT('%','${fuzzyCondition}','%')</if>
+          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> OR bc.province LIKE CONCAT('%','${fuzzyCondition}','%')</if>
+          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> OR bc.city LIKE CONCAT('%','${fuzzyCondition}','%')</if>
+          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> OR bc.county LIKE CONCAT('%','${fuzzyCondition}','%')</if>
+          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> OR bc.customer_address LIKE CONCAT('%','${fuzzyCondition}','%')</if>
+  </sql>
+  <!-- 条件 -->
+  <sql id="findByExampleWhere">
+      WHERE 1=1
+          <if test="id!=null and id!=''"> AND bc.id = #{id}</if>
+          <if test="customerCode!=null and customerCode!=''"> AND bc.customer_code = #{customerCode}</if>
+          <if test="customerName!=null and customerName!=''"> AND bc.customer_name = #{customerName}</if>
+          <if test="status!=null and status!=''"> AND bc.status  = #{status}</if>
+          <if test="province!=null and province!=''"> AND bc.province  = #{province}</if>
+          <if test="city!=null and city!=''"> AND bc.status  = #{city}</if>
+          <if test="county!=null and county!=''"> AND bc.county  = #{county}</if>
+          <if test="companyId!=null and companyId!=''"> AND bc.company_id = #{companyId}</if>
+  </sql>
+  
+  
+  <!-- 【固定】：按主键查询 -->
+  <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	  select
+      <include refid="Base_Column_List"/>
+      from bd_customer bc
+      WHERE id in
+      <foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+	           #{item}
+	  </foreach>
+  </select>
+  
+  <!-- 【固定】：插入记录（支持一条及多条） -->
+  <insert id="insert" parameterType="java.util.Collection">
+  	INSERT INTO bd_customer
+          (id, customer_code, customer_name, status, customer_type, customer_tel,province,city,county,customer_address,contact_name,contact_tel,contact_email,
+    remark,creator,create_time, modifier, modify_time,rec_ver, company_id)
+       VALUES
+  		<foreach collection="list" item="item" index="index" separator=",">
+	   		(#{item.id}, #{item.customerCode},#{item.customerName}, #{item.status},#{item.customerType},#{item.customerTel},#{item.province},#{item.city},#{item.county},
+      #{item.customerAddress},#{item.contactName},#{item.contactTel},#{item.contactEmail},
+      #{item.remark},#{item.creator},#{item.createTime}, #{item.modifier},  #{item.modifyTime},#{item.recVer}, #{item.companyId})
+  		</foreach>
+  </insert>
+  
+  <!-- 【固定】：删除记录 -->
+  <delete id="delete" parameterType="java.lang.reflect.Array">
+      DELETE FROM bd_customer WHERE id in 
+   <foreach collection="array" index="index" item="item" open="(" separator="," close=")">  
+           #{item}   
+   </foreach>
+  </delete>
+  
+  <!-- 【固定】：更新记录（支持一条及多条） -->
+  <update id="update" parameterType="java.util.Collection">
+	UPDATE bd_customer
+	<trim prefix="set" suffixOverrides=",">
+		<!-- 更新的字段集合 -->
+		<trim prefix="customer_code =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.customerCode}
+             </foreach>
+		</trim>
+		<trim prefix="customer_name =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.customerName}
+             </foreach>
+		</trim>
+		<trim prefix="status =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.status}
+             </foreach>
+		</trim>
+		<trim prefix="customer_type =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.customerType}
+             </foreach>
+		</trim>
+		<trim prefix="customer_tel =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.customerTel}
+             </foreach>
+		</trim>
+		<trim prefix="customer_email =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.customerEmail}
+             </foreach>
+		</trim>
+		
+		<trim prefix="province =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.province}
+             </foreach>
+		</trim>
+		<trim prefix="city =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.city}
+             </foreach>
+		</trim>
+		<trim prefix="county =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.county}
+             </foreach>
+		</trim>
+		
+		<trim prefix="customer_address =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.customerAddress}
+             </foreach>
+		</trim>
+		<trim prefix="contact_name =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.contactName}
+             </foreach>
+		</trim>
+		<trim prefix="contact_tel =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.contactTel}
+             </foreach>
+		</trim>
+		<trim prefix="contact_email =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.contactEmail}
+             </foreach>
+		</trim>
+		
+		<trim prefix="remark =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.remark}
+             </foreach>
+		</trim>
+		<trim prefix="modifier =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.modifier}
+             </foreach>
+		</trim>
+		<trim prefix="modify_time =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.modifyTime}
+             </foreach>
+		</trim>
+		<trim prefix="rec_ver =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.recVer}
+             </foreach>
+		</trim>
+		<trim prefix="company_id =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.companyId}
+             </foreach>
+		</trim>
+	</trim>
+	WHERE
+	<foreach collection="list" separator="or" item="item" index="index" >
+		<if test="item.id!=null">
+		(ID=#{item.id}) AND (REC_VER=#{item.recVer}-1)
+		</if>
+	</foreach>	
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from bd_customer bc
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAllByPage" resultMap="QueryResultMap" parameterType="Map">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_customer bc
+    <include refid="findByConditionWhere" />
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.xibin.wms.pojo.BdLoc">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_customer bc
+    <include refid="findByExampleWhere" />
+  </select>
+  
+  <select id="selectByKey" resultMap="QueryResultMap" resultType="java.util.List"  parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bd_customer bc
+    where bc.customer_code = #{customerCode,jdbcType=VARCHAR}
+    and 
+    bc.company_id = #{companyId,jdbcType=INTEGER}
+  </select>
+</mapper>

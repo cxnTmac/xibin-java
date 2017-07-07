@@ -2,28 +2,42 @@ package com.xibin.wms.pojo;
 
 import java.util.Date;
 
-public class WmOutboundDetail {
+import com.xibin.core.daosupport.BaseModel;
+
+public class WmOutboundDetail extends BaseModel{
     private Integer id;
 
     private String orderNo;
 
     private String lineNo;
+    
+    private String buyerCode;
 
     private String skuCode;
+    
+    private String status;
 
     private Double outboundNum;
+    
+    private Double outboundAllocNum;
+    
+    private Double outboundPickNum;
+    
+    private Double outboundShipNum;
 
     private Double outboundPrice;
+    
+    private String planShipLoc;
 
     private String remark;
 
     private Integer creator;
 
-    private Date createtime;
+    private Date createTime;
 
     private Integer modifier;
 
-    private Date modifytime;
+    private Date modifyTime;
 
     private Integer recVer;
 
@@ -31,115 +45,165 @@ public class WmOutboundDetail {
 
     private Integer warehouseId;
 
-    public Integer getId() {
-        return id;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public String getOrderNo() {
-        return orderNo;
-    }
+	public String getOrderNo() {
+		return orderNo;
+	}
 
-    public void setOrderNo(String orderNo) {
-        this.orderNo = orderNo == null ? null : orderNo.trim();
-    }
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
 
-    public String getLineNo() {
-        return lineNo;
-    }
+	public String getLineNo() {
+		return lineNo;
+	}
 
-    public void setLineNo(String lineNo) {
-        this.lineNo = lineNo == null ? null : lineNo.trim();
-    }
+	public void setLineNo(String lineNo) {
+		this.lineNo = lineNo;
+	}
 
-    public String getSkuCode() {
-        return skuCode;
-    }
+	public String getSkuCode() {
+		return skuCode;
+	}
 
-    public void setSkuCode(String skuCode) {
-        this.skuCode = skuCode == null ? null : skuCode.trim();
-    }
+	public void setSkuCode(String skuCode) {
+		this.skuCode = skuCode;
+	}
 
-    public Double getOutboundNum() {
-        return outboundNum;
-    }
+	public Double getOutboundNum() {
+		return outboundNum;
+	}
 
-    public void setOutboundNum(Double outboundNum) {
-        this.outboundNum = outboundNum;
-    }
+	public void setOutboundNum(Double outboundNum) {
+		this.outboundNum = outboundNum;
+	}
 
-    public Double getOutboundPrice() {
-        return outboundPrice;
-    }
+	public Double getOutboundPrice() {
+		return outboundPrice;
+	}
 
-    public void setOutboundPrice(Double outboundPrice) {
-        this.outboundPrice = outboundPrice;
-    }
+	public void setOutboundPrice(Double outboundPrice) {
+		this.outboundPrice = outboundPrice;
+	}
 
-    public String getRemark() {
-        return remark;
-    }
+	public String getPlanShipLoc() {
+		return planShipLoc;
+	}
 
-    public void setRemark(String remark) {
-        this.remark = remark == null ? null : remark.trim();
-    }
+	public void setPlanShipLoc(String planShipLoc) {
+		this.planShipLoc = planShipLoc;
+	}
 
-    public Integer getCreator() {
-        return creator;
-    }
+	public String getRemark() {
+		return remark;
+	}
 
-    public void setCreator(Integer creator) {
-        this.creator = creator;
-    }
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
 
-    public Date getCreatetime() {
-        return createtime;
-    }
+	public Integer getCreator() {
+		return creator;
+	}
 
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
-    }
+	public void setCreator(Integer creator) {
+		this.creator = creator;
+	}
 
-    public Integer getModifier() {
-        return modifier;
-    }
+	public Date getCreateTime() {
+		return createTime;
+	}
 
-    public void setModifier(Integer modifier) {
-        this.modifier = modifier;
-    }
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
 
-    public Date getModifytime() {
-        return modifytime;
-    }
+	public Integer getModifier() {
+		return modifier;
+	}
 
-    public void setModifytime(Date modifytime) {
-        this.modifytime = modifytime;
-    }
+	public void setModifier(Integer modifier) {
+		this.modifier = modifier;
+	}
 
-    public Integer getRecVer() {
-        return recVer;
-    }
+	public Date getModifyTime() {
+		return modifyTime;
+	}
 
-    public void setRecVer(Integer recVer) {
-        this.recVer = recVer;
-    }
+	public void setModifyTime(Date modifyTime) {
+		this.modifyTime = modifyTime;
+	}
 
-    public Integer getCompanyId() {
-        return companyId;
-    }
+	public Integer getRecVer() {
+		return recVer;
+	}
 
-    public void setCompanyId(Integer companyId) {
-        this.companyId = companyId;
-    }
+	public void setRecVer(Integer recVer) {
+		this.recVer = recVer;
+	}
 
-    public Integer getWarehouseId() {
-        return warehouseId;
-    }
+	public Integer getCompanyId() {
+		return companyId;
+	}
 
-    public void setWarehouseId(Integer warehouseId) {
-        this.warehouseId = warehouseId;
-    }
+	public void setCompanyId(Integer companyId) {
+		this.companyId = companyId;
+	}
+
+	public Integer getWarehouseId() {
+		return warehouseId;
+	}
+
+	public void setWarehouseId(Integer warehouseId) {
+		this.warehouseId = warehouseId;
+	}
+
+	public String getBuyerCode() {
+		return buyerCode;
+	}
+
+	public void setBuyerCode(String buyerCode) {
+		this.buyerCode = buyerCode;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public Double getOutboundAllocNum() {
+		return outboundAllocNum;
+	}
+
+	public void setOutboundAllocNum(Double outboundAllocNum) {
+		this.outboundAllocNum = outboundAllocNum;
+	}
+
+	public Double getOutboundPickNum() {
+		return outboundPickNum;
+	}
+
+	public void setOutboundPickNum(Double outboundPickNum) {
+		this.outboundPickNum = outboundPickNum;
+	}
+
+	public Double getOutboundShipNum() {
+		return outboundShipNum;
+	}
+
+	public void setOutboundShipNum(Double outboundShipNum) {
+		this.outboundShipNum = outboundShipNum;
+	}
+	
+	
 }

@@ -8,170 +8,185 @@
     <result column="zone_name" property="zoneName" jdbcType="VARCHAR" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
-    <result column="createTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="modifier" property="modifier" jdbcType="INTEGER" />
-    <result column="modifyTime" property="modifytime" jdbcType="TIMESTAMP" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="rec_ver" property="recVer" jdbcType="INTEGER" />
+    <result column="company_id" property="companyId" jdbcType="INTEGER" />
+    <result column="warehouse_id" property="warehouseId" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <resultMap id="QueryResultMap" type="com.xibin.wms.query.BdZoneQueryItem" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="area_code" property="areaCode" jdbcType="VARCHAR" />
+    <result column="area_name" property="areaName" jdbcType="VARCHAR" />
+    <result column="zone_code" property="zoneCode" jdbcType="VARCHAR" />
+    <result column="zone_name" property="zoneName" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="INTEGER" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
     <result column="rec_ver" property="recVer" jdbcType="INTEGER" />
     <result column="company_id" property="companyId" jdbcType="INTEGER" />
     <result column="warehouse_id" property="warehouseId" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, area_code, zone_code, zone_name, remark, creator, createTime, modifier, modifyTime, 
-    rec_ver, company_id, warehouse_id
+    bz.id, bz.area_code, bz.zone_code, bz.zone_name, bz.remark, bz.creator, bz.create_time, bz.modifier, bz.modify_time, 
+    bz.rec_ver, bz.company_id, bz.warehouse_id
   </sql>
+  
+  <!-- 条件 -->
+  <sql id="findByConditionWhere">
+      WHERE 1=1
+          <if test="id!=null and id!=''"> AND bz.id = #{id}</if>
+          <if test="areaCode!=null and areaCode!=''"> AND bz.area_code = #{areaCode}</if>
+          <if test="zoneName!=null and zoneName!=''"> AND bz.zone_name LIKE CONCAT('%','${zoneName}','%')</if>
+          <if test="zoneCode!=null and zoneCode!=''"> AND bz.zone_code LIKE CONCAT('%','${zoneCode}','%')</if>
+          <if test="remark!=null and remark!=''"> AND bz.remark LIKE CONCAT('%','${remark}','%')</if>
+          <if test="companyId!=null and companyId!=''"> AND bz.company_id = #{companyId}</if>
+          <if test="warehouseId!=null and warehouseId!=''"> AND bz.warehouse_id = #{warehouseId}</if>
+          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> AND bz.zone_name LIKE CONCAT('%','${fuzzyCondition}','%')</if>
+          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> OR bz.zone_code LIKE CONCAT('%','${fuzzyCondition}','%')</if>
+  </sql>
+  <!-- 条件 -->
+  <sql id="findByExampleWhere">
+      WHERE 1=1
+          <if test="id!=null and id!=''"> AND bz.id = #{id}</if>
+          <if test="areaCode!=null and areaCode!=''"> AND bz.area_code = #{areaCode}</if>
+          <if test="zoneCode!=null and zoneCode!=''"> AND bz.zone_code = #{zoneCode}</if>
+          <if test="zoneName!=null and zoneName!=''"> AND bz.zone_name = #{zoneName}</if>
+          <if test="companyId!=null and companyId!=''"> AND bz.company_id = #{companyId}</if>
+  </sql>
+  
+  
+  <!-- 【固定】：按主键查询 -->
+  <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	  select
+      <include refid="Base_Column_List"/>
+      from bd_zone bz
+      WHERE id in
+      <foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+	           #{item}
+	  </foreach>
+  </select>
+  
+  <!-- 【固定】：插入记录（支持一条及多条） -->
+  <insert id="insert" parameterType="java.util.Collection">
+  	INSERT INTO bd_zone
+          (id, area_code, zone_code, zone_name, remark, creator, create_time, modifier, modify_time, 
+    rec_ver, company_id, warehouse_id)
+       VALUES
+  		<foreach collection="list" item="item" index="index" separator=",">
+	   		(#{item.id}, #{item.areaCode},#{item.zoneCode}, #{item.zoneName},
+      #{item.remark},#{item.creator},#{item.createTime}, #{item.modifier},  #{item.modifyTime},
+      #{item.recVer}, #{item.companyId},#{item.warehouseId})
+  		</foreach>
+  </insert>
+  
+  <!-- 【固定】：删除记录 -->
+  <delete id="delete" parameterType="java.lang.reflect.Array">
+      DELETE FROM bd_zone WHERE id in 
+   <foreach collection="array" index="index" item="item" open="(" separator="," close=")">  
+           #{item}   
+   </foreach>
+  </delete>
+  
+  <!-- 【固定】：更新记录（支持一条及多条） -->
+  <update id="update" parameterType="java.util.Collection">
+	UPDATE bd_zone
+	<trim prefix="set" suffixOverrides=",">
+		<!-- 更新的字段集合 -->
+		<trim prefix="area_code =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.areaCode}
+             </foreach>
+		</trim>
+		<trim prefix="zone_code =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.zoneCode}
+             </foreach>
+		</trim>
+		<trim prefix="zone_name =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.zoneName}
+             </foreach>
+		</trim>
+		<trim prefix="remark =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.remark}
+             </foreach>
+		</trim>
+		<trim prefix="modifier =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.modifier}
+             </foreach>
+		</trim>
+		<trim prefix="modify_time =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.modifyTime}
+             </foreach>
+		</trim>
+		<trim prefix="rec_ver =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.recVer}
+             </foreach>
+		</trim>
+		<trim prefix="company_id =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.companyId}
+             </foreach>
+		</trim>
+		<trim prefix="warehouse_id =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.warehouseId}
+             </foreach>
+		</trim>
+	</trim>
+	WHERE
+	<foreach collection="list" separator="or" item="item" index="index" >
+		<if test="item.id!=null">
+		(ID=#{item.id}) AND (REC_VER=#{item.recVer}-1)
+		</if>
+	</foreach>	
+  </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from bd_zone
+    from bd_zone bz
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from bd_zone
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.xibin.wms.pojo.BdZone" >
-    insert into bd_zone (id, area_code, zone_code, 
-      zone_name, remark, creator, 
-      createTime, modifier, modifyTime, 
-      rec_ver, company_id, warehouse_id
-      )
-    values (#{id,jdbcType=INTEGER}, #{areaCode,jdbcType=VARCHAR}, #{zoneCode,jdbcType=VARCHAR}, 
-      #{zoneName,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{creator,jdbcType=INTEGER}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{modifier,jdbcType=INTEGER}, #{modifytime,jdbcType=TIMESTAMP}, 
-      #{recVer,jdbcType=INTEGER}, #{companyId,jdbcType=INTEGER}, #{warehouseId,jdbcType=INTEGER}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.xibin.wms.pojo.BdZone" >
-    insert into bd_zone
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="areaCode != null" >
-        area_code,
-      </if>
-      <if test="zoneCode != null" >
-        zone_code,
-      </if>
-      <if test="zoneName != null" >
-        zone_name,
-      </if>
-      <if test="remark != null" >
-        remark,
-      </if>
-      <if test="creator != null" >
-        creator,
-      </if>
-      <if test="createtime != null" >
-        createTime,
-      </if>
-      <if test="modifier != null" >
-        modifier,
-      </if>
-      <if test="modifytime != null" >
-        modifyTime,
-      </if>
-      <if test="recVer != null" >
-        rec_ver,
-      </if>
-      <if test="companyId != null" >
-        company_id,
-      </if>
-      <if test="warehouseId != null" >
-        warehouse_id,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="areaCode != null" >
-        #{areaCode,jdbcType=VARCHAR},
-      </if>
-      <if test="zoneCode != null" >
-        #{zoneCode,jdbcType=VARCHAR},
-      </if>
-      <if test="zoneName != null" >
-        #{zoneName,jdbcType=VARCHAR},
-      </if>
-      <if test="remark != null" >
-        #{remark,jdbcType=VARCHAR},
-      </if>
-      <if test="creator != null" >
-        #{creator,jdbcType=INTEGER},
-      </if>
-      <if test="createtime != null" >
-        #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="modifier != null" >
-        #{modifier,jdbcType=INTEGER},
-      </if>
-      <if test="modifytime != null" >
-        #{modifytime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="recVer != null" >
-        #{recVer,jdbcType=INTEGER},
-      </if>
-      <if test="companyId != null" >
-        #{companyId,jdbcType=INTEGER},
-      </if>
-      <if test="warehouseId != null" >
-        #{warehouseId,jdbcType=INTEGER},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xibin.wms.pojo.BdZone" >
-    update bd_zone
-    <set >
-      <if test="areaCode != null" >
-        area_code = #{areaCode,jdbcType=VARCHAR},
-      </if>
-      <if test="zoneCode != null" >
-        zone_code = #{zoneCode,jdbcType=VARCHAR},
-      </if>
-      <if test="zoneName != null" >
-        zone_name = #{zoneName,jdbcType=VARCHAR},
-      </if>
-      <if test="remark != null" >
-        remark = #{remark,jdbcType=VARCHAR},
-      </if>
-      <if test="creator != null" >
-        creator = #{creator,jdbcType=INTEGER},
-      </if>
-      <if test="createtime != null" >
-        createTime = #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="modifier != null" >
-        modifier = #{modifier,jdbcType=INTEGER},
-      </if>
-      <if test="modifytime != null" >
-        modifyTime = #{modifytime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="recVer != null" >
-        rec_ver = #{recVer,jdbcType=INTEGER},
-      </if>
-      <if test="companyId != null" >
-        company_id = #{companyId,jdbcType=INTEGER},
-      </if>
-      <if test="warehouseId != null" >
-        warehouse_id = #{warehouseId,jdbcType=INTEGER},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.xibin.wms.pojo.BdZone" >
-    update bd_zone
-    set area_code = #{areaCode,jdbcType=VARCHAR},
-      zone_code = #{zoneCode,jdbcType=VARCHAR},
-      zone_name = #{zoneName,jdbcType=VARCHAR},
-      remark = #{remark,jdbcType=VARCHAR},
-      creator = #{creator,jdbcType=INTEGER},
-      createTime = #{createtime,jdbcType=TIMESTAMP},
-      modifier = #{modifier,jdbcType=INTEGER},
-      modifyTime = #{modifytime,jdbcType=TIMESTAMP},
-      rec_ver = #{recVer,jdbcType=INTEGER},
-      company_id = #{companyId,jdbcType=INTEGER},
-      warehouse_id = #{warehouseId,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+  <select id="selectAllByPage" resultMap="QueryResultMap" parameterType="Map">
+    select 
+    <include refid="Base_Column_List" />
+    ,ba.area_name 
+    from bd_zone bz
+    left join bd_area ba on
+    bz.area_code = ba.area_code
+    and bz.company_id = ba.company_id
+    and bz.warehouse_id = ba.warehouse_id
+    <include refid="findByConditionWhere" />
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.xibin.wms.pojo.BdLoc">
+    select 
+    <include refid="Base_Column_List" />
+    from bd_zone bz
+    <include refid="findByExampleWhere" />
+  </select>
+  
+  <select id="selectByKey" resultMap="QueryResultMap" resultType="java.util.List"  parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+     ,ba.area_name
+    from bd_zone bz
+    left join bd_area ba on
+    ba.area_code = bz.area_code
+    and ba.company_id = bz.company_id
+    and ba.warehouse_id = bz.warehouse_id
+    where bz.zone_code = #{zoneCode,jdbcType=VARCHAR}
+    and 
+    bz.company_id = #{companyId,jdbcType=INTEGER}
+    and
+    bz.warehouse_id = #{warehouseId,jdbcType=INTEGER}
+  </select>
 </mapper>

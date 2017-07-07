@@ -5,24 +5,22 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.xibin.core.daosupport.BaseMapper;
+import com.xibin.wms.pojo.BdArea;
 import com.xibin.wms.pojo.SysUser;
+import com.xibin.wms.query.SysUserQueryItem;
 
-public interface SysUserMapper {
-    int deleteByPrimaryKey(Integer id);
-
-    int insert(SysUser record);
-
-    int insertSelective(SysUser record);
+public interface SysUserMapper extends BaseMapper{
 
     SysUser selectByPrimaryKey(Integer id);
     
-    List<SysUser> selectAll();
+    List<SysUserQueryItem> selectAllByPage(Map map);
     
-    List<SysUser> selectAllByPage(Map map);
+    List<SysUserQueryItem> selectByKey(@Param("userName")String userName,@Param("companyId")String companyId);
+    
+    List<SysUser> selectByExample(SysUser example);
     
     List<SysUser> selectByUserNameAndPassword(@Param("userName")String userName,@Param("password")String password);
 
-    int updateByPrimaryKeySelective(SysUser record);
 
-    int updateByPrimaryKey(SysUser record);
 }

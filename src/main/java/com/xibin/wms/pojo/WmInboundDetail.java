@@ -2,28 +2,38 @@ package com.xibin.wms.pojo;
 
 import java.util.Date;
 
-public class WmInboundDetail {
+import com.xibin.core.daosupport.BaseModel;
+
+public class WmInboundDetail extends BaseModel{
     private Integer id;
 
     private String orderNo;
 
     private String lineNo;
+    
+    private String status;
+    
+    private String supplierCode;
 
     private String skuCode;
+    
+    private Double inboundPreNum;
 
     private Double inboundNum;
 
     private Double inboundPrice;
+    
+    private String planLoc;
 
     private String remark;
 
     private Integer creator;
 
-    private Date createtime;
+    private Date createTime;
 
     private Integer modifier;
 
-    private Date modifytime;
+    private Date modifyTime;
 
     private Integer recVer;
 
@@ -31,115 +41,151 @@ public class WmInboundDetail {
 
     private Integer warehouseId;
 
-    public Integer getId() {
-        return id;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public String getOrderNo() {
-        return orderNo;
-    }
+	public String getOrderNo() {
+		return orderNo;
+	}
 
-    public void setOrderNo(String orderNo) {
-        this.orderNo = orderNo == null ? null : orderNo.trim();
-    }
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
 
-    public String getLineNo() {
-        return lineNo;
-    }
+	public String getLineNo() {
+		return lineNo;
+	}
 
-    public void setLineNo(String lineNo) {
-        this.lineNo = lineNo == null ? null : lineNo.trim();
-    }
+	public void setLineNo(String lineNo) {
+		this.lineNo = lineNo;
+	}
 
-    public String getSkuCode() {
-        return skuCode;
-    }
+	public String getStatus() {
+		return status;
+	}
 
-    public void setSkuCode(String skuCode) {
-        this.skuCode = skuCode == null ? null : skuCode.trim();
-    }
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
-    public Double getInboundNum() {
-        return inboundNum;
-    }
+	public String getSupplierCode() {
+		return supplierCode;
+	}
 
-    public void setInboundNum(Double inboundNum) {
-        this.inboundNum = inboundNum;
-    }
+	public void setSupplierCode(String supplierCode) {
+		this.supplierCode = supplierCode;
+	}
 
-    public Double getInboundPrice() {
-        return inboundPrice;
-    }
+	public String getSkuCode() {
+		return skuCode;
+	}
 
-    public void setInboundPrice(Double inboundPrice) {
-        this.inboundPrice = inboundPrice;
-    }
+	public void setSkuCode(String skuCode) {
+		this.skuCode = skuCode;
+	}
 
-    public String getRemark() {
-        return remark;
-    }
+	public Double getInboundPreNum() {
+		return inboundPreNum;
+	}
 
-    public void setRemark(String remark) {
-        this.remark = remark == null ? null : remark.trim();
-    }
+	public void setInboundPreNum(Double inboundPreNum) {
+		this.inboundPreNum = inboundPreNum;
+	}
 
-    public Integer getCreator() {
-        return creator;
-    }
+	public Double getInboundNum() {
+		return inboundNum;
+	}
 
-    public void setCreator(Integer creator) {
-        this.creator = creator;
-    }
+	public void setInboundNum(Double inboundNum) {
+		this.inboundNum = inboundNum;
+	}
 
-    public Date getCreatetime() {
-        return createtime;
-    }
+	public Double getInboundPrice() {
+		return inboundPrice;
+	}
 
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
-    }
+	public void setInboundPrice(Double inboundPrice) {
+		this.inboundPrice = inboundPrice;
+	}
 
-    public Integer getModifier() {
-        return modifier;
-    }
+	public String getPlanLoc() {
+		return planLoc;
+	}
 
-    public void setModifier(Integer modifier) {
-        this.modifier = modifier;
-    }
+	public void setPlanLoc(String planLoc) {
+		this.planLoc = planLoc;
+	}
 
-    public Date getModifytime() {
-        return modifytime;
-    }
+	public String getRemark() {
+		return remark;
+	}
 
-    public void setModifytime(Date modifytime) {
-        this.modifytime = modifytime;
-    }
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
 
-    public Integer getRecVer() {
-        return recVer;
-    }
+	public Integer getCreator() {
+		return creator;
+	}
 
-    public void setRecVer(Integer recVer) {
-        this.recVer = recVer;
-    }
+	public void setCreator(Integer creator) {
+		this.creator = creator;
+	}
 
-    public Integer getCompanyId() {
-        return companyId;
-    }
+	public Date getCreateTime() {
+		return createTime;
+	}
 
-    public void setCompanyId(Integer companyId) {
-        this.companyId = companyId;
-    }
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
 
-    public Integer getWarehouseId() {
-        return warehouseId;
-    }
+	public Integer getModifier() {
+		return modifier;
+	}
 
-    public void setWarehouseId(Integer warehouseId) {
-        this.warehouseId = warehouseId;
-    }
+	public void setModifier(Integer modifier) {
+		this.modifier = modifier;
+	}
+
+	public Date getModifyTime() {
+		return modifyTime;
+	}
+
+	public void setModifyTime(Date modifyTime) {
+		this.modifyTime = modifyTime;
+	}
+
+	public Integer getRecVer() {
+		return recVer;
+	}
+
+	public void setRecVer(Integer recVer) {
+		this.recVer = recVer;
+	}
+
+	public Integer getCompanyId() {
+		return companyId;
+	}
+
+	public void setCompanyId(Integer companyId) {
+		this.companyId = companyId;
+	}
+
+	public Integer getWarehouseId() {
+		return warehouseId;
+	}
+
+	public void setWarehouseId(Integer warehouseId) {
+		this.warehouseId = warehouseId;
+	}
+
+	
+
+    
 }

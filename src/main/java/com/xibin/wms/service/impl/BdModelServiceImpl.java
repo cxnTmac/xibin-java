@@ -8,6 +8,8 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.xibin.core.costants.Constants;
 import com.xibin.core.daosupport.BaseManagerImpl;
@@ -19,6 +21,7 @@ import com.xibin.wms.dao.BdModelMapper;
 import com.xibin.wms.pojo.BdFittingSku;
 import com.xibin.wms.pojo.BdModel;
 import com.xibin.wms.service.BdModelService;
+@Transactional(propagation = Propagation.REQUIRED)
 @Service
 public class BdModelServiceImpl extends BaseManagerImpl implements BdModelService {
 	@Autowired

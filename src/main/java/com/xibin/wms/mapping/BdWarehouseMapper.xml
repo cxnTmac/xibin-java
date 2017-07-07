@@ -7,9 +7,9 @@
     <result column="warehouse_name" property="warehouseName" jdbcType="VARCHAR" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
-    <result column="createTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createtime" jdbcType="TIMESTAMP" />
     <result column="modifier" property="modifier" jdbcType="INTEGER" />
-    <result column="modifyTime" property="modifytime" jdbcType="TIMESTAMP" />
+    <result column="modify_time" property="modifytime" jdbcType="TIMESTAMP" />
     <result column="rec_ver" property="recVer" jdbcType="INTEGER" />
     <result column="company_id" property="companyId" jdbcType="INTEGER" />
   </resultMap>

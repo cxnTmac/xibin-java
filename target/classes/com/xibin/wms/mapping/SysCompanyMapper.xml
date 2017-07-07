@@ -10,9 +10,9 @@
     <result column="parent_company_id" property="parentCompanyId" jdbcType="INTEGER" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
-    <result column="createTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createtime" jdbcType="TIMESTAMP" />
     <result column="modifier" property="modifier" jdbcType="INTEGER" />
-    <result column="modifyTime" property="modifytime" jdbcType="TIMESTAMP" />
+    <result column="modify_time" property="modifytime" jdbcType="TIMESTAMP" />
     <result column="rec_ver" property="recVer" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >

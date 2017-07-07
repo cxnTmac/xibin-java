@@ -2,7 +2,9 @@ package com.xibin.wms.pojo;
 
 import java.util.Date;
 
-public class BdZone {
+import com.xibin.core.daosupport.BaseModel;
+
+public class BdZone extends BaseModel{
     private Integer id;
 
     private String areaCode;
@@ -15,11 +17,11 @@ public class BdZone {
 
     private Integer creator;
 
-    private Date createtime;
+    private Date createTime;
 
     private Integer modifier;
 
-    private Date modifytime;
+    private Date modifyTime;
 
     private Integer recVer;
 
@@ -75,12 +77,12 @@ public class BdZone {
         this.creator = creator;
     }
 
-    public Date getCreatetime() {
-        return createtime;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
     public Integer getModifier() {
@@ -91,12 +93,12 @@ public class BdZone {
         this.modifier = modifier;
     }
 
-    public Date getModifytime() {
-        return modifytime;
+    public Date getModifyTime() {
+        return modifyTime;
     }
 
-    public void setModifytime(Date modifytime) {
-        this.modifytime = modifytime;
+    public void setModifyTime(Date modifyTime) {
+        this.modifyTime = modifyTime;
     }
 
     public Integer getRecVer() {
@@ -122,4 +124,5 @@ public class BdZone {
     public void setWarehouseId(Integer warehouseId) {
         this.warehouseId = warehouseId;
     }
+
 }
