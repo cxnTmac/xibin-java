@@ -16,6 +16,7 @@
     <result column="contact_name" property="contactName" jdbcType="VARCHAR" />
     <result column="contact_tel" property="contactTel" jdbcType="VARCHAR" />
     <result column="contact_email" property="contactEmail" jdbcType="VARCHAR" />
+    <result column="auxi_id" property="auxiId" jdbcType="INTEGER" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -40,6 +41,7 @@
     <result column="contact_name" property="contactName" jdbcType="VARCHAR" />
     <result column="contact_tel" property="contactTel" jdbcType="VARCHAR" />
     <result column="contact_email" property="contactEmail" jdbcType="VARCHAR" />
+    <result column="auxi_id" property="auxiId" jdbcType="INTEGER" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -49,7 +51,7 @@
     <result column="company_id" property="companyId" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, customer_code, customer_name, status, customer_type, customer_tel,customer_email,province,city,county,customer_address,contact_name,contact_tel,contact_email,
+    id, customer_code, customer_name, status, customer_type, customer_tel,customer_email,province,city,county,customer_address,contact_name,contact_tel,contact_email,auxi_id,
     remark,creator,create_time, modifier, modify_time,rec_ver, company_id
   </sql>
   
@@ -100,11 +102,11 @@
   <!-- 【固定】：插入记录（支持一条及多条） -->
   <insert id="insert" parameterType="java.util.Collection">
   	INSERT INTO bd_customer
-          (id, customer_code, customer_name, status, customer_type, customer_tel,province,city,county,customer_address,contact_name,contact_tel,contact_email,
+          (id, customer_code, customer_name, status, customer_type, customer_tel,province,city,county,customer_address,contact_name,contact_tel,contact_email,auxi_id,
     remark,creator,create_time, modifier, modify_time,rec_ver, company_id)
        VALUES
   		<foreach collection="list" item="item" index="index" separator=",">
-	   		(#{item.id}, #{item.customerCode},#{item.customerName}, #{item.status},#{item.customerType},#{item.customerTel},#{item.province},#{item.city},#{item.county},
+	   		(#{item.id}, #{item.customerCode},#{item.customerName}, #{item.status},#{item.customerType},#{item.customerTel},#{item.province},#{item.city},#{item.county},#{item.auxiId},
       #{item.customerAddress},#{item.contactName},#{item.contactTel},#{item.contactEmail},
       #{item.remark},#{item.creator},#{item.createTime}, #{item.modifier},  #{item.modifyTime},#{item.recVer}, #{item.companyId})
   		</foreach>
@@ -188,6 +190,11 @@
 		<trim prefix="contact_email =case"  suffix="end,"  >
              <foreach collection="list" item="item" index="index">
                      when (ID=#{item.id}) then #{item.contactEmail}
+             </foreach>
+		</trim>
+		<trim prefix="auxi_id =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.auxiId}
              </foreach>
 		</trim>
 		

@@ -1,11 +1,9 @@
 package com.xibin.core.controller;
 
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
@@ -14,9 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,16 +65,17 @@ public class FileUploadController {
 		System.out.println("图片上传路径："+realPath);
 		String weburl = webPicUploadWithOutHost+"/fittingSku/"+fittingSkuCode+"-"+userDetails.getCompanyId().toString();
 		try {
-			File originFile = new File(realPath, pic.getOriginalFilename());
-			String fileName = pic.getOriginalFilename().substring(0,pic.getOriginalFilename().lastIndexOf("."));
+			String fileName = System.currentTimeMillis()+"";
+			File originFile = new File(realPath, fileName +".jpg");
+			//String fileName = pic.getOriginalFilename().substring(0,pic.getOriginalFilename().lastIndexOf("."));
 			String destFileName = realPath+"/"+fileName+"-zip"+".jpg";
 			FileUtils.copyInputStreamToFile(pic.getInputStream(), originFile);
 			BufferedImage sourceImg = ImageIO.read(new FileInputStream(originFile));
 			BdFittingSkuPic modelPic = new BdFittingSkuPic();
 			modelPic.setCompanyId(userDetails.getCompanyId());
-			modelPic.setFittingSkuPicName(pic.getOriginalFilename());
+			modelPic.setFittingSkuPicName(fileName);
 			modelPic.setFittingSkuCode(fittingSkuCode);
-			modelPic.setFittingSkuPicUrl(weburl+"/"+pic.getOriginalFilename());
+			modelPic.setFittingSkuPicUrl(weburl+"/"+fileName +".jpg");
 			modelPic.setType(CodeMaster.PIC_TYPE_NORMAL);
 			modelPic.setWidth(sourceImg.getWidth());
 			modelPic.setHeight(sourceImg.getHeight());
@@ -86,7 +83,7 @@ public class FileUploadController {
 			BufferedImage zipImg = ImageIO.read(new FileInputStream(ImageUtils.resizeAndSave(250, 250, originFile, destFileName)));
 			BdFittingSkuPic modelPicZip = new BdFittingSkuPic();
 			modelPicZip.setCompanyId(userDetails.getCompanyId());
-			modelPicZip.setFittingSkuPicName(pic.getOriginalFilename());
+			modelPicZip.setFittingSkuPicName(fileName);
 			modelPicZip.setFittingSkuCode(fittingSkuCode);
 			modelPicZip.setFittingSkuPicUrl(weburl+"/"+fileName+"-zip"+".jpg");
 			modelPicZip.setType(CodeMaster.PIC_TYPE_ZIP);

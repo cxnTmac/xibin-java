@@ -10,7 +10,9 @@
     <result column="audit_op" property="auditOp" jdbcType="INTEGER" />
     <result column="audit_status" property="auditStatus" jdbcType="VARCHAR" />
     <result column="audit_time" property="auditTime" jdbcType="TIMESTAMP" />
+    <result column="is_calculated" property="isCalculated" jdbcType="VARCHAR" />
     <result column="inbound_type" property="inboundType" jdbcType="VARCHAR" />
+    <result column="voucher_id" property="voucherId" jdbcType="INTEGER" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -30,7 +32,9 @@
     <result column="audit_op" property="auditOp" jdbcType="INTEGER" />
     <result column="audit_status" property="auditStatus" jdbcType="VARCHAR" />
     <result column="audit_time" property="auditTime" jdbcType="TIMESTAMP" />
+    <result column="is_calculated" property="isCalculated" jdbcType="VARCHAR" />
     <result column="inbound_type" property="inboundType" jdbcType="VARCHAR" />
+    <result column="voucher_id" property="voucherId" jdbcType="INTEGER" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -41,7 +45,7 @@
     <result column="warehouse_id" property="warehouseId" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    wih.id, wih.order_no, wih.supplier_code,wih.status,wih.order_time, wih.audit_op,wih.audit_status, wih.audit_time, wih.inbound_type, wih.remark, 
+    wih.id, wih.order_no, wih.supplier_code,wih.status,wih.order_time, wih.audit_op,wih.audit_status, wih.audit_time, wih.inbound_type,wih.is_calculated,wih.voucher_id, wih.remark, 
     wih.creator, wih.create_time, wih.modifier, wih.modify_time, wih.rec_ver, wih.company_id, wih.warehouse_id
   </sql>
   
@@ -56,6 +60,7 @@
           <if test="orderTimeFm!=null and orderTimeFm!=''"> AND wih.order_time &gt;= #{orderTimeFm}</if>
           <if test="orderTimeTo!=null and orderTimeTo!=''"> AND wih.order_time &lt;= #{orderTimeTo} </if>
           <if test="supplierCode!=null and supplierCode!=''"> AND wih.supplier_code = #{supplierCode}</if>
+          <if test="isCalculated!=null and isCalculated!=''"> AND wih.is_calculated = #{isCalculated}</if>
           <if test="inboundType!=null and inboundType!=''"> AND wih.inbound_type = #{inboundType}</if>
           <if test="companyId!=null and companyId!=''"> AND wih.company_id = #{companyId}</if>
           <if test="warehouseId!=null and warehouseId!=''"> AND wih.warehouse_id = #{warehouseId}</if>
@@ -69,6 +74,7 @@
           <if test="status!=null and status!=''"> AND wih.audit_status = #{status}</if>
           <if test="supplierCode!=null and supplierCode!=''"> AND wih.supplier_code = #{supplierCode}</if>
           <if test="inboundType!=null and inboundType!=''"> AND wih.inbound_type = #{inboundType}</if>
+          <if test="isCalculated!=null and isCalculated!=''"> AND wih.is_calculated = #{isCalculated}</if>
           <if test="companyId!=null and companyId!=''"> AND wih.company_id = #{companyId}</if>
           <if test="warehouseId!=null and warehouseId!=''"> AND wih.warehouse_id = #{warehouseId}</if>
   </sql>
@@ -86,13 +92,13 @@
   <!-- 【固定】：插入记录（支持一条及多条） -->
   <insert id="insert" parameterType="java.util.Collection">
   	INSERT INTO wm_inbound_header
-          (id, order_no, supplier_code, status,order_time, audit_op,audit_status, audit_time, inbound_type, remark, 
+          (id, order_no, supplier_code, status,order_time, audit_op,audit_status, audit_time, inbound_type,is_calculated,voucher_id, remark, 
     creator, create_time, modifier, modify_time, rec_ver, company_id, warehouse_id)
        VALUES
   		<foreach collection="list" item="item" index="index" separator=",">
 	   		(#{item.id}, #{item.orderNo}, #{item.supplierCode},#{item.status},
       #{item.orderTime}, #{item.auditOp},#{item.auditStatus},#{item.auditTime}, 
-      #{item.inboundType}, #{item.remark}, #{item.creator},#{item.createTime},#{item.modifier}, #{item.modifyTime}, 
+      #{item.inboundType},#{item.isCalculated},#{item.voucherId}, #{item.remark}, #{item.creator},#{item.createTime},#{item.modifier}, #{item.modifyTime}, 
       #{item.recVer}, #{item.companyId},#{item.warehouseId})
   		</foreach>
   </insert>
@@ -149,6 +155,16 @@
 		<trim prefix="inbound_type =case"  suffix="end,"  >
              <foreach collection="list" item="item" index="index">
                      when (ID=#{item.id}) then #{item.inboundType}
+             </foreach>
+		</trim>
+		<trim prefix="is_calculated =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.isCalculated}
+             </foreach>
+		</trim>
+		<trim prefix="voucher_id =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.voucherId}
              </foreach>
 		</trim>
 		<trim prefix="remark =case"  suffix="end,"  >
@@ -229,4 +245,41 @@
     and
     wih.warehouse_id = #{warehouseId}
   </select>
+  <select id="queryOrderNosByStatus"  resultType="String"  parameterType="Map" >
+
+    SELECT
+		wih.order_no
+	FROM
+		wm_inbound_header wih
+	WHERE
+		1=1
+		<if test="orderNos!=null and orderNos!=''">
+			AND wih.order_no in
+          	<foreach item="item" index="index" collection="orderNos" open="(" separator="," close=")">  
+      			#{item}  
+     	  	</foreach>
+		</if>
+	
+	AND wih.status = #{status}
+	AND wih.company_id = #{companyId,jdbcType=INTEGER}
+    AND wih.warehouse_id = #{warehouseId,jdbcType=INTEGER}
+  </select>
+  
+  <update id="updateStatusByOrderNos" parameterType="Map">
+  	UPDATE wm_inbound_header wih
+  	set wih.status = #{toStatus}
+  	<if test="voucherId!=null and voucherId!=''">
+  	, wih.voucher_id = #{voucherId}
+  	</if>
+  	WHERE 1=1
+		<if test="orderNos!=null and orderNos!=''">
+			AND wih.order_no in
+          	<foreach item="item" index="index" collection="orderNos" open="(" separator="," close=")">  
+      			#{item}  
+     	  	</foreach>
+		</if>
+	AND wih.company_id = #{companyId}
+    AND wih.warehouse_id = #{warehouseId}
+  	
+  </update>
 </mapper>

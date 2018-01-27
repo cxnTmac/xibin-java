@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import com.xibin.core.daosupport.BaseMapper;
 import com.xibin.wms.pojo.WmInboundDetail;
 import com.xibin.wms.query.WmInboundDetailQueryItem;
+import com.xibin.wms.query.WmInboundDetailSumPriceQueryItem;
 
 public interface WmInboundDetailMapper extends BaseMapper{
 	WmInboundDetail selectByPrimaryKey(Integer id);
@@ -16,9 +17,13 @@ public interface WmInboundDetailMapper extends BaseMapper{
     
     List<WmInboundDetailQueryItem> selectAllByPage(Map map);
     
+    List<WmInboundDetailQueryItem> selectClosedOrderDetail(Map map);
+    
     List<WmInboundDetailQueryItem> selectByKey(@Param("orderNo")String orderNo,@Param("lineNo")String lineNo,@Param("companyId")String companyId,@Param("warehouseId")String warehouseId);
     
     List<WmInboundDetail> selectByExample(WmInboundDetail example);
     
     List<Integer> selectLastLineNo(@Param("orderNo")String orderNo,@Param("companyId")String companyId,@Param("warehouseId")String warehouseId);
+    
+    List<WmInboundDetailSumPriceQueryItem> querySumPriceGroupBySupplierForAccount(Map map);
 }

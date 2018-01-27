@@ -5,7 +5,9 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,10 +16,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.xibin.core.costants.Constants;
 import com.xibin.core.exception.BusinessException;
 import com.xibin.core.page.pojo.Page;
 import com.xibin.core.page.pojo.PageEntity;
 import com.xibin.core.pojo.Message;
+import com.xibin.core.security.pojo.UserDetails;
 import com.xibin.wms.pojo.BdCustomer;
 import com.xibin.wms.pojo.BdZone;
 import com.xibin.wms.query.BdCustomerQueryItem;
@@ -30,11 +34,14 @@ import com.xibin.wms.service.BdZoneService;
 public class CustomerController {
 	@Resource
 	private BdCustomerService bdCustomerService;
+	@Autowired  
+	private HttpSession session;
 	
 	@RequestMapping("/showAllCustomer")
 	@ResponseBody
 	public PageEntity<BdCustomerQueryItem> showAllCustomer(HttpServletRequest request,Model model){ 
 	    // 开始分页  
+		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
 		PageEntity<BdCustomerQueryItem> pageEntity = new PageEntity<BdCustomerQueryItem>();
 		Page<?> page = new Page();
 		//配置分页参数
@@ -43,6 +50,9 @@ public class CustomerController {
 		Map map = JSONObject.parseObject(request.getParameter("conditions"));
 		map.put("page", page);
 		List<BdCustomerQueryItem> list = bdCustomerService.getAllCustomerByPage(map);
+		if(userDetails != null){
+			map.put("companyId", userDetails.getCompanyId());
+		}
 		pageEntity.setList(list);
 		pageEntity.setSize(page.getTotalRecord());
 	    return  pageEntity;

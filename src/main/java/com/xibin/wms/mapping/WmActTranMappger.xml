@@ -18,6 +18,8 @@
     <result column="fm_qty_op" property="fmQtyOp" jdbcType="DOUBLE" />
     <result column="fm_qty_before" property="fmQtyBefore" jdbcType="DOUBLE" />
     <result column="fm_qty_after" property="fmQtyAfter" jdbcType="DOUBLE" />
+    <result column="cost" property="cost" jdbcType="DOUBLE" />
+    <result column="price" property="price" jdbcType="DOUBLE" />
     <result column="to_sku" property="toSku" jdbcType="VARCHAR" />
     <result column="to_lot" property="toLot" jdbcType="VARCHAR" />
     <result column="to_loc" property="toLoc" jdbcType="VARCHAR" />
@@ -50,6 +52,8 @@
     <result column="fm_qty_op" property="fmQtyOp" jdbcType="DOUBLE" />
     <result column="fm_qty_before" property="fmQtyBefore" jdbcType="DOUBLE" />
     <result column="fm_qty_after" property="fmQtyAfter" jdbcType="DOUBLE" />
+    <result column="cost" property="cost" jdbcType="DOUBLE" />
+    <result column="price" property="price" jdbcType="DOUBLE" />
     <result column="to_sku" property="toSku" jdbcType="VARCHAR" />
     <result column="to_sku_name" property="toSkuName" jdbcType="VARCHAR" />
     <result column="to_lot" property="toLot" jdbcType="VARCHAR" />
@@ -83,6 +87,8 @@
 	wat.fm_qty_op,
 	wat.fm_qty_before,
 	wat.fm_qty_after,
+	wat.cost,
+	wat.price,
 	wat.to_sku,
 	wat.to_lot,
 	wat.to_loc,
@@ -141,12 +147,12 @@
   <insert id="insert" parameterType="java.util.Collection">
   	INSERT INTO wm_act_tran
           (id,tran_id,tran_type,order_type,order_no,line_no,task_id,task_line_no,tran_op,tran_time,fm_sku,fm_lot,fm_loc,fm_qty_op,
-	fm_qty_before,fm_qty_after,to_sku,to_lot,to_loc,to_qty_op,to_qty_before,to_qty_after,
+	fm_qty_before,fm_qty_after,cost,price,to_sku,to_lot,to_loc,to_qty_op,to_qty_before,to_qty_after,
 	creator,create_time,modifier,modify_time,rec_ver,company_id,warehouse_id)
        VALUES
   		<foreach collection="list" item="item" index="index" separator=",">
 	   		(#{item.id}, #{item.tranId},#{item.tranType}, #{item.orderType},#{item.orderNo},#{item.lineNo},#{item.taskId},#{item.taskLineNo},
-      #{item.tranOp},#{item.tranTime},#{item.fmSku},#{item.fmLot},#{item.fmLoc},#{item.fmQtyOp},#{item.fmQtyBefore},#{item.fmQtyAfter},
+      #{item.tranOp},#{item.tranTime},#{item.fmSku},#{item.fmLot},#{item.fmLoc},#{item.fmQtyOp},#{item.fmQtyBefore},#{item.fmQtyAfter},#{item.cost},#{item.price},
       #{item.toSku},#{item.toLot},#{item.toLoc},#{item.toQtyOp},#{item.toQtyBefore},#{item.toQtyAfter},
       #{item.creator},#{item.createTime}, #{item.modifier},  #{item.modifyTime},#{item.recVer}, #{item.companyId},#{item.warehouseId})
   		</foreach>
@@ -238,6 +244,16 @@
 		<trim prefix="fm_qty_after =case"  suffix="end,"  >
              <foreach collection="list" item="item" index="index">
                      when (ID=#{item.id}) then #{item.fmQtyAfter}
+             </foreach>
+		</trim>
+		<trim prefix="cost =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.cost}
+             </foreach>
+		</trim>
+		<trim prefix="price =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.price}
              </foreach>
 		</trim>
 		

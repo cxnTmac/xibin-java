@@ -1,6 +1,6 @@
 package com.xibin.core.controller;
 
-import java.util.HashMap;
+
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,7 @@ import com.xibin.core.security.pojo.UserDetails;
 @RequestMapping(value = "/popWin", produces = {"application/json;charset=UTF-8"})
 public class PopWinController {
 	@Autowired
+	@Qualifier("sqlSessionFactory")
 	SqlSessionFactory factory;
 	@Autowired
 	HttpSession session;
@@ -46,11 +48,18 @@ public class PopWinController {
 		Map map = JSON.parseObject(request.getParameter("queryConditions"));
 		map.put("page", page);
 		map.put("companyId", userDetails.getCompanyId());
+		if(request.getParameter("sys").equals("fin")){
+			map.put("bookId", userDetails.getBookId());
+		}
 		SqlSession sqlsession = factory.openSession();
-		List<?> list = sqlsession.selectList("com.xibin.wms.dao."+request.getParameter("queryType"),map);
+		List<?> list = sqlsession.selectList(getClassPath(request.getParameter("sys"))+request.getParameter("queryType"),map);
 		
 		pageEntity.setList(list);
 		pageEntity.setSize(page.getTotalRecord());
 		return pageEntity;
+	}
+	
+	private String getClassPath(String sys){
+		return "com.xibin."+sys+".dao.";
 	}
 }

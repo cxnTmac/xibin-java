@@ -6,8 +6,10 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.annotations.Param;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,14 +19,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sun.swing.internal.plaf.metal.resources.metal_zh_TW;
+import com.xibin.core.costants.Constants;
 import com.xibin.core.exception.BusinessException;
 import com.xibin.core.page.pojo.Page;
 import com.xibin.core.page.pojo.PageEntity;
 import com.xibin.core.pojo.Message;
+import com.xibin.core.security.pojo.UserDetails;
+import com.xibin.fin.pojo.FiVoucher;
+import com.xibin.fin.pojo.FiVoucherDetail;
 import com.xibin.wms.pojo.BdFittingSku;
+import com.xibin.wms.pojo.BdFittingSkuAssemble;
 import com.xibin.wms.pojo.BdFittingSkuPic;
 import com.xibin.wms.pojo.BdFittingType;
+import com.xibin.wms.query.BdFittingSkuAssembleQueryItem;
 import com.xibin.wms.query.BdFittingSkuQueryItem;
+import com.xibin.wms.service.BdFittingSkuAssembleService;
 import com.xibin.wms.service.BdFittingSkuPicService;
 import com.xibin.wms.service.BdFittingSkuService;
 import com.xibin.wms.service.BdFittingTypeService;
@@ -36,11 +45,16 @@ public class FittingSkuController {
 	private BdFittingSkuService fittingSkuService;
 	@Resource
 	private BdFittingSkuPicService fittingSkuPicService;
+	@Resource
+	private BdFittingSkuAssembleService fittingSkuAssembleService;
+	@Autowired  
+	private HttpSession session;
 	
 	@RequestMapping("/showAllFittingSku")
 	@ResponseBody
 	public PageEntity<BdFittingSkuQueryItem> showAllFittingSku(HttpServletRequest request,Model model){ 
 	    // 开始分页  
+		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
 		PageEntity<BdFittingSkuQueryItem> pageEntity = new PageEntity<BdFittingSkuQueryItem>();
 		Page<?> page = new Page();
 		//配置分页参数
@@ -48,6 +62,9 @@ public class FittingSkuController {
 		page.setPageSize(Integer.parseInt(request.getParameter("size")));
 		Map map = JSONObject.parseObject(request.getParameter("conditions"));
 		map.put("page", page);
+		if(userDetails != null){
+			map.put("companyId", userDetails.getCompanyId());
+		}
 		List<BdFittingSkuQueryItem> list = fittingSkuService.getAllFittingSkuByPage(map);
 		pageEntity.setList(list);
 		pageEntity.setSize(page.getTotalRecord());
@@ -69,6 +86,7 @@ public class FittingSkuController {
 	@ResponseBody
 	public PageEntity<BdFittingSkuQueryItem> MshowAllFittingSku(HttpServletRequest request,Model model){ 
 		// 开始分页  
+		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
 		PageEntity<BdFittingSkuQueryItem> pageEntity = new PageEntity<BdFittingSkuQueryItem>();
 		Page<?> page = new Page();
 		//配置分页参数
@@ -76,6 +94,9 @@ public class FittingSkuController {
 		page.setPageSize(Integer.parseInt(request.getParameter("size")));
 		Map map = JSONObject.parseObject(request.getParameter("conditions"));
 		map.put("page", page);
+		if(userDetails != null){
+			map.put("companyId", userDetails.getCompanyId());
+		}
 		List<BdFittingSkuQueryItem> list = fittingSkuService.MgetAllFittingSkuByPageWithOnePic(map);
 		pageEntity.setList(list);
 		pageEntity.setSize(page.getTotalRecord());
@@ -164,4 +185,31 @@ public class FittingSkuController {
 	    return message;
 	  }
 	  
+	  
+	  
+	  @RequestMapping("/saveSkuAssemble")
+	  @ResponseBody
+	  public Message saveSkuAssemble(HttpServletRequest request,Model model){ 
+			Message message = new Message();
+			List<BdFittingSkuAssemble> details = JSONObject.parseArray(request.getParameter("details"), BdFittingSkuAssemble.class);
+			List<BdFittingSkuAssemble> removeDetails = JSONObject.parseArray(request.getParameter("removeDetails"), BdFittingSkuAssemble.class);
+			return fittingSkuAssembleService.saveFittingSkuAssemble(details,removeDetails);
+	  }
+	  
+	  @RequestMapping("/querySkuAssembleByFSkuCode")
+	  @ResponseBody
+	  public PageEntity<BdFittingSkuAssembleQueryItem> saveVoucherAndDetail(HttpServletRequest request,Model model){ 
+		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
+		PageEntity<BdFittingSkuAssembleQueryItem> pageEntity = new PageEntity<BdFittingSkuAssembleQueryItem>();
+		Page<?> page = new Page();
+		Map map = JSONObject.parseObject(request.getParameter("conditions"));
+		map.put("page", page);
+		if(userDetails != null){
+			map.put("companyId", userDetails.getCompanyId());
+		}
+		List<BdFittingSkuAssembleQueryItem> list = fittingSkuAssembleService.getAllFittingSkuByFSkuCode(map);
+		pageEntity.setList(list);
+		pageEntity.setSize((long)list.size());
+		return  pageEntity;
+	  }
 }

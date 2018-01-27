@@ -21,6 +21,11 @@ public class InventoryUpdateEntity implements Serializable {
 	
 	private String lotNum;
 	
+	private Double cost;
+	
+	//入库/出库价格
+	private Double price;
+	
 	private String locCode;
 	//操作数
 	private Double qtyOp;
@@ -99,6 +104,18 @@ public class InventoryUpdateEntity implements Serializable {
 	}
 	public void setQtyOpAfter(Double qtyOpAfter) {
 		this.qtyOpAfter = qtyOpAfter;
+	}
+	public Double getPrice() {
+		return price;
+	}
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+	public Double getCost() {
+		return cost;
+	}
+	public void setCost(Double cost) {
+		this.cost = cost;
 	}
 	
 	

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xibin.fin.dao.FiVoucherGLMapper" >
+  <resultMap id="BaseResultMap" type="com.xibin.fin.entity.FiVoucherSumByCourseQueryItem" >
+
+    <result column="course_no" property="courseNo" jdbcType="VARCHAR" />
+    <result column="course_name" property="courseName" jdbcType="VARCHAR" />
+    <result column="period" property="period" jdbcType="VARCHAR" />
+    <result column="sum_debit" property="sumDebit" jdbcType="DOUBLE" />
+    <result column="sum_credit" property="sumCredit" jdbcType="DOUBLE" />
+    <result column="to_go" property="toGo" jdbcType="VARCHAR" />
+   
+  </resultMap>
+  <select id="queryForVoucherGL" resultMap="BaseResultMap" resultType="java.util.List"  parameterType="Map" >
+  	SELECT
+		fc.course_name,
+		fvd.course_no,
+		fv.period,
+		sum(fvd.debit) as sum_debit,
+		sum(fvd.credit) as sum_credit,
+		fc.to_go,
+		fc.balance
+	FROM
+		fi_voucher_detail fvd
+	LEFT JOIN fi_course fc ON 
+			fvd.course_no = fc.course_no 
+			AND fvd.company_id = fc.company_id
+	LEFT JOIN fi_voucher fv ON 
+			fvd.voucher_id = fv.id 
+			AND fvd.company_id = fv.company_id
+			AND fvd.book_id = fv.book_id
+	WHERE fv.status IN ('10','20')
+	<if test="periodFrom!=null and periodFrom!=''">AND fv.period &gt;= #{periodFrom,jdbcType=VARCHAR}</if>
+	<if test="periodTo!=null and periodTo!=''">AND fv.period &lt;= #{periodTo,jdbcType=VARCHAR}</if>
+	<if test="courseNo!=null and courseNo!=''">AND fvd.course_no = #{courseNo,jdbcType=VARCHAR}</if>
+	<if test="companyId!=null and companyId!=''">AND fvd.company_id = #{companyId,jdbcType=VARCHAR}</if>
+	GROUP BY fvd.period,fvd.course_no
+	ORDER BY fvd.period,fvd.course_no
+  </select>
+  
+  <select id="queryForVoucherCount"  resultType="java.lang.Integer"  parameterType="Map" >
+  	SELECT
+		count(*)
+	FROM
+		fi_voucher fv
+	WHERE
+		fv.status  IN ('10','20')
+	<if test="periodFrom!=null and periodFrom!=''">AND fv.period &gt;= #{periodFrom,jdbcType=VARCHAR}</if>
+	<if test="periodTo!=null and periodTo!=''">AND fv.period &lt;= #{periodTo,jdbcType=VARCHAR}</if>
+	<if test="companyId!=null and companyId!=''">AND fv.company_id = #{companyId,jdbcType=VARCHAR}</if>
+	<if test="bookId!=null and bookId!=''">AND fv.book_id = #{bookId,jdbcType=VARCHAR}</if>
+  </select>
+  
+  
+  <select id="queryForVoucherDetailSum" resultMap="BaseResultMap" resultType="java.util.List"  parameterType="Map" >
+  	SELECT
+		fc.course_name,
+		fvd.course_no,
+		fv.period,
+		sum(fvd.debit) as sum_debit,
+		sum(fvd.credit) as sum_credit,
+		fc.to_go,
+		fc.balance
+	FROM
+		fi_voucher_detail fvd
+	LEFT JOIN fi_course fc ON 
+			fvd.course_no = fc.course_no 
+			AND fvd.company_id = fc.company_id
+	LEFT JOIN fi_voucher fv ON 
+			fvd.voucher_id = fv.id 
+			AND fvd.company_id = fv.company_id
+			AND fvd.book_id = fv.book_id
+	WHERE fv.status IN ('10','20')
+	<if test="periodFrom!=null and periodFrom!=''">AND fv.period &gt;= #{periodFrom,jdbcType=VARCHAR}</if>
+	<if test="periodTo!=null and periodTo!=''">AND fv.period &lt;= #{periodTo,jdbcType=VARCHAR}</if>
+	<if test="courseNo!=null and courseNo!=''">AND fvd.course_no = #{courseNo,jdbcType=VARCHAR}</if>
+	<if test="companyId!=null and companyId!=''">AND fvd.company_id = #{companyId,jdbcType=VARCHAR}</if>
+	<if test="bookId!=null and bookId!=''">AND fvd.book_id = #{bookId,jdbcType=VARCHAR}</if>
+	GROUP BY fvd.course_no
+	ORDER BY fvd.course_no
+  </select>
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+</mapper>

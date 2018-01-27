@@ -19,4 +19,6 @@ public interface BdFittingSkuService {
 	public BdFittingSku saveFittingSku (BdFittingSku model) throws BusinessException;
 	
 	public List<BdFittingSkuQueryItem> selectByKey(String fittingTypeCode);
+	
+	public List<BdFittingSkuQueryItem> selectByKey(String skuCode,String companyId); 
 }

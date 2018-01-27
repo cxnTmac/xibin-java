@@ -14,6 +14,12 @@ public class UserDetails implements Serializable {
 	//公司ID
 	private Integer companyId;
 	private String companyName;
+	
+	private String currentPeriod;
+	
+	private Integer bookId;
+	
+	private String bookName;
 	//仓库ID
 	private Integer warehouseId;
 	private String warehouseName;
@@ -53,6 +59,24 @@ public class UserDetails implements Serializable {
 	}
 	public void setWarehouseName(String warehouseName) {
 		this.warehouseName = warehouseName;
+	}
+	public String getCurrentPeriod() {
+		return currentPeriod;
+	}
+	public void setCurrentPeriod(String currentPeriod) {
+		this.currentPeriod = currentPeriod;
+	}
+	public Integer getBookId() {
+		return bookId;
+	}
+	public void setBookId(Integer bookId) {
+		this.bookId = bookId;
+	}
+	public String getBookName() {
+		return bookName;
+	}
+	public void setBookName(String bookName) {
+		this.bookName = bookName;
 	}
 	
 }

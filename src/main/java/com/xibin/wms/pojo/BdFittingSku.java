@@ -28,6 +28,10 @@ public class BdFittingSku extends BaseModel{
     private String modelCode;
 
     private String fittingTypeCode;
+    
+    private String needToAssemble;
+    
+    private String assembleType;
 
     private String type;
 
@@ -244,4 +248,22 @@ public class BdFittingSku extends BaseModel{
     public void setCompanyId(Integer companyId) {
         this.companyId = companyId;
     }
+
+	public String getNeedToAssemble() {
+		return needToAssemble;
+	}
+
+	public void setNeedToAssemble(String needToAssemble) {
+		this.needToAssemble = needToAssemble;
+	}
+
+	public String getAssembleType() {
+		return assembleType;
+	}
+
+	public void setAssembleType(String assembleType) {
+		this.assembleType = assembleType;
+	}
+    
+    
 }

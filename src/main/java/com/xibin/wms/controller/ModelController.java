@@ -48,7 +48,9 @@ public class ModelController {
 		page.setPageSize(Integer.parseInt(request.getParameter("size")));
 		Map map = JSONObject.parseObject(request.getParameter("conditions"));
 		map.put("page", page);
-		map.put("companyId", userDetails.getCompanyId());
+		if(userDetails != null){
+			map.put("companyId", userDetails.getCompanyId());
+		}
 		List<BdModel> userList = bdModelService.getAllModelByPage(map);
 		pageEntity.setList(userList);
 		pageEntity.setSize(page.getTotalRecord());
@@ -60,7 +62,9 @@ public class ModelController {
 	    // 开始分页  
 		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
 		Map map = JSONObject.parseObject(request.getParameter("conditions"));
-		map.put("companyId", userDetails.getCompanyId());
+		if(userDetails != null){
+			map.put("companyId", userDetails.getCompanyId());
+		}
 		List<BdModel> userList = bdModelService.getAllModelByPage(map);
 	    return  userList;
 	 }

@@ -12,6 +12,9 @@
     <result column="inbound_num" property="inboundNum" jdbcType="DOUBLE" />
     <result column="inbound_price" property="inboundPrice" jdbcType="DOUBLE" />
     <result column="plan_loc" property="planLoc" jdbcType="VARCHAR" />
+    <result column="supplier_code" property="supplierCode" jdbcType="VARCHAR" />
+    <result column="is_created_voucher" property="isCreatedVoucher" jdbcType="VARCHAR" />
+    <result column="voucher_no" property="voucherNo" jdbcType="VARCHAR" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -26,6 +29,7 @@
     <result column="order_no" property="orderNo" jdbcType="VARCHAR" />
     <result column="line_no" property="lineNo" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="header_status" property="headerStatus" jdbcType="VARCHAR" />
     <result column="supplier_code" property="supplierCode" jdbcType="VARCHAR" />
     <result column="supplier_name" property="supplierName" jdbcType="VARCHAR" />
     <result column="sku_code" property="skuCode" jdbcType="VARCHAR" />
@@ -33,6 +37,8 @@
     <result column="inbound_num" property="inboundNum" jdbcType="DOUBLE" />
     <result column="inbound_price" property="inboundPrice" jdbcType="DOUBLE" />
     <result column="plan_loc" property="planLoc" jdbcType="VARCHAR" />
+    <result column="is_created_voucher" property="isCreatedVoucher" jdbcType="VARCHAR" />
+    <result column="voucher_no" property="voucherNo" jdbcType="VARCHAR" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -42,9 +48,14 @@
     <result column="company_id" property="companyId" jdbcType="INTEGER" />
     <result column="warehouse_id" property="warehouseId" jdbcType="INTEGER" />
   </resultMap>
-  
+  <resultMap id="SumPriceResultMap" type="com.xibin.wms.query.WmInboundDetailSumPriceQueryItem" >
+    <result column="total" property="total" jdbcType="DOUBLE" />
+    <result column="supplier_code" property="supplierCode" jdbcType="VARCHAR" />
+    <result column="auxi_id" property="auxiId" jdbcType="INTEGER" />
+
+  </resultMap>
   <sql id="Base_Column_List" >
-    wid.id, wid.order_no, wid.line_no,wid.status,wid.supplier_code, wid.sku_code, wid.inbound_pre_num,wid.inbound_num, wid.inbound_price, wid.plan_loc,wid.remark, wid.creator, wid.create_time, 
+    wid.id, wid.order_no, wid.line_no,wid.status,wid.supplier_code, wid.sku_code, wid.inbound_pre_num,wid.inbound_num, wid.inbound_price, wid.plan_loc,wid.is_created_voucher,wid.voucher_no,wid.remark, wid.creator, wid.create_time, 
     wid.modifier, wid.modify_time, wid.rec_ver, wid.company_id, wid.warehouse_id
   </sql>
   
@@ -56,6 +67,8 @@
           <if test="supplierCode!=null and supplierCode!=''"> AND wid.supplier_code = #{supplierCode}</if>
           <if test="lineNo!=null and lineNo!=''"> AND wid.line_no LIKE CONCAT('%','${lineNo}','%')</if>
           <if test="skuCode!=null and skuCode!=''"> AND wid.sku_code LIKE CONCAT('%','${skuCode}','%')</if>
+          <if test="isCreatedVoucher!=null and isCreatedVoucher!=''"> AND wid.is_created_voucher = #{isCreatedVoucher}</if>
+          <if test="voucherNo!=null and voucherNo!=''"> AND wid.voucher_no LIKE CONCAT('%','${voucherNo}','%')</if>
           <if test="companyId!=null and companyId!=''"> AND wid.company_id = #{companyId}</if>
           <if test="warehouseId!=null and warehouseId!=''"> AND wid.warehouse_id = #{warehouseId}</if>
           <if test="fuzzyCondition!=null and fuzzyCondition!=''"> AND wid.order_no LIKE CONCAT('%','${fuzzyCondition}','%')</if>
@@ -70,6 +83,8 @@
           <if test="supplierCode!=null and supplierCode!=''"> AND wid.supplier_code = #{supplierCode}</if>
           <if test="lineNo!=null and lineNo!=''"> AND wid.line_no = #{lineNo}</if>
           <if test="skuCode!=null and skuCode!=''"> AND wid.sku_code = #{skuCode}</if>
+          <if test="isCreatedVoucher!=null and isCreatedVoucher!=''"> AND wid.is_created_voucher = #{isCreatedVoucher}</if>
+          <if test="voucherNo!=null and voucherNo!=''"> AND wid.voucher_no = #{voucherNo}</if>
           <if test="companyId!=null and companyId!=''"> AND wid.company_id = #{companyId}</if>
           <if test="warehouseId!=null and warehouseId!=''"> AND wid.warehouse_id = #{warehouseId}</if>
   </sql>
@@ -89,11 +104,11 @@
   <!-- 【固定】：插入记录（支持一条及多条） -->
   <insert id="insert" parameterType="java.util.Collection">
   	INSERT INTO wm_inbound_detail
-          (id, order_no, line_no,status,supplier_code,sku_code, inbound_pre_num,inbound_num, inbound_price, plan_loc,remark, creator, create_time, 
+          (id, order_no, line_no,status,supplier_code,sku_code, inbound_pre_num,inbound_num, inbound_price, plan_loc,is_created_voucher,voucher_no,remark, creator, create_time, 
     modifier, modify_time, rec_ver, company_id, warehouse_id)
        VALUES
   		<foreach collection="list" item="item" index="index" separator=",">
-	   		(#{item.id}, #{item.orderNo},#{item.lineNo},#{item.status}, #{item.supplierCode},#{item.skuCode},#{item.inboundPreNum},#{item.inboundNum},#{item.inboundPrice},#{item.planLoc},
+	   		(#{item.id}, #{item.orderNo},#{item.lineNo},#{item.status}, #{item.supplierCode},#{item.skuCode},#{item.inboundPreNum},#{item.inboundNum},#{item.inboundPrice},#{item.planLoc},#{item.isCreatedVoucher},#{item.voucherNo},
       #{item.remark},#{item.creator},#{item.createTime}, #{item.modifier},  #{item.modifyTime},
       #{item.recVer}, #{item.companyId},#{item.warehouseId})
   		</foreach>
@@ -155,6 +170,16 @@
 		<trim prefix="plan_loc =case"  suffix="end,"  >
              <foreach collection="list" item="item" index="index">
                      when (ID=#{item.id}) then #{item.planLoc}
+             </foreach>
+		</trim>
+		<trim prefix="is_created_voucher =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.isCreatedVoucher}
+             </foreach>
+		</trim>
+		<trim prefix="voucher_no =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.voucherNo}
              </foreach>
 		</trim>
 		<trim prefix="remark =case"  suffix="end,"  >
@@ -259,4 +284,56 @@
     and
     wid.warehouse_id = #{warehouseId,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectClosedOrderDetail"   resultMap="QueryResultMap"   parameterType="Map" >
+    select
+    <include refid="Base_Column_List" />
+    ,bc.customer_name as supplier_name,
+    wih.status as header_status
+    from wm_inbound_header wih
+    left join bd_customer bc on
+    	bc.customer_code = wih.supplier_code
+    and bc.company_id = wih.company_id
+    left join wm_inbound_detail wid on
+    wid.order_no = wih.order_no
+    and wid.company_id = wih.company_id
+    and wid.warehouse_id = wih.warehouse_id
+    <include refid="findByConditionWhere" /> 
+    <if test="headerStatus!=null and headerStatus!=''">AND wih.status = #{headerStatus}</if>
+    <if test="inboundType!=null and inboundType!=''">AND wih.inbound_type = #{inboundType}</if>
+    <if test="inboundType!=null and inboundType!=''">AND wih.inbound_type = #{inboundType}</if>
+    <if test="orderTimeFm!=null and orderTimeFm!=''"> AND wih.order_time &gt;= #{orderTimeFm}</if>
+    <if test="orderTimeTo!=null and orderTimeTo!=''"> AND wih.order_time &lt;= #{orderTimeTo} </if>
+    order by wih.order_no,wid.line_no
+  </select>
+  
+  
+  <select id="querySumPriceGroupBySupplierForAccount"   resultMap="SumPriceResultMap"   parameterType="Map" >
+  SELECT
+	sum(
+		wid.inbound_price * wid.inbound_num
+	)as total,
+	wid.supplier_code,
+	bc.auxi_id
+	FROM
+		wm_inbound_detail wid
+	LEFT JOIN bd_customer bc ON bc.company_id = wid.company_id
+	AND bc.customer_code = wid.supplier_code
+	LEFT JOIN wm_inbound_header wih ON wid.order_no = wih.order_no
+	AND wid.company_id = wih.company_id
+	AND wid.warehouse_id = wih.warehouse_id
+	WHERE
+		1 = 1
+    <if test="orderNos!=null and orderNos!=''"> 
+          	AND wid.order_no in 
+          	<foreach item="item" index="index" collection="orderNos" open="(" separator="," close=")">  
+      			#{item}  
+     	  	</foreach>
+    </if>
+	AND wih.status = '99'
+	AND wid.company_id = #{companyId}
+	AND wid.warehouse_id = #{warehouseId}
+	GROUP BY
+		wid.supplier_code	
+ </select>
 </mapper>

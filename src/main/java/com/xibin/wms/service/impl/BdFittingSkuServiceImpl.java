@@ -71,12 +71,18 @@ public class BdFittingSkuServiceImpl extends BaseManagerImpl implements BdFittin
 		return (BdFittingSku) this.save(model);
 	}
 
+	
 
 	@Override
 	public List<BdFittingSkuQueryItem> selectByKey(String skuCode) {
 		// TODO Auto-generated method stub
 		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
 		return bdFittingSkuMapper.selectByKey(skuCode,userDetails.getCompanyId().toString());
+	}
+	
+	@Override
+	public List<BdFittingSkuQueryItem> selectByKey(String skuCode,String companyId) {
+		return bdFittingSkuMapper.selectByKey(skuCode,companyId);
 	}
 
 	@Override

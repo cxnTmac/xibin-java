@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xibin.wms.dao.WmAssembleFDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.xibin.wms.pojo.WmAssembleFDetail" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+    <result column="line_no" property="lineNo" jdbcType="VARCHAR" />
+    <result column="fitting_sku_code" property="fittingSkuCode" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="assemble_loc" property="assembleLoc" jdbcType="VARCHAR" />
+    <result column="create_s" property="createS" jdbcType="VARCHAR" />
+    <result column="pre_num" property="preNum" jdbcType="INTEGER" />
+    <result column="num" property="num" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="INTEGER" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="rec_ver" property="recVer" jdbcType="INTEGER" />
+    <result column="company_id" property="companyId" jdbcType="INTEGER" />
+    <result column="warehouse_id" property="warehouseId" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="QueryResultMap" type="com.xibin.wms.query.WmAssembleFDetailQueryItem" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+    <result column="line_no" property="lineNo" jdbcType="VARCHAR" />
+    <result column="fitting_sku_code" property="fittingSkuCode" jdbcType="VARCHAR" />
+    <result column="fitting_sku_name" property="fittingSkuName" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="assemble_loc" property="assembleLoc" jdbcType="VARCHAR" />
+    <result column="create_s" property="createS" jdbcType="VARCHAR" />
+    <result column="pre_num" property="preNum" jdbcType="INTEGER" />
+    <result column="num" property="num" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="INTEGER" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="rec_ver" property="recVer" jdbcType="INTEGER" />
+    <result column="company_id" property="companyId" jdbcType="INTEGER" />
+    <result column="warehouse_id" property="warehouseId" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    wafd.id, wafd.order_no,wafd.line_no,wafd.status,wafd.fitting_sku_code,wafd.assemble_loc, wafd.create_s,wafd.pre_num, wafd.num,wafd.remark, 
+    wafd.creator, wafd.create_time, wafd.modifier, wafd.modify_time, wafd.rec_ver, wafd.company_id, wafd.warehouse_id
+  </sql>
+  
+  <!-- 条件 -->
+  <sql id="findByConditionWhere">
+      WHERE 1=1
+          <if test="id!=null and id!=''"> AND wafd.id = #{id}</if>
+          <if test="orderNo!=null and orderNo!=''"> AND wafd.order_no = #{orderNo}</if>
+          <if test="fittingSkuCode!=null and fittingSkuCode''"> AND wafd.fitting_sku_code LIKE CONCAT('%','${fittingSkuCode}','%')</if>
+          <if test="companyId!=null and companyId!=''"> AND wafd.company_id = #{companyId}</if>
+          <if test="warehouseId!=null and warehouseId!=''"> AND wafd.warehouse_id = #{warehouseId}</if>
+  </sql>
+  <!-- 条件 -->
+  <sql id="findByExampleWhere">
+      WHERE 1=1
+         <if test="id!=null and id!=''"> AND wafd.id = #{id}</if>
+          <if test="orderNo!=null and orderNo!=''"> AND wafd.order_no = #{orderNo}</if>
+          <if test="fittingSkuCode!=null and fittingSkuCode''"> AND wafd.fitting_sku_code = #{fittingSkuCode}</if>
+          <if test="companyId!=null and companyId!=''"> AND wafd.company_id = #{companyId}</if>
+          <if test="warehouseId!=null and warehouseId!=''"> AND wafd.warehouse_id = #{warehouseId}</if>
+  </sql>
+  <!-- 【固定】：按主键查询 -->
+  <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	  select
+      <include refid="Base_Column_List"/>
+      from wm_assemble_f_detail
+      WHERE id in
+      <foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+	           #{item}
+	  </foreach>
+  </select>
+  
+  <!-- 【固定】：插入记录（支持一条及多条） -->
+  <insert id="insert" parameterType="java.util.Collection">
+  	INSERT INTO wm_assemble_f_detail
+          (id, order_no,line_no,status,fitting_sku_code,assemble_loc,create_s,pre_num,num,remark, 
+    creator,create_time,modifier, modify_time, rec_ver, company_id, warehouse_id)
+       VALUES
+  		<foreach collection="list" item="item" index="index" separator=",">
+	   		(#{item.id}, #{item.orderNo}, #{item.lineNo},#{item.status},#{item.fittingSkuCode},
+      #{item.assembleLoc}, #{item.createS},#{item.preNum},#{item.num},
+      #{item.remark}, #{item.creator},#{item.createTime},#{item.modifier}, #{item.modifyTime}, 
+      #{item.recVer}, #{item.companyId},#{item.warehouseId})
+  		</foreach>
+  </insert>
+  
+  <!-- 【固定】：删除记录 -->
+  <delete id="delete" parameterType="java.lang.reflect.Array">
+      DELETE FROM wm_assemble_f_detail WHERE ID in 
+   <foreach collection="array" index="index" item="item" open="(" separator="," close=")">  
+           #{item}   
+   </foreach>
+  </delete>
+  
+  <!-- 【固定】：更新记录（支持一条及多条） -->
+  <update id="update" parameterType="java.util.Collection">
+	UPDATE wm_assemble_f_detail
+	<trim prefix="set" suffixOverrides=",">
+		<!-- 更新的字段集合 -->
+		<trim prefix="order_no =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.orderNo}
+             </foreach>
+		</trim>
+		<trim prefix="line_no =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.lineNo}
+             </foreach>
+		</trim>
+		<trim prefix="status =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.status}
+             </foreach>
+		</trim>
+		<trim prefix="fitting_sku_code =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.fittingSkuCode}
+             </foreach>
+		</trim>
+		<trim prefix="assemble_loc =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.assembleLoc}
+             </foreach>
+		</trim>
+		<trim prefix="create_s =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.createS}
+             </foreach>
+		</trim>
+		<trim prefix="pre_num =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.preNum}
+             </foreach>
+		</trim>
+		
+		<trim prefix="num =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.num}
+             </foreach>
+		</trim>
+		<trim prefix="remark =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.remark}
+             </foreach>
+		</trim>
+		
+		
+		
+		<trim prefix="modifier =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.modifier}
+             </foreach>
+		</trim>
+		<trim prefix="modify_time =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.modifyTime}
+             </foreach>
+		</trim>
+		<trim prefix="rec_ver =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.recVer}
+             </foreach>
+		</trim>
+		<trim prefix="company_id =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.companyId}
+             </foreach>
+		</trim>
+		<trim prefix="warehouse_id =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.warehouseId}
+             </foreach>
+		</trim>
+	</trim>
+	WHERE
+	<foreach collection="list" separator="or" item="item" index="index" >
+		<if test="item.id!=null">
+		(ID=#{item.id}) AND (REC_VER=#{item.recVer}-1)
+		</if>
+	</foreach>	
+  </update>
+  
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from wm_assemble_f_detail wafd
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAllByOrderNo" resultMap="QueryResultMap" parameterType="Map">
+    select 
+    <include refid="Base_Column_List" />
+    ,bfs.fitting_sku_name
+    from wm_assemble_f_detail wafd
+    left join bd_fitting_sku bfs on
+    bfs.fitting_sku_code  = wafd.fitting_sku_code
+    and bfs.company_id = wafd.company_id
+    where 
+    1=1
+    and wafd.order_no = #{orderNo}
+    and 
+    wafd.company_id = #{companyId}
+    and
+    wafd.warehouse_id = #{warehouseId}
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.xibin.wms.pojo.WmAssembleFDetail">
+    select 
+    <include refid="Base_Column_List" />
+    from wm_assemble_f_detail wafd
+    <include refid="findByExampleWhere" />
+  </select>
+  <select id="selectByKey" resultMap="BaseResultMap" resultType="java.util.List"  parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from wm_assemble_f_detail wafd
+    where wafd.order_no = #{orderNo}
+    and
+    wafd.line_no = #{lineNo}
+    and 
+    wafd.company_id = #{companyId}
+    and
+    wafd.warehouse_id = #{warehouseId}
+  </select>
+  
+  <select id="selectLastLineNo"   resultType="Integer"   parameterType="java.lang.String" >
+    select
+    max(wafd.line_no)
+    from wm_assemble_f_detail wafd 
+    where wafd.order_no = #{orderNo,jdbcType=VARCHAR}
+    and 
+    wafd.company_id = #{companyId,jdbcType=INTEGER}
+    and
+    wafd.warehouse_id = #{warehouseId,jdbcType=INTEGER}
+  </select>
+  
+</mapper>

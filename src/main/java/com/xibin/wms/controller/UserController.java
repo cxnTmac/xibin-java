@@ -23,6 +23,10 @@ import com.xibin.core.page.pojo.Page;
 import com.xibin.core.page.pojo.PageEntity;
 import com.xibin.core.pojo.Message;
 import com.xibin.core.security.pojo.UserDetails;
+import com.xibin.fin.pojo.FiBook;
+import com.xibin.fin.pojo.FiTerm;
+import com.xibin.fin.service.FiBookService;
+import com.xibin.fin.service.FiTermService;
 import com.xibin.wms.pojo.BdFittingSku;
 import com.xibin.wms.pojo.SysUser;
 import com.xibin.wms.query.SysUserQueryItem;
@@ -33,6 +37,12 @@ import com.xibin.wms.service.UserService;
 public class UserController {
   @Resource
   private UserService userService;
+  
+  @Resource
+  private FiTermService termService;
+  
+  @Resource
+  private FiBookService bookService;
   @Autowired  
   private HttpSession session;
   @RequestMapping("/showUser")
@@ -54,7 +64,9 @@ public class UserController {
 	page.setPageNo(Integer.parseInt(request.getParameter("page")));
 	Map map = JSONObject.parseObject(request.getParameter("conditions"));
 	map.put("page",page);
-	map.put("companyId", userDetails.getCompanyId());
+	if(userDetails != null){
+		map.put("companyId", userDetails.getCompanyId());
+	}
 	List<SysUserQueryItem> userList = userService.getAllUserByPage(map);
 	pageEntity.setList(userList);
 	//pageEntity.setSize(page.getTotalRecord());
@@ -102,10 +114,16 @@ public class UserController {
 			userDetails.setUserName(list.get(0).getUserName());
 			userDetails.setCompanyId(list.get(0).getCompanyId());
 			userDetails.setWarehouseId(1);
+			FiBook defaultBook = getDefaultBook(list.get(0).getCompanyId());
+			if(defaultBook!=null){
+				userDetails.setBookId(defaultBook.getId());
+				userDetails.setBookName(defaultBook.getBookName());
+			}
+			userDetails.setCurrentPeriod(getCurrentPeriod(list.get(0).getCompanyId()));
 			userDetails.setUserId(list.get(0).getId());
 			session.setAttribute(Constants.SESSION_USER_KEY, userDetails);
 			message.setCode(200);
-			message.setData(list.get(0));
+			message.setData(userDetails);
 			message.setMsg("登陆成功！");
 		}else{
 			message.setCode(0);
@@ -116,6 +134,25 @@ public class UserController {
 		message.setMsg("用户名或密码错误！");
 	}
 	return message;
+  }
+  
+  private String  getCurrentPeriod(Integer companyId){
+	  FiTerm term  = termService.getCurrentTerm(companyId);
+	  if(term!=null){
+		  return term.getPeriod();
+	  }
+	  return null;
+  }
+  
+  private FiBook getDefaultBook(Integer companyId){
+	  FiBook example = new FiBook();
+	  example.setCompanyId(companyId);
+	  example.setIsDefault("Y");
+	  List<FiBook> results = bookService.findByExample(example);
+	  if(!results.isEmpty()){
+		 return  results.get(0);
+	  }
+	  return null;
   }
   @RequestMapping("/logout")
   @ResponseBody

@@ -27,6 +27,16 @@ public class WmOutboundDetail extends BaseModel{
 
     private Double outboundPrice;
     
+    private Double cost;
+    
+    private String isCreateVoucher;
+    
+    private String voucherNo;
+    
+    private String isCreateCostVoucher;
+    
+    private String costVoucherNo;
+    
     private String planShipLoc;
 
     private String remark;
@@ -91,6 +101,46 @@ public class WmOutboundDetail extends BaseModel{
 
 	public void setOutboundPrice(Double outboundPrice) {
 		this.outboundPrice = outboundPrice;
+	}
+
+	public Double getCost() {
+		return cost;
+	}
+
+	public void setCost(Double cost) {
+		this.cost = cost;
+	}
+
+	public String getIsCreateVoucher() {
+		return isCreateVoucher;
+	}
+
+	public void setIsCreateVoucher(String isCreateVoucher) {
+		this.isCreateVoucher = isCreateVoucher;
+	}
+
+	public String getVoucherNo() {
+		return voucherNo;
+	}
+
+	public void setVoucherNo(String voucherNo) {
+		this.voucherNo = voucherNo;
+	}
+
+	public String getIsCreateCostVoucher() {
+		return isCreateCostVoucher;
+	}
+
+	public void setIsCreateCostVoucher(String isCreateCostVoucher) {
+		this.isCreateCostVoucher = isCreateCostVoucher;
+	}
+
+	public String getCostVoucherNo() {
+		return costVoucherNo;
+	}
+
+	public void setCostVoucherNo(String costVoucherNo) {
+		this.costVoucherNo = costVoucherNo;
 	}
 
 	public String getPlanShipLoc() {

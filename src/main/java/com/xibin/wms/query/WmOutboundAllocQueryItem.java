@@ -17,8 +17,14 @@ public class WmOutboundAllocQueryItem implements Serializable{
     private String status;
     
     private String buyerCode;
+    
+    private String buyerName;
 
     private String skuCode;
+    
+    private String skuName;
+    
+    private String modelCode;
 
     private Double outboundNum;
 
@@ -35,6 +41,8 @@ public class WmOutboundAllocQueryItem implements Serializable{
     private Integer shipOp;
     
     private Date shipTime;
+    
+    private Double cost;
 
     private String remark;
 
@@ -234,6 +242,38 @@ public class WmOutboundAllocQueryItem implements Serializable{
 
 	public void setWarehouseId(Integer warehouseId) {
 		this.warehouseId = warehouseId;
+	}
+
+	public String getBuyerName() {
+		return buyerName;
+	}
+
+	public void setBuyerName(String buyerName) {
+		this.buyerName = buyerName;
+	}
+
+	public String getSkuName() {
+		return skuName;
+	}
+
+	public void setSkuName(String skuName) {
+		this.skuName = skuName;
+	}
+
+	public String getModelCode() {
+		return modelCode;
+	}
+
+	public void setModelCode(String modelCode) {
+		this.modelCode = modelCode;
+	}
+
+	public Double getCost() {
+		return cost;
+	}
+
+	public void setCost(Double cost) {
+		this.cost = cost;
 	}
 
 	

@@ -14,6 +14,8 @@ import com.xibin.wms.query.WmInboundHeaderQueryItem;
 public interface WmInboundDetailService {
 	public WmInboundDetail getInboundDetailById(int userId);
 	
+	public List<WmInboundDetail> getInboundDetailByIds(String []ids); 
+	
 	public List<WmInboundDetailQueryItem> getAllInboundDetailByPage(Map map);
 	
 	public List<WmInboundDetailQueryItem> selectByKey(String orderNo,String lineNo);
@@ -25,4 +27,6 @@ public interface WmInboundDetailService {
 	public int removeInboundDetail(int []ids,String orderNo) throws BusinessException;
 	
 	public int updateStatusByKey(String orderNo,String lineNos,String status);
+	
+	public List<WmInboundDetailQueryItem> selectClosedOrderDetail(Map map);
 }

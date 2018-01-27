@@ -40,6 +40,10 @@ public class WmActTranQueryItem implements Serializable{
     
     private Double fmQtyAfter;
     
+    private Double cost;
+    
+    private Double price;
+    
     private String toSku;
     
     private String toSkuName;
@@ -314,6 +318,22 @@ public class WmActTranQueryItem implements Serializable{
 
 	public void setToSkuName(String toSkuName) {
 		this.toSkuName = toSkuName;
+	}
+
+	public Double getCost() {
+		return cost;
+	}
+
+	public void setCost(Double cost) {
+		this.cost = cost;
+	}
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
 	}
 	
 	

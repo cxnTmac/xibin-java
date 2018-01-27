@@ -13,10 +13,18 @@ public class WmOutboundDetailQueryItem implements Serializable{
     private String lineNo;
     
     private String buyerCode;
+    
+    private String buyerName;
 
     private String skuCode;
     
+    private String skuName;
+    
+    private String modelCode;
+    
     private String status;
+    
+    private String headerStatus;
 
     private Double outboundNum;
     
@@ -84,6 +92,22 @@ public class WmOutboundDetailQueryItem implements Serializable{
 
 	public void setSkuCode(String skuCode) {
 		this.skuCode = skuCode;
+	}
+
+	public String getSkuName() {
+		return skuName;
+	}
+
+	public void setSkuName(String skuName) {
+		this.skuName = skuName;
+	}
+
+	public String getModelCode() {
+		return modelCode;
+	}
+
+	public void setModelCode(String modelCode) {
+		this.modelCode = modelCode;
 	}
 
 	public Double getOutboundNum() {
@@ -182,6 +206,14 @@ public class WmOutboundDetailQueryItem implements Serializable{
 		this.buyerCode = buyerCode;
 	}
 
+	public String getBuyerName() {
+		return buyerName;
+	}
+
+	public void setBuyerName(String buyerName) {
+		this.buyerName = buyerName;
+	}
+
 	public Double getOutboundAllocNum() {
 		return outboundAllocNum;
 	}
@@ -204,6 +236,14 @@ public class WmOutboundDetailQueryItem implements Serializable{
 
 	public void setOutboundShipNum(Double outboundShipNum) {
 		this.outboundShipNum = outboundShipNum;
+	}
+
+	public String getHeaderStatus() {
+		return headerStatus;
+	}
+
+	public void setHeaderStatus(String headerStatus) {
+		this.headerStatus = headerStatus;
 	}
 
 	

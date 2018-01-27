@@ -26,10 +26,13 @@ import com.xibin.wms.constants.WmsCodeMaster;
 import com.xibin.wms.dao.WmOutboundAllocMapper;
 import com.xibin.wms.dao.WmOutboundDetailMapper;
 import com.xibin.wms.entity.InventoryUpdateEntity;
+import com.xibin.wms.pojo.WmActTran;
+import com.xibin.wms.pojo.WmInboundDetail;
 import com.xibin.wms.pojo.WmInventory;
 import com.xibin.wms.pojo.WmOutboundAlloc;
 import com.xibin.wms.pojo.WmOutboundDetail;
 import com.xibin.wms.query.WmOutboundAllocQueryItem;
+import com.xibin.wms.query.WmOutboundDetailPriceQueryItem;
 import com.xibin.wms.query.WmOutboundDetailQueryItem;
 import com.xibin.wms.query.WmOutboundHeaderQueryItem;
 import com.xibin.wms.service.WmOutboundDetailService;
@@ -61,10 +64,18 @@ public class WmOutboundDetailServiceImpl  extends BaseManagerImpl implements WmO
 	}
 
 	@Override
+	public List<WmOutboundDetail> getInboundDetailByIds(String []ids) {
+		// TODO Auto-generated method stub
+		return (List<WmOutboundDetail>) this.getById(ids);
+	}
+
+	@Override
 	public List<WmOutboundDetailQueryItem> getAllOutboundDetailByPage(Map map) {
 		// TODO Auto-generated method stub
 		return wmOutboundDetailMapper.selectAllByPage(map);
 	}
+	
+	
 
 	@Override
 	public List<WmOutboundDetailQueryItem> selectByKey(String orderNo,String lineNo) {
@@ -113,7 +124,7 @@ public class WmOutboundDetailServiceImpl  extends BaseManagerImpl implements WmO
 		return message;
 	}
 	@Override
-	public WmOutboundDetail saveOutboundDetail(WmOutboundDetail model) throws BusinessException {
+	public WmOutboundDetailQueryItem saveOutboundDetail(WmOutboundDetail model) throws BusinessException {
 		Message message = operateBeforeCheck(model.getOrderNo());
 		if(message.getCode()==0){
 			throw new BusinessException(message.getMsg());
@@ -132,7 +143,8 @@ public class WmOutboundDetailServiceImpl  extends BaseManagerImpl implements WmO
 					model.setLineNo(num+"");
 				}
 		}
-		return (WmOutboundDetail) this.save(model);
+		this.save(model);
+		return this.selectByKey(model.getOrderNo(), model.getLineNo()).get(0);
 	}
 
 	private  List<Integer> selectLastLineNo(String orderNo,String companyId,String warehouseId) {
@@ -178,6 +190,9 @@ public class WmOutboundDetailServiceImpl  extends BaseManagerImpl implements WmO
 					entity.setOrderType(WmsCodeMaster.ORDER_OUB.getCode());
 					entity.setSkuCode(allocList.get(i).getSkuCode());
 					entity.setQtyOp(allocList.get(i).getOutboundNum());
+					entity.setPrice(allocList.get(i).getOutboundPrice());
+					entity.setCost(allocList.get(i).getCost());
+					
 					//更新库存
 					wmInventoryService.updateInventory(entity);
 				}
@@ -197,6 +212,13 @@ public class WmOutboundDetailServiceImpl  extends BaseManagerImpl implements WmO
 			throw new BusinessException("出库单号["+orderNo+"]行号["+lineNo+"]的出库单明细已不存在");
 		}
 		
+	}
+	@Override
+	public List<WmOutboundDetailPriceQueryItem> queryHistoryPrice(Map map){
+		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
+		map.put("companyId", userDetails.getCompanyId().toString());
+		map.put("warehouseId", userDetails.getWarehouseId().toString());
+		return wmOutboundDetailMapper.queryHistoryPrice(map);
 	}
 	@Override
 	public Message allocByKey(String orderNo, String lineNo) throws BusinessException {
@@ -238,25 +260,32 @@ public class WmOutboundDetailServiceImpl  extends BaseManagerImpl implements WmO
 				entity.setOrderNo(orderNo);
 				entity.setOrderType(WmsCodeMaster.ORDER_OUB.getCode());
 				entity.setSkuCode(inventory.getSkuCode());
+				entity.setPrice(detail.getOutboundPrice());
 				//库存数量足够
 				if(inventory.getInvAvailableNum().doubleValue()>=outboundNumForCalculate){				
 					alloc.setOutboundNum(outboundNumForCalculate);
-					wmOutboundAllocService.saveOutboundAlloc(alloc);
+					
 					entity.setQtyOp(outboundNumForCalculate);
 					entity.setQtyOpBefore(inventory.getInvAvailableNum());
 					entity.setQtyOpAfter(inventory.getInvAvailableNum()-outboundNumForCalculate);
 					//更新库存
-					wmInventoryService.updateInventory(entity);
+					WmActTran actTran = wmInventoryService.updateInventory(entity);
+					//回填计算出的成本数据
+					alloc.setCost(actTran.getCost());
+					wmOutboundAllocService.saveOutboundAlloc(alloc);
 					outboundNumForCalculate  = 0.0;
 					break;
 				}else{
 					alloc.setOutboundNum(inventory.getInvAvailableNum());
-					wmOutboundAllocService.saveOutboundAlloc(alloc);
+					
 					entity.setQtyOp(inventory.getInvAvailableNum());
 					entity.setQtyOpBefore(inventory.getInvAvailableNum());
 					entity.setQtyOpAfter(0.0);
 					//更新库存
-					wmInventoryService.updateInventory(entity);
+					WmActTran actTran = wmInventoryService.updateInventory(entity);
+					//回填计算出的成本数据
+					alloc.setCost(actTran.getCost());
+					wmOutboundAllocService.saveOutboundAlloc(alloc);
 					outboundNumForCalculate = outboundNumForCalculate - inventory.getInvAvailableNum().doubleValue();
 				}
 			}
@@ -264,7 +293,7 @@ public class WmOutboundDetailServiceImpl  extends BaseManagerImpl implements WmO
 			BeanUtils.copyProperties(detail, targetDetail);
 			targetDetail.setOutboundAllocNum(detail.getOutboundNum().doubleValue() - outboundNumForCalculate);
 			
-					
+						
 			//订货数已经全部分配
 			if(outboundNumForCalculate == 0.0){
 				targetDetail.setStatus(WmsCodeMaster.SO_FULL_ALLOC.getCode());
@@ -292,6 +321,12 @@ public class WmOutboundDetailServiceImpl  extends BaseManagerImpl implements WmO
 		}
 		
 		
+	}
+
+	@Override
+	public List<WmOutboundDetailQueryItem> selectClosedOrderDetail(Map map) {
+		// TODO Auto-generated method stub
+		return wmOutboundDetailMapper.selectClosedOrderDetail(map);
 	}
 	
 	

@@ -34,6 +34,8 @@ public class BdCustomerQueryItem implements Serializable{
     
     private String contactEmail;
     
+    private Integer auxiId;
+    
     private String remark;
 
     private Integer creator;
@@ -214,6 +216,14 @@ public class BdCustomerQueryItem implements Serializable{
 
 	public void setCompanyId(Integer companyId) {
 		this.companyId = companyId;
+	}
+
+	public Integer getAuxiId() {
+		return auxiId;
+	}
+
+	public void setAuxiId(Integer auxiId) {
+		this.auxiId = auxiId;
 	}
     
     

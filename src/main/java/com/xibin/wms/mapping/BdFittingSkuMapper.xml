@@ -14,6 +14,8 @@
     <result column="price" property="price" jdbcType="DOUBLE" />
     <result column="model_code" property="modelCode" jdbcType="VARCHAR" />
     <result column="fitting_type_code" property="fittingTypeCode" jdbcType="VARCHAR" />
+    <result column="need_to_assemble" property="needToAssemble" jdbcType="VARCHAR" />
+    <result column="assemble_type" property="assembleType" jdbcType="VARCHAR" />
     <result column="type" property="type" jdbcType="VARCHAR" />
     <result column="def1" property="def1" jdbcType="VARCHAR" />
     <result column="def2" property="def2" jdbcType="VARCHAR" />
@@ -41,6 +43,8 @@
     <result column="model_code" property="modelCode" jdbcType="VARCHAR" />
     <result column="fitting_type_code" property="fittingTypeCode" jdbcType="VARCHAR" />
     <result column="fitting_type_name" property="fittingTypeName" jdbcType="VARCHAR" />
+    <result column="need_to_assemble" property="needToAssemble" jdbcType="VARCHAR" />
+    <result column="assemble_type" property="assembleType" jdbcType="VARCHAR" />
     <result column="type" property="type" jdbcType="VARCHAR" />
     <result column="def1" property="def1" jdbcType="VARCHAR" />
     <result column="def2" property="def2" jdbcType="VARCHAR" />
@@ -59,7 +63,7 @@
   
   <sql id="Base_Column_List">
     bfs.id, bfs.fitting_sku_code, bfs.fitting_sku_name, bfs.fitting_sku_status, bfs.fitting_sku_remark, bfs.manufacturer, 
-    bfs.materialquality, bfs.package_code, bfs.uom_desc, bfs.price, bfs.model_code, bfs.fitting_type_code, bfs.type, 
+    bfs.materialquality, bfs.package_code, bfs.uom_desc, bfs.price, bfs.model_code, bfs.fitting_type_code, bfs.type, bfs.need_to_assemble,bfs.assemble_type,
     bfs.def1, bfs.def2, bfs.def3, bfs.def4, bfs.def5, bfs.create_time, bfs.creator, bfs.modify_time, bfs.modifier, bfs.rec_ver, 
     bfs.company_id
   </sql>
@@ -69,11 +73,13 @@
           <if test="id!=null and id!=''"> AND id = #{id}</if>
           <if test="fittingSkuCode!=null and fittingSkuCode!=''"> AND bfs.fitting_sku_code LIKE CONCAT('%','${fittingSkuCode}','%')</if>
           <if test="fittingTypeName!=null and fittingTypeName!=''"> AND bfs.fitting_sku_name LIKE CONCAT('%','${fittingSkuName}','%')</if>
-          <if test="modelCode!=null and modelCode!=''"> AND bfs.model_code = #{modelCode}</if>
+          <if test="fittingSkuStatus!=null and fittingSkuStatus!=''"> AND bfs.fitting_sku_status = #{fittingSkuStatus}</if>
+          <if test="modelCode!=null and modelCode!=''"> AND bfs.model_code LIKE CONCAT('%','${modelCode}','%')</if>
           <if test="fittingTypeCode!=null and fittingTypeCode!=''"> AND bfs.fitting_type_code = #{fittingTypeCode}</if>
+          <if test="needToAssemble!=null and needToAssemble!=''"> AND bfs.need_to_assemble = #{needToAssemble}</if>
           <if test="companyId!=null and companyId!=''"> AND bfs.company_id = #{companyId}</if>
-          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> AND bfs.fitting_sku_name LIKE CONCAT('%','${fuzzyCondition}','%')</if>
-          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> OR bfs.model_code LIKE CONCAT('%','${fuzzyCondition}','%')</if>
+          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> AND (bfs.fitting_sku_name LIKE CONCAT('%','${fuzzyCondition}','%')</if>
+          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> OR bfs.model_code LIKE CONCAT('%','${fuzzyCondition}','%'))</if>
   </sql>
   <!-- 条件 -->
   <sql id="findByExampleWhere">
@@ -81,8 +87,10 @@
           <if test="id!=null and id!=''"> AND id = #{id}</if>
           <if test="fittingSkuCode!=null and fittingSkuCode!=''"> AND bfs.fitting_sku_code  = #{fittingSkuCode}</if>
           <if test="fittingSkuName!=null and fittingSkuName!=''"> AND bfs.fitting_sku_name = #{fittingSkuName}</if>
+          <if test="fittingSkuStatus!=null and fittingSkuStatus!=''"> AND bfs.fitting_sku_status = #{fittingSkuStatus}</if>
           <if test="modelCode!=null and modelCode!=''"> AND bfs.model_code = #{modelCode}</if>
           <if test="fittingTypeCode!=null and fittingTypeCode!=''"> AND bfs.fitting_type_code = #{fittingTypeCode}</if>
+          <if test="needToAssemble!=null and needToAssemble!=''"> AND bfs.need_to_assemble = #{needToAssemble}</if>
           <if test="companyId!=null and companyId!=''"> AND bfs.company_id = #{companyId}</if>
   </sql>
   <!-- 【固定】：按主键查询 -->
@@ -100,7 +108,7 @@
   <insert id="insert" parameterType="java.util.Collection">
   	INSERT INTO bd_fitting_sku
           (id, fitting_sku_code, fitting_sku_name, fitting_sku_status, fitting_sku_remark, manufacturer, 
-    materialquality, package_code, uom_desc, price, model_code, fitting_type_code, type, 
+    materialquality, package_code, uom_desc, price, model_code, fitting_type_code, type, need_to_assemble,assemble_type,
     def1, def2, def3, def4, def5, create_time, creator, modify_time, modifier, rec_ver, 
     company_id)
        VALUES
@@ -108,7 +116,7 @@
 	   		(#{item.id}, #{item.fittingSkuCode}, #{item.fittingSkuName}, 
       #{item.fittingSkuStatus}, #{item.fittingSkuRemark},#{item.manufacturer}, 
       #{item.materialquality}, #{item.packageCode}, #{item.uomDesc}, 
-      #{item.price}, #{item.modelCode}, #{item.fittingTypeCode},#{item.type}, 
+      #{item.price}, #{item.modelCode}, #{item.fittingTypeCode},#{item.type}, #{item.needToAssemble},#{item.assembleType},  
       #{item.def1}, #{item.def2}, #{item.def3}, #{item.def4}, #{item.def5}, 
       #{item.createTime}, #{item.creator}, #{item.modifyTime}, #{item.modifier}, 
       #{item.recVer}, #{item.companyId})
@@ -184,6 +192,16 @@
 		<trim prefix="fitting_type_code =case"  suffix="end,"  >
              <foreach collection="list" item="item" index="index">
                      when (ID=#{item.id}) then #{item.fittingTypeCode}
+             </foreach>
+		</trim>
+		<trim prefix="need_to_assemble =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.needToAssemble}
+             </foreach>
+		</trim>
+		<trim prefix="assemble_type =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.assembleType}
              </foreach>
 		</trim>
 		<trim prefix="type =case"  suffix="end,"  >
@@ -269,6 +287,5 @@
 	bfsp.type = 'ZIP'
 	<include refid="findByConditionWhere"/>
 	GROUP BY bfs.fitting_sku_code
-    
   </select>
 </mapper>

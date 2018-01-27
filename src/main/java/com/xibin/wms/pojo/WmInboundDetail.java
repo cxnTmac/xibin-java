@@ -24,6 +24,10 @@ public class WmInboundDetail extends BaseModel{
     private Double inboundPrice;
     
     private String planLoc;
+    
+    private String isCreatedVoucher;
+    
+    private String voucherNo;
 
     private String remark;
 
@@ -119,6 +123,22 @@ public class WmInboundDetail extends BaseModel{
 
 	public void setPlanLoc(String planLoc) {
 		this.planLoc = planLoc;
+	}
+
+	public String getIsCreatedVoucher() {
+		return isCreatedVoucher;
+	}
+
+	public void setIsCreatedVoucher(String isCreatedVoucher) {
+		this.isCreatedVoucher = isCreatedVoucher;
+	}
+
+	public String getVoucherNo() {
+		return voucherNo;
+	}
+
+	public void setVoucherNo(String voucherNo) {
+		this.voucherNo = voucherNo;
 	}
 
 	public String getRemark() {

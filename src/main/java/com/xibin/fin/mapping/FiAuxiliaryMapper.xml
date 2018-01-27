@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xibin.fin.dao.FiAuxiliaryMapper" >
+  <resultMap id="BaseResultMap" type="com.xibin.fin.pojo.FiAuxiliary" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <id column="fid" property="fid" jdbcType="INTEGER" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="book_id" property="bookId" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="INTEGER" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="rec_ver" property="recVer" jdbcType="INTEGER" />
+    <result column="company_id" property="companyId" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    fa.id, fa.fid, fa.code,fa.name, fa.type, fa.status, fa.book_id,fa.remark, fa.creator, fa.create_time, fa.modifier, fa.modify_time, fa.rec_ver, 
+    fa.company_id
+  </sql>
+  
+  <!-- 条件 -->
+  <sql id="findByConditionWhere">
+      WHERE 1=1
+          <if test="id!=null and id!=''"> AND fa.id = #{id}</if>
+          <if test="fid!=null and fid!=''"> AND fa.fid = #{fid}</if>
+          <if test="companyId!=null and companyId!=''"> AND fa.company_id = #{companyId}</if>
+  </sql>
+  <!-- 条件 -->
+  <sql id="findByExampleWhere">
+      WHERE 1=1
+          <if test="id!=null and id!=''"> AND fa.id = #{id}</if>
+          <if test="fid!=null and fid!=''"> AND fa.fid = #{fid}</if>
+          <if test="companyId!=null and companyId!=''"> AND fa.company_id = #{companyId}</if>
+  </sql>
+  <!-- 【固定】：按主键查询 -->
+  <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	  select
+      <include refid="Base_Column_List"/>
+      from fi_auxiliary fa
+      WHERE id in
+      <foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+	           #{item}
+	  </foreach>
+  </select>
+  
+  <!-- 【固定】：插入记录（支持一条及多条） -->
+  <insert id="insert" parameterType="java.util.Collection">
+  	INSERT INTO fi_auxiliary
+          (id, fid,code,name,type,status,book_id,remark,creator,create_time,modifier,modify_time,rec_ver, 
+    company_id)
+       VALUES
+  		<foreach collection="list" item="item" index="index" separator=",">
+	   		(#{item.id}, #{item.fid}, #{item.name},#{item.type}, #{item.status},#{item.bookId},
+      #{item.remark},#{item.creator},#{item.createTime}, #{item.modifier},  #{item.modifyTime},
+      #{item.recVer}, #{item.companyId})
+  		</foreach>
+  </insert>
+  
+  <!-- 【固定】：删除记录 -->
+  <delete id="delete" parameterType="java.lang.reflect.Array">
+      DELETE FROM fi_auxiliary WHERE id in 
+   <foreach collection="array" index="index" item="item" open="(" separator="," close=")">  
+           #{item}   
+   </foreach>
+  </delete>
+  
+  <!-- 【固定】：更新记录（支持一条及多条） -->
+  <update id="update" parameterType="java.util.Collection">
+	UPDATE fi_auxiliary
+	<trim prefix="set" suffixOverrides=",">
+		<!-- 更新的字段集合 -->
+		<trim prefix="fid =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.fid}
+             </foreach>
+		</trim>
+		<trim prefix="code =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.code}
+             </foreach>
+		</trim>
+		<trim prefix="name =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.name}
+             </foreach>
+		</trim>
+		<trim prefix="type =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.type}
+             </foreach>
+		</trim>
+		<trim prefix="status =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.status}
+             </foreach>
+		</trim>
+		<trim prefix="remark =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.remark}
+             </foreach>
+		</trim>
+		
+		
+		<trim prefix="modifier =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.modifier}
+             </foreach>
+		</trim>
+		<trim prefix="modify_time =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.modifyTime}
+             </foreach>
+		</trim>
+		<trim prefix="rec_ver =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.recVer}
+             </foreach>
+		</trim>
+		<trim prefix="company_id =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.companyId}
+             </foreach>
+		</trim>
+
+	</trim>
+	WHERE
+	<foreach collection="list" separator="or" item="item" index="index" >
+		<if test="item.id!=null">
+		(ID=#{item.id}) AND (REC_VER=#{item.recVer}-1)
+		</if>
+	</foreach>	
+  </update>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from fi_auxiliary fa
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAllByPage" resultMap="BaseResultMap" parameterType="Map">
+    select 
+    <include refid="Base_Column_List" />
+    from fi_auxiliary fa
+    <include refid="findByConditionWhere" />
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.xibin.fin.pojo.FiCourse">
+    select 
+    <include refid="Base_Column_List" />
+    from fi_auxiliary fa
+    <include refid="findByExampleWhere" />
+  </select>
+  
+  
+ 
+  
+  
+</mapper>

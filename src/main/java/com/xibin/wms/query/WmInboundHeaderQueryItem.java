@@ -25,6 +25,10 @@ public class WmInboundHeaderQueryItem implements Serializable{
     private Date auditTime;
 
     private String inboundType;
+    
+    private String isCalculated;
+    
+    private Integer voucherId;
 
     private String remark;
 
@@ -122,6 +126,14 @@ public class WmInboundHeaderQueryItem implements Serializable{
 		this.inboundType = inboundType;
 	}
 
+	public String getIsCalculated() {
+		return isCalculated;
+	}
+
+	public void setIsCalculated(String isCalculated) {
+		this.isCalculated = isCalculated;
+	}
+
 	public String getRemark() {
 		return remark;
 	}
@@ -184,6 +196,14 @@ public class WmInboundHeaderQueryItem implements Serializable{
 
 	public void setWarehouseId(Integer warehouseId) {
 		this.warehouseId = warehouseId;
+	}
+
+	public Integer getVoucherId() {
+		return voucherId;
+	}
+
+	public void setVoucherId(Integer voucherId) {
+		this.voucherId = voucherId;
 	}
 
    

@@ -5,7 +5,9 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,10 +16,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.xibin.core.costants.Constants;
 import com.xibin.core.exception.BusinessException;
 import com.xibin.core.page.pojo.Page;
 import com.xibin.core.page.pojo.PageEntity;
 import com.xibin.core.pojo.Message;
+import com.xibin.core.security.pojo.UserDetails;
 import com.xibin.wms.pojo.BdLoc;
 import com.xibin.wms.pojo.BdZone;
 import com.xibin.wms.query.BdLocQueryItem;
@@ -30,11 +34,13 @@ import com.xibin.wms.service.BdZoneService;
 public class LocController {
 	@Resource
 	private BdLocService bdLocService;
-	
+	@Autowired  
+	private HttpSession session;
 	@RequestMapping("/showAllLoc")
 	@ResponseBody
 	public PageEntity<BdLocQueryItem> showAllLoc(HttpServletRequest request,Model model){ 
 	    // 开始分页  
+		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
 		PageEntity<BdLocQueryItem> pageEntity = new PageEntity<BdLocQueryItem>();
 		Page<?> page = new Page();
 		//配置分页参数
@@ -42,6 +48,10 @@ public class LocController {
 		page.setPageSize(Integer.parseInt(request.getParameter("size")));
 		Map map = JSONObject.parseObject(request.getParameter("conditions"));
 		map.put("page", page);
+		if(userDetails != null){
+			map.put("companyId", userDetails.getCompanyId());
+			map.put("warehouseId", userDetails.getWarehouseId());
+		}
 		List<BdLocQueryItem> list = bdLocService.getAllLocByPage(map);
 		pageEntity.setList(list);
 		pageEntity.setSize(page.getTotalRecord());
@@ -52,8 +62,8 @@ public class LocController {
 	@RequestMapping("/getLocByLocCode")
 	@ResponseBody
 	public BdLocQueryItem getLocByLocCode(HttpServletRequest request,Model model){
-		String areaCode = request.getParameter("areaCode");
-		List<BdLocQueryItem> list = bdLocService.selectByKey(areaCode);
+		String locCode = request.getParameter("locCode");
+		List<BdLocQueryItem> list = bdLocService.selectByKey(locCode);
 		if(!list.isEmpty()){
 			return list.get(0);
 		}

@@ -1,6 +1,7 @@
 package com.xibin.wms.pojo;
 
 import java.util.Date;
+import java.util.function.DoublePredicate;
 
 import com.xibin.core.daosupport.BaseModel;
 
@@ -36,6 +37,10 @@ public class WmActTran extends BaseModel{
     private Double fmQtyBefore;
     
     private Double fmQtyAfter;
+    
+    private Double cost;
+    
+    private Double price;
     
     private String toSku;
     
@@ -294,4 +299,21 @@ public class WmActTran extends BaseModel{
 	public void setWarehouseId(Integer warehouseId) {
 		this.warehouseId = warehouseId;
 	}
+
+	public Double getCost() {
+		return cost;
+	}
+
+	public void setCost(Double cost) {
+		this.cost = cost;
+	}
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+	
 }

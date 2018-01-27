@@ -90,6 +90,11 @@ public class BdFittingSkuPicServiceImpl extends BaseManagerImpl implements BdFit
 		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
 		return bdFittingSkuPicMapper.selectByFittingSkuCode(fittingSkuCode,userDetails.getCompanyId().toString());
 	}
+	@Override
+	public List<BdFittingSkuPic> selectByFittingSkuCode(String fittingSkuCode,String companyId) {
+		// TODO Auto-generated method stub
+		return bdFittingSkuPicMapper.selectByFittingSkuCode(fittingSkuCode,companyId);
+	}
 
 	@Override
 	protected BaseMapper getMapper() {

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.xibin.core.exception.BusinessException;
 import com.xibin.wms.entity.InventoryUpdateEntity;
+import com.xibin.wms.pojo.WmActTran;
 import com.xibin.wms.pojo.WmInventory;
 import com.xibin.wms.query.WmInventoryQueryItem;
 
@@ -19,7 +20,7 @@ public interface WmInventoryService {
 	
 	public List<WmInventory> getAvailableInvByExample(WmInventory model);
 	
-	public void updateInventory(InventoryUpdateEntity fmIn) throws BusinessException;
-	public void updateInventory(InventoryUpdateEntity fmIn,InventoryUpdateEntity toIn) throws BusinessException; 
+	public WmActTran updateInventory(InventoryUpdateEntity fmIn) throws BusinessException;
+	public WmActTran updateInventory(InventoryUpdateEntity fmIn,InventoryUpdateEntity toIn) throws BusinessException; 
 	
 }

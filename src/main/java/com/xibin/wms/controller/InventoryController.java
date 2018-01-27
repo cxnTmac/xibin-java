@@ -50,8 +50,10 @@ public class InventoryController {
 		page.setPageSize(Integer.parseInt(request.getParameter("size")));
 		Map map = JSONObject.parseObject(request.getParameter("conditions"));
 		map.put("page", page);
-		map.put("companyId", userDetails.getCompanyId());
-		map.put("companyId", userDetails.getWarehouseId());
+		if(userDetails != null){
+			map.put("companyId", userDetails.getCompanyId());
+			map.put("companyId", userDetails.getWarehouseId());
+		}
 		List<WmInventoryQueryItem> userList = wmInventoryService.getAllInventoryByPage(map);
 		pageEntity.setList(userList);
 		pageEntity.setSize(page.getTotalRecord());

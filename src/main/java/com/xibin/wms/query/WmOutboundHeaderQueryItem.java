@@ -23,6 +23,12 @@ public class WmOutboundHeaderQueryItem implements Serializable{
     private Date auditTime;
 
     private String outboundType;
+    
+    private String isCalculated;
+    
+    private Integer voucherId;
+    
+    private Integer costVoucherId;
 
     private String remark;
 
@@ -94,6 +100,14 @@ public class WmOutboundHeaderQueryItem implements Serializable{
 
 	public void setOutboundType(String outboundType) {
 		this.outboundType = outboundType;
+	}
+
+	public String getIsCalculated() {
+		return isCalculated;
+	}
+
+	public void setIsCalculated(String isCalculated) {
+		this.isCalculated = isCalculated;
 	}
 
 	public String getRemark() {
@@ -174,6 +188,22 @@ public class WmOutboundHeaderQueryItem implements Serializable{
 
 	public void setAuditStatus(String auditStatus) {
 		this.auditStatus = auditStatus;
+	}
+
+	public Integer getVoucherId() {
+		return voucherId;
+	}
+
+	public void setVoucherId(Integer voucherId) {
+		this.voucherId = voucherId;
+	}
+
+	public Integer getCostVoucherId() {
+		return costVoucherId;
+	}
+
+	public void setCostVoucherId(Integer costVoucherId) {
+		this.costVoucherId = costVoucherId;
 	}
 	
 }

@@ -23,6 +23,8 @@ public class WmInventoryQueryItem implements Serializable{
     private Double invNum;
 
     private Double invAvailableNum;
+    
+    private Double totalPrice;
 
     private Integer creator;
 
@@ -164,6 +166,14 @@ public class WmInventoryQueryItem implements Serializable{
 
 	public void setWarehouseId(Integer warehouseId) {
 		this.warehouseId = warehouseId;
+	}
+
+	public Double getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(Double totalPrice) {
+		this.totalPrice = totalPrice;
 	}
 
 	

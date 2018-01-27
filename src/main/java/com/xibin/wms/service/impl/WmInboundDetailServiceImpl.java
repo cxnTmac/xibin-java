@@ -31,6 +31,7 @@ import com.xibin.wms.pojo.WmInboundRecieve;
 import com.xibin.wms.query.WmInboundDetailQueryItem;
 import com.xibin.wms.query.WmInboundHeaderQueryItem;
 import com.xibin.wms.query.WmInboundRecieveQueryItem;
+import com.xibin.wms.query.WmOutboundDetailQueryItem;
 import com.xibin.wms.service.WmInboundDetailService;
 import com.xibin.wms.service.WmInboundHeaderService;
 import com.xibin.wms.service.WmInboundReceiveService;
@@ -52,13 +53,22 @@ public class WmInboundDetailServiceImpl  extends BaseManagerImpl implements WmIn
 		// TODO Auto-generated method stub
 		return wmInboundDetailMapper.selectByPrimaryKey(id);
 	}
+	@Override
+	public List<WmInboundDetail> getInboundDetailByIds(String []ids) {
+		// TODO Auto-generated method stub
+		return (List<WmInboundDetail>) this.getById(ids);
+	}
 
 	@Override
 	public List<WmInboundDetailQueryItem> getAllInboundDetailByPage(Map map) {
 		// TODO Auto-generated method stub
 		return wmInboundDetailMapper.selectAllByPage(map);
 	}
-
+	@Override
+	public List<WmInboundDetailQueryItem> selectClosedOrderDetail(Map map) {
+		// TODO Auto-generated method stub
+		return wmInboundDetailMapper.selectClosedOrderDetail(map);
+	}
 	@Override
 	public List<WmInboundDetailQueryItem> selectByKey(String orderNo,String lineNo) {
 		// TODO Auto-generated method stub

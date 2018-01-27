@@ -29,6 +29,8 @@ public class WmOutboundAlloc extends BaseModel{
     
     private Integer pickOp;
     
+    private Double cost;
+    
     private Date pickTime;
     
     private Integer shipOp;
@@ -233,6 +235,14 @@ public class WmOutboundAlloc extends BaseModel{
 
 	public void setToLocCode(String toLocCode) {
 		this.toLocCode = toLocCode;
+	}
+
+	public Double getCost() {
+		return cost;
+	}
+
+	public void setCost(Double cost) {
+		this.cost = cost;
 	}
 	
 	

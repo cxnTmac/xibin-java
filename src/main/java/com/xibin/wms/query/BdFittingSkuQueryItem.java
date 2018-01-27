@@ -50,6 +50,10 @@ public class BdFittingSkuQueryItem implements Serializable {
     private String fittingSkuPicUrl;
     
     private String fittingSkuPicName;
+    
+    private String needToAssemble;
+    
+    private String assembleType;
 
     private Date createTime;
 
@@ -277,6 +281,22 @@ public class BdFittingSkuQueryItem implements Serializable {
 
 	public void setCompanyId(Integer companyId) {
 		this.companyId = companyId;
+	}
+
+	public String getNeedToAssemble() {
+		return needToAssemble;
+	}
+
+	public void setNeedToAssemble(String needToAssemble) {
+		this.needToAssemble = needToAssemble;
+	}
+
+	public String getAssembleType() {
+		return assembleType;
+	}
+
+	public void setAssembleType(String assembleType) {
+		this.assembleType = assembleType;
 	}
     
     

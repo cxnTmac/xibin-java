@@ -14,6 +14,8 @@ public class WmInboundDetailQueryItem implements Serializable{
     
     private String status;
     
+    private String headerStatus;
+    
     private String supplierCode;
     
     private String supplierName;
@@ -27,6 +29,10 @@ public class WmInboundDetailQueryItem implements Serializable{
     private Double inboundPrice;
     
     private String planLoc;
+    
+    private String isCreatedVoucher;
+    
+    private String voucherNo;
 
     private String remark;
 
@@ -132,6 +138,22 @@ public class WmInboundDetailQueryItem implements Serializable{
 		this.planLoc = planLoc;
 	}
 
+	public String getIsCreatedVoucher() {
+		return isCreatedVoucher;
+	}
+
+	public void setIsCreatedVoucher(String isCreatedVoucher) {
+		this.isCreatedVoucher = isCreatedVoucher;
+	}
+
+	public String getVoucherNo() {
+		return voucherNo;
+	}
+
+	public void setVoucherNo(String voucherNo) {
+		this.voucherNo = voucherNo;
+	}
+
 	public String getRemark() {
 		return remark;
 	}
@@ -194,6 +216,14 @@ public class WmInboundDetailQueryItem implements Serializable{
 
 	public void setWarehouseId(Integer warehouseId) {
 		this.warehouseId = warehouseId;
+	}
+
+	public String getHeaderStatus() {
+		return headerStatus;
+	}
+
+	public void setHeaderStatus(String headerStatus) {
+		this.headerStatus = headerStatus;
 	}
 
 	

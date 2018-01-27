@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xibin.fin.dao.FiVoucherDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.xibin.fin.pojo.FiVoucherDetail" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="voucher_id" property="voucherId" jdbcType="INTEGER" />
+    <result column="line_no" property="lineNo" jdbcType="INTEGER" />
+    <result column="course_no" property="courseNo" jdbcType="VARCHAR" />
+    <result column="to_go" property="toGo" jdbcType="VARCHAR" />
+    <result column="debit" property="debit" jdbcType="DOUBLE" />
+    <result column="credit" property="credit" jdbcType="DOUBLE" />
+    <result column="summary" property="summary" jdbcType="VARCHAR" />
+    <result column="auxi_id" property="auxiId" jdbcType="INTEGER" />
+    <result column="amount" property="amount" jdbcType="DOUBLE" />
+    <result column="price" property="price" jdbcType="DOUBLE" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="INTEGER" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="rec_ver" property="recVer" jdbcType="INTEGER" />
+    <result column="company_id" property="companyId" jdbcType="INTEGER" />
+    <result column="book_id" property="bookId" jdbcType="INTEGER" />
+  </resultMap>
+  
+  
+  
+  
+  <resultMap id="BaseResultEntityMap" type="com.xibin.fin.entity.FiVoucherEntity" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    
+    <result column="voucher_num" property="voucherNum" jdbcType="INTEGER" />
+    <result column="voucher_word" property="voucherWord" jdbcType="VARCHAR" />
+    <result column="period" property="period" jdbcType="VARCHAR" />
+    <result column="bill_date" property="billDate" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="bill" property="bill" jdbcType="DOUBLE" />
+    <result column="checker_name" property="checkerName" jdbcType="VARCHAR" />
+    <result column="complete_date" property="completeDate" jdbcType="TIMESTAMP" />
+    <result column="course_name" property="courseName" jdbcType="VARCHAR" />
+    
+    
+    <result column="voucher_id" property="voucherId" jdbcType="INTEGER" />
+    <result column="line_no" property="lineNo" jdbcType="INTEGER" />
+    <result column="course_no" property="courseNo" jdbcType="VARCHAR" />
+    <result column="to_go" property="toGo" jdbcType="VARCHAR" />
+    <result column="debit" property="debit" jdbcType="DOUBLE" />
+    <result column="credit" property="credit" jdbcType="DOUBLE" />
+    <result column="summary" property="summary" jdbcType="VARCHAR" />
+    <result column="auxi_id" property="auxiId" jdbcType="INTEGER" />
+    <result column="amount" property="amount" jdbcType="DOUBLE" />
+    <result column="price" property="price" jdbcType="DOUBLE" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="INTEGER" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="rec_ver" property="recVer" jdbcType="INTEGER" />
+    <result column="company_id" property="companyId" jdbcType="INTEGER" />
+    <result column="book_id" property="bookId" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <resultMap id="BaseQueryItemMap" type="com.xibin.fin.entity.FiVoucherDetailQueryItem" >
+  	
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="voucher_id" property="voucherId" jdbcType="INTEGER" />
+    <result column="line_no" property="lineNo" jdbcType="INTEGER" />
+    <result column="course_no" property="courseNo" jdbcType="VARCHAR" />
+    <result column="course_name" property="courseName" jdbcType="VARCHAR" />
+    <result column="to_go" property="toGo" jdbcType="VARCHAR" />
+    <result column="debit" property="debit" jdbcType="DOUBLE" />
+    <result column="credit" property="credit" jdbcType="DOUBLE" />
+    <result column="summary" property="summary" jdbcType="VARCHAR" />
+    <result column="auxi_id" property="auxiId" jdbcType="INTEGER" />
+    <result column="auxiliary_name" property="auxiliaryName" jdbcType="VARCHAR" />
+    <result column="amount" property="amount" jdbcType="DOUBLE" />
+    <result column="price" property="price" jdbcType="DOUBLE" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="INTEGER" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="rec_ver" property="recVer" jdbcType="INTEGER" />
+    <result column="company_id" property="companyId" jdbcType="INTEGER" />
+    <result column="book_id" property="bookId" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <resultMap id="BaseSumQueryItemMap" type="com.xibin.fin.entity.FiVoucherDetailSumQueryItem" >
+  	
+    <result column="sum_debit" property="sumDebit" jdbcType="DOUBLE" />
+    <result column="sum_credit" property="sumCredit" jdbcType="DOUBLE" />
+    <result column="course_no" property="courseNo" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="to_go" property="toGo" jdbcType="VARCHAR" />
+    <result column="balance" property="balance" jdbcType="DOUBLE" />
+    
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    fvd.id, fvd.voucher_id, fvd.course_no,fvd.line_no,fvd.debit, fvd.credit,fvd.summary, fvd.auxi_id, fvd.amount,fvd.price, 
+    fvd.remark, fvd.creator, fvd.create_time, fvd.modifier, fvd.modify_time, fvd.rec_ver, 
+    fvd.company_id,fvd.book_id
+  </sql>
+  
+  <!-- 条件 -->
+  <sql id="findByConditionWhere">
+      WHERE 1=1
+          <if test="id!=null and id!=''"> AND fvd.id = #{id}</if>
+          <if test="companyId!=null and companyId!=''"> AND fvd.company_id = #{companyId}</if>
+          <if test="bookId!=null and bookId!=''"> AND fvd.book_id = #{bookId}</if>
+  </sql>
+  <!-- 条件 -->
+  <sql id="findByExampleWhere">
+      WHERE 1=1
+          <if test="id!=null and id!=''"> AND fvd.id = #{id}</if>
+          <if test="companyId!=null and companyId!=''"> AND fvd.company_id = #{companyId}</if>
+          <if test="bookId!=null and bookId!=''"> AND fvd.book_id = #{bookId}</if>
+  </sql>
+  <!-- 【固定】：按主键查询 -->
+  <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	  select
+      <include refid="Base_Column_List"/>
+      from fi_voucher_detail fvd
+      WHERE id in
+      <foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+	           #{item}
+	  </foreach>
+  </select>
+  
+  <!-- 【固定】：插入记录（支持一条及多条） -->
+  <insert id="insert" parameterType="java.util.Collection">
+  	INSERT INTO fi_voucher_detail
+          (id, voucher_id,course_no,line_no,debit,credit,summary,auxi_id,amount,price,
+          remark, creator, create_time, modifier, modify_time,rec_ver,company_id,book_id)
+       VALUES
+  		<foreach collection="list" item="item" index="index" separator=",">
+	   		(#{item.id}, #{item.voucherId}, #{item.courseNo},#{item.lineNo},#{item.debit}, #{item.credit},#{item.summary}, #{item.auxiId}, #{item.amount},#{item.price},  
+      #{item.remark},#{item.creator},#{item.createTime}, #{item.modifier},  #{item.modifyTime},
+      #{item.recVer}, #{item.companyId}, #{item.bookId})
+  		</foreach>
+  </insert>
+  
+  <!-- 【固定】：删除记录 -->
+  <delete id="delete" parameterType="java.lang.reflect.Array">
+      DELETE FROM fi_voucher_detail WHERE id in 
+   <foreach collection="array" index="index" item="item" open="(" separator="," close=")">  
+           #{item}   
+   </foreach>
+  </delete>
+  
+  <!-- 【固定】：更新记录（支持一条及多条） -->
+  <update id="update" parameterType="java.util.Collection">
+	UPDATE fi_voucher_detail
+	<trim prefix="set" suffixOverrides=",">
+		<!-- 更新的字段集合 -->
+		<trim prefix="voucher_id =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.voucherId}
+             </foreach>
+		</trim>
+		<trim prefix="course_no =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.courseNo}
+             </foreach>
+		</trim>
+		<trim prefix="line_no =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.lineNo}
+             </foreach>
+		</trim>
+		<trim prefix="debit =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.debit}
+             </foreach>
+		</trim>
+		<trim prefix="credit =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.credit}
+             </foreach>
+		</trim>
+		<trim prefix="summary =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.summary}
+             </foreach>
+		</trim>
+		<trim prefix="auxi_id =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.auxiId}
+             </foreach>
+		</trim>
+		<trim prefix="amount =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.amount}
+             </foreach>
+		</trim>
+		<trim prefix="price =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.price}
+             </foreach>
+		</trim>
+		
+		<trim prefix="remark =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.remark}
+             </foreach>
+		</trim>
+		
+		
+		<trim prefix="modifier =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.modifier}
+             </foreach>
+		</trim>
+		<trim prefix="modify_time =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.modifyTime}
+             </foreach>
+		</trim>
+		<trim prefix="rec_ver =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.recVer}
+             </foreach>
+		</trim>
+		<trim prefix="company_id =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.companyId}
+             </foreach>
+		</trim>
+		<trim prefix="book_id =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.bookId}
+             </foreach>
+		</trim>
+	</trim>
+	WHERE
+	<foreach collection="list" separator="or" item="item" index="index" >
+		<if test="item.id!=null">
+		(ID=#{item.id}) AND (REC_VER=#{item.recVer}-1)
+		</if>
+	</foreach>	
+  </update>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from fi_voucher_detail fvd
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAllByPage" resultMap="BaseResultMap" parameterType="Map">
+    select 
+    <include refid="Base_Column_List" />
+    from fi_voucher_detail fvd
+    <include refid="findByConditionWhere" />
+  </select>
+  
+  <select id="selectAllEntityByPage" resultMap="BaseResultEntityMap" parameterType="Map">
+    select 
+    fv.voucher_num,
+    fv.voucher_word,
+    fv.period,
+    fv.bill_date,
+    fv.status,
+    fv.bill,
+    fv.checker as checker_name,
+    fv.complete_date,
+    fc.course_name,
+    <include refid="Base_Column_List" />
+    from fi_voucher_detail fvd
+    left join fi_voucher fv on
+    fv.id = fvd.voucher_id
+    and
+    fv.company_id = fvd.company_id
+    and
+    fv.book_id = fvd.book_id
+    left join fi_course fc on
+    fc.course_no = fvd.course_no
+    and fc.company_id = fvd.company_id
+    <include refid="findByConditionWhere" />
+    order by 
+    fv.voucher_num,
+    fv.voucher_word
+  </select>
+  
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.xibin.fin.pojo.FiVoucherDetail">
+    select 
+    <include refid="Base_Column_List" />
+    from fi_voucher_detail fvd
+    <include refid="findByExampleWhere" />
+  </select>
+  <select id="selectByKey" resultMap="BaseResultMap" resultType="java.util.List"  parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from fi_voucher_detail fvd
+    where fvd.voucher_id = #{voucherId,jdbcType=VARCHAR}
+    and 
+    fvd.line_no = #{lineNo,jdbcType=VARCHAR}
+    and
+    fvd.company_id = #{companyId,jdbcType=INTEGER}
+    and
+    fvd.book_id = #{bookId,jdbcType=INTEGER}
+  </select>
+  
+  
+  <select id="selectByVoucherIdForQueryItem" resultMap="BaseQueryItemMap" resultType="java.util.List"  parameterType="java.lang.String" >
+    select 
+    fc.course_name,
+    fa.name as auxiliary_name,
+    <include refid="Base_Column_List" />
+    from fi_voucher_detail fvd
+    left join fi_course fc on
+    fc.course_no = fvd.course_no
+    and fc.company_id = fvd.company_id
+    left join fi_auxiliary fa
+    on fa.id = fvd.auxi_id
+    and fa.company_id = fvd.company_id
+    and fa.book_id = fvd.book_id
+    where fvd.voucher_id = #{voucherId,jdbcType=VARCHAR}
+    order by
+    fvd.line_no
+  </select>
+  
+  <select id="selectByVoucherIdForSum" resultMap="BaseSumQueryItemMap" resultType="java.util.List" >
+   SELECT
+	fc.balance,
+	fc.to_go,
+	fvd.course_no,
+	fc.type,
+	sum(fvd.debit) as sumDebit,
+	sum(fvd.credit) as sumCredit
+	FROM
+		fi_voucher_detail fvd
+	LEFT JOIN fi_course fc ON fc.course_no = fvd.course_no
+	AND fc.company_id = fvd.company_id
+	LEFT JOIN fi_voucher fv ON fv.id = fvd.voucher_id
+	AND fv.company_id = fvd.company_id
+	AND fv.book_id = fvd.book_id
+	WHERE
+		fvd.voucher_id = #{voucherId,jdbcType=VARCHAR}
+	GROUP BY fvd.course_no
+  </select>
+</mapper>

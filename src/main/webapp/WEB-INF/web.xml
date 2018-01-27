@@ -54,7 +54,7 @@
   <context-param>
     	<description>不用进行单点的请求（js、css、img）</description>
     	<param-name>excepUrlRegex</param-name>
-    	<param-value>/user/login.shtml</param-value>
+    	<param-value>/user/login.shtml|/wx/*.*</param-value>
   </context-param>
   <filter>
     	<display-name>LoginFilter</display-name>

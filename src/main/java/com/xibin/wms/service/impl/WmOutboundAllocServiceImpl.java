@@ -200,6 +200,8 @@ public class WmOutboundAllocServiceImpl  extends BaseManagerImpl implements WmOu
 		entityFm.setOrderType(WmsCodeMaster.ORDER_OUB.getCode());
 		entityFm.setSkuCode(alloc.getSkuCode());
 		entityFm.setQtyOp(alloc.getOutboundNum());
+		entityFm.setPrice(alloc.getOutboundPrice());
+		entityFm.setCost(alloc.getCost());
 		//更新库存
 		wmInventoryService.updateInventory(entityFm);
 		//更新分配明细状态
@@ -226,6 +228,8 @@ public class WmOutboundAllocServiceImpl  extends BaseManagerImpl implements WmOu
 		entityFm.setOrderType(WmsCodeMaster.ORDER_OUB.getCode());
 		entityFm.setSkuCode(alloc.getSkuCode());
 		entityFm.setQtyOp(alloc.getOutboundNum());
+		entityFm.setPrice(alloc.getOutboundPrice());
+		entityFm.setCost(alloc.getCost());
 		//更新库存
 		wmInventoryService.updateInventory(entityFm);
 		//更新分配明细状态
@@ -252,6 +256,8 @@ public class WmOutboundAllocServiceImpl  extends BaseManagerImpl implements WmOu
 		entityFm.setOrderType(WmsCodeMaster.ORDER_OUB.getCode());
 		entityFm.setSkuCode(alloc.getSkuCode());
 		entityFm.setQtyOp(alloc.getOutboundNum());
+		entityFm.setCost(alloc.getCost());
+		entityFm.setPrice(alloc.getOutboundPrice());
 		InventoryUpdateEntity entityTo = new InventoryUpdateEntity();
 		entityTo.setActionCode(WmsCodeMaster.ACT_PICK.getCode());
 		entityTo.setLineNo(alloc.getLineNo());
@@ -260,6 +266,8 @@ public class WmOutboundAllocServiceImpl  extends BaseManagerImpl implements WmOu
 		entityTo.setOrderType(WmsCodeMaster.ORDER_OUB.getCode());
 		entityTo.setSkuCode(alloc.getSkuCode());
 		entityTo.setQtyOp(alloc.getOutboundNum());
+		entityTo.setCost(alloc.getCost());
+		entityTo.setPrice(alloc.getOutboundPrice());
 		//更新库存
 		wmInventoryService.updateInventory(entityFm, entityTo);
 		//更新分配明细状态
@@ -285,6 +293,8 @@ public class WmOutboundAllocServiceImpl  extends BaseManagerImpl implements WmOu
 		entityFm.setOrderType(WmsCodeMaster.ORDER_OUB.getCode());
 		entityFm.setSkuCode(alloc.getSkuCode());
 		entityFm.setQtyOp(alloc.getOutboundNum());
+		entityFm.setCost(alloc.getCost());
+		entityFm.setPrice(alloc.getOutboundPrice());
 		InventoryUpdateEntity entityTo = new InventoryUpdateEntity();
 		entityTo.setActionCode(WmsCodeMaster.ACT_CANCEL_PICK.getCode());
 		entityTo.setLineNo(alloc.getLineNo());
@@ -293,6 +303,8 @@ public class WmOutboundAllocServiceImpl  extends BaseManagerImpl implements WmOu
 		entityTo.setOrderType(WmsCodeMaster.ORDER_OUB.getCode());
 		entityTo.setSkuCode(alloc.getSkuCode());
 		entityTo.setQtyOp(alloc.getOutboundNum());
+		entityTo.setCost(alloc.getCost());
+		entityTo.setPrice(alloc.getOutboundPrice());
 		//更新库存
 		wmInventoryService.updateInventory(entityFm, entityTo);
 		//更新分配明细状态

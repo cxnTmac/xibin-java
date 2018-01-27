@@ -1,12 +1,15 @@
 package com.xibin.wms.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,10 +18,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.xibin.core.costants.Constants;
 import com.xibin.core.exception.BusinessException;
 import com.xibin.core.page.pojo.Page;
 import com.xibin.core.page.pojo.PageEntity;
 import com.xibin.core.pojo.Message;
+import com.xibin.core.security.pojo.UserDetails;
+import com.xibin.fin.service.UtVoucherService;
 import com.xibin.wms.pojo.WmInboundDetail;
 import com.xibin.wms.pojo.WmInboundHeader;
 import com.xibin.wms.pojo.WmInboundRecieve;
@@ -38,17 +44,32 @@ public class InboundController {
 	private WmInboundDetailService inboundDetailService;
 	@Resource
 	private WmInboundReceiveService inboundReceiveService;
+	@Autowired
+	private UtVoucherService utVoucherService;
+	@Autowired  
+	private HttpSession session;
 	@RequestMapping("/showAllInboundOrder")
 	@ResponseBody
 	public PageEntity<WmInboundHeaderQueryItem> showAllInboundOrder(HttpServletRequest request,Model model){ 
-	    // 开始分页  
+	    // 开始分页 
+		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
 		PageEntity<WmInboundHeaderQueryItem> pageEntity = new PageEntity<WmInboundHeaderQueryItem>();
 		Page<?> page = new Page();
+		Map map = new HashMap<>();
 		//配置分页参数
-		page.setPageNo(Integer.parseInt(request.getParameter("page")));
-		page.setPageSize(Integer.parseInt(request.getParameter("size")));
-		Map map = JSONObject.parseObject(request.getParameter("conditions"));
-		map.put("page", page);
+		if(request.getParameter("page")!=null&&request.getParameter("size")!=null){
+			page.setPageNo(Integer.parseInt(request.getParameter("page")));
+			page.setPageSize(Integer.parseInt(request.getParameter("size")));
+			map = JSONObject.parseObject(request.getParameter("conditions"));
+			map.put("page", page);
+			
+		}else{
+		    map = JSONObject.parseObject(request.getParameter("conditions"));
+		}
+		if(userDetails != null){
+			map.put("companyId", userDetails.getCompanyId());
+			map.put("warehouseId", userDetails.getWarehouseId());
+		}
 		List<WmInboundHeaderQueryItem> list = inboundHeaderService.getAllInboundOrderByPage(map);
 		pageEntity.setList(list);
 		pageEntity.setSize(page.getTotalRecord());
@@ -57,7 +78,8 @@ public class InboundController {
 	@RequestMapping("/showAllInboundDetail")
 	@ResponseBody
 	public PageEntity<WmInboundDetailQueryItem> showAllInboundDetail(HttpServletRequest request,Model model){ 
-	    // 开始分页  
+	    // 开始分页 
+		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
 		PageEntity<WmInboundDetailQueryItem> pageEntity = new PageEntity<WmInboundDetailQueryItem>();
 		Page<?> page = new Page();
 		//配置分页参数
@@ -65,15 +87,34 @@ public class InboundController {
 		page.setPageSize(Integer.parseInt(request.getParameter("size")));
 		Map map = JSONObject.parseObject(request.getParameter("conditions"));
 		map.put("page", page);
+		if(userDetails != null){
+			map.put("companyId", userDetails.getCompanyId());
+			map.put("warehouseId", userDetails.getWarehouseId());
+		}
 		List<WmInboundDetailQueryItem> list = inboundDetailService.getAllInboundDetailByPage(map);
 		pageEntity.setList(list);
 		pageEntity.setSize(page.getTotalRecord());
 	    return  pageEntity;
 	 }
+	
+	@RequestMapping("/showAllClosedOrderInboundDetail")
+	@ResponseBody
+	public List<WmInboundDetailQueryItem> showAllClosedOrderInboundDetail(HttpServletRequest request,Model model){ 
+	    // 开始分页 
+		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
+		Map map = JSONObject.parseObject(request.getParameter("conditions"));
+		if(userDetails != null){
+			map.put("companyId", userDetails.getCompanyId());
+			map.put("warehouseId", userDetails.getWarehouseId());
+		}
+		return  inboundDetailService.selectClosedOrderDetail(map);
+
+	 }
 	@RequestMapping("/showAllInboundRecieve")
 	@ResponseBody
 	public PageEntity<WmInboundRecieveQueryItem> showAllInboundRecieve(HttpServletRequest request,Model model){ 
 	    // 开始分页  
+		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
 		PageEntity<WmInboundRecieveQueryItem> pageEntity = new PageEntity<WmInboundRecieveQueryItem>();
 		Page<?> page = new Page();
 		//配置分页参数
@@ -81,6 +122,10 @@ public class InboundController {
 		page.setPageSize(Integer.parseInt(request.getParameter("size")));
 		Map map = JSONObject.parseObject(request.getParameter("conditions"));
 		map.put("page", page);
+		if(userDetails != null){
+			map.put("companyId", userDetails.getCompanyId());
+			map.put("warehouseId", userDetails.getWarehouseId());
+		}
 		List<WmInboundRecieveQueryItem> list = inboundReceiveService.getAllInboundRecByPage(map);
 		pageEntity.setList(list);
 		pageEntity.setSize(page.getTotalRecord());
@@ -106,6 +151,11 @@ public class InboundController {
 		}
 		return message;
 	 }
+	@RequestMapping("/createVoucher")
+	@ResponseBody
+	public Message  createVoucher(@RequestParam("ids") String ids,@RequestParam("period")String period,@RequestParam("type")String type){ 
+		return utVoucherService.createVoucher(ids.split(","),period,type);
+	}
 	@RequestMapping("/removeInboundDetail")
 	@ResponseBody
 	public Message  removeInboundDetail(@RequestParam("ids") int [] ids,@RequestParam("orderNo") String  orderNo){ 
@@ -243,7 +293,35 @@ public class InboundController {
 		message.converMsgsToMsg("</br>");
 		return message;
 	}
-	
+	@RequestMapping("/close")
+	@ResponseBody
+	public Message  close(@RequestParam("orderNos") String  orderNos){ 
+		Message message = new Message();
+		String []orderArray = orderNos.split(",");
+		List<String> errors = new ArrayList<String>();
+		WmInboundHeaderQueryItem queryItem = new WmInboundHeaderQueryItem();
+		try {
+			for(String orderNo:orderArray){
+				queryItem = inboundHeaderService.close(orderNo);
+			}
+		} catch (BusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			errors.add(e.getMessage());
+		}
+		if(errors.size()==0){
+			message.setCode(200);
+			message.setMsg("操作成功！");
+			if(orderArray.length == 1){
+				message.setData(queryItem);
+			}
+		}else{
+			message.setCode(100);
+			message.setMsgs(errors);
+		}
+		message.converMsgsToMsg("</br>");
+		return message;
+	}
 	@RequestMapping("/remove")
 	@ResponseBody
 	public Message  remove(@RequestParam("orderNos") String [] orderNos){ 
@@ -267,5 +345,43 @@ public class InboundController {
 		}
 		message.converMsgsToMsg("");
 		return message;
-	} 
+	}
+	
+	@RequestMapping("/accountByOrderNo")
+	@ResponseBody
+	public Message accountByOrderNo(HttpServletRequest request,Model model){
+		String orderNo = request.getParameter("orderNo");
+		Message message= new Message();
+		try {
+			message = inboundHeaderService.accountByOrderNo(orderNo);
+			return message;
+		} catch (BusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			message.setCode(0);
+			message.setMsg(e.getMessage());
+			return message;
+		}
+	}
+	
+	@RequestMapping("/accountByOrderNos")
+	@ResponseBody
+	public Message accountByOrderNos(@RequestParam("orderNos") String  orderNos){
+		List<String> orderNoList = new ArrayList<String>();
+		String []orderArray = orderNos.split(",");
+		for(String orderNo:orderArray){
+			orderNoList.add(orderNo);
+		}
+		Message message= new Message();
+		try {
+			message = inboundHeaderService.accountByOrderNos(orderNoList);
+			return message;
+		} catch (BusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			message.setCode(0);
+			message.setMsg(e.getMessage());
+			return message;
+		}
+	}
 }

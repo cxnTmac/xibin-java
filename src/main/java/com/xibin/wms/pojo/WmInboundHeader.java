@@ -22,6 +22,10 @@ public class WmInboundHeader extends BaseModel{
     private Date auditTime;
 
     private String inboundType;
+    
+    private String isCalculated;
+    
+    private Integer voucherId;
 
     private String remark;
 
@@ -112,7 +116,13 @@ public class WmInboundHeader extends BaseModel{
 	public void setInboundType(String inboundType) {
 		this.inboundType = inboundType;
 	}
+	public String getIsCalculated() {
+		return isCalculated;
+	}
 
+	public void setIsCalculated(String isCalculated) {
+		this.isCalculated = isCalculated;
+	}
 	public String getRemark() {
 		return remark;
 	}
@@ -175,6 +185,14 @@ public class WmInboundHeader extends BaseModel{
 
 	public void setWarehouseId(Integer warehouseId) {
 		this.warehouseId = warehouseId;
+	}
+
+	public Integer getVoucherId() {
+		return voucherId;
+	}
+
+	public void setVoucherId(Integer voucherId) {
+		this.voucherId = voucherId;
 	}
 
    

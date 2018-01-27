@@ -17,6 +17,7 @@
     <result column="pick_time" property="pickTime" jdbcType="TIMESTAMP" />
     <result column="ship_op" property="shipOp" jdbcType="INTEGER" />
     <result column="ship_time" property="shipTime" jdbcType="TIMESTAMP" />
+    <result column="cost" property="cost" jdbcType="DOUBLE" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -32,8 +33,11 @@
     <result column="line_no" property="lineNo" jdbcType="VARCHAR" />
     <result column="alloc_id" property="allocId" jdbcType="VARCHAR" />
     <result column="buyer_code" property="buyerCode" jdbcType="VARCHAR" />
+    <result column="buyer_name" property="buyerName" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="VARCHAR" />
     <result column="sku_code" property="skuCode" jdbcType="VARCHAR" />
+    <result column="sku_name" property="skuName" jdbcType="VARCHAR" />
+    <result column="model_code" property="modelCode" jdbcType="VARCHAR" />
     <result column="outbound_num" property="outboundNum" jdbcType="DOUBLE" />
     <result column="outbound_price" property="outboundPrice" jdbcType="DOUBLE" />
     <result column="alloc_loc_code" property="allocLocCode" jdbcType="VARCHAR" />
@@ -42,6 +46,7 @@
     <result column="pick_time" property="pickTime" jdbcType="TIMESTAMP" />
     <result column="ship_op" property="shipOp" jdbcType="INTEGER" />
     <result column="ship_time" property="shipTime" jdbcType="TIMESTAMP" />
+    <result column="cost" property="cost" jdbcType="DOUBLE" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -52,7 +57,7 @@
     <result column="warehouse_id" property="warehouseId" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    woa.id, woa.order_no, woa.line_no,woa.alloc_id,woa.status,woa.buyer_code, woa.sku_code, woa.outbound_num, woa.outbound_price, woa.alloc_loc_code,woa.to_loc_code,woa.pick_op,woa.pick_time,woa.ship_op,woa.ship_time, woa.remark, 
+    woa.id, woa.order_no, woa.line_no,woa.alloc_id,woa.status,woa.buyer_code, woa.sku_code, woa.outbound_num, woa.outbound_price, woa.alloc_loc_code,woa.to_loc_code,woa.pick_op,woa.pick_time,woa.ship_op,woa.ship_time,woa.cost, woa.remark, 
     woa.creator, woa.create_time, woa.modifier, woa.modify_time, woa.rec_ver, woa.company_id, woa.warehouse_id
   </sql>
   
@@ -99,11 +104,12 @@
   <!-- 【固定】：插入记录（支持一条及多条） -->
   <insert id="insert" parameterType="java.util.Collection">
   	INSERT INTO wm_outbound_alloc
-          (id, order_no, line_no,alloc_id,status,buyer_code, sku_code, outbound_num, outbound_price, alloc_loc_code,to_loc_code, pick_op,pick_time,ship_op,ship_time,remark, 
+          (id, order_no, line_no,alloc_id,status,buyer_code, sku_code, outbound_num, outbound_price, alloc_loc_code,to_loc_code, pick_op,pick_time,ship_op,ship_time,cost,remark, 
     creator, create_time, modifier, modify_time, rec_ver, company_id, warehouse_id)
        VALUES
   		<foreach collection="list" item="item" index="index" separator=",">
-	   		(#{item.id}, #{item.orderNo},#{item.lineNo},#{item.allocId},#{item.status}, #{item.buyerCode},  #{item.skuCode},#{item.outboundNum},#{item.outboundPrice},#{item.allocLocCode},#{item.toLocCode},#{item.pickOp},#{item.pickTime},#{item.shipOp},#{item.shipTime},
+	   		(#{item.id}, #{item.orderNo},#{item.lineNo},#{item.allocId},#{item.status}, #{item.buyerCode},  #{item.skuCode},#{item.outboundNum},#{item.outboundPrice},
+	   		#{item.allocLocCode},#{item.toLocCode},#{item.pickOp},#{item.pickTime},#{item.shipOp},#{item.shipTime},#{item.cost},
       #{item.remark},#{item.creator},#{item.createTime}, #{item.modifier},  #{item.modifyTime},
       #{item.recVer}, #{item.companyId},#{item.warehouseId})
   		</foreach>
@@ -192,6 +198,11 @@
                      when (ID=#{item.id}) then #{item.shipTime}
              </foreach>
 		</trim>
+		<trim prefix="cost =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.cost}
+             </foreach>
+		</trim>
 		<trim prefix="remark =case"  suffix="end,"  >
              <foreach collection="list" item="item" index="index">
                      when (ID=#{item.id}) then #{item.remark}
@@ -242,7 +253,16 @@
    <select id="selectAllByPage" resultMap="QueryResultMap" parameterType="Map">
     select 
     <include refid="Base_Column_List" />
+    ,bfs.fitting_sku_name as sku_name,
+    bfs.model_code,
+    bc.customer_name as buyer_name
     from wm_outbound_alloc woa
+    left join bd_fitting_sku bfs on 
+    bfs.fitting_sku_code = woa.sku_code
+    and bfs.company_id = woa.company_id
+    left join bd_customer bc on
+    bc.customer_code = woa.buyer_code
+    and bc.company_id = woa.company_id
     <include refid="findByConditionWhere" />
   </select>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.xibin.wms.pojo.BdLoc">
@@ -255,7 +275,16 @@
   <select id="selectByKey" resultMap="QueryResultMap" resultType="java.util.List"  parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
+    ,bfs.fitting_sku_name as sku_name,
+    bfs.model_code,
+    bc.customer_name as buyer_name
     from wm_outbound_alloc woa
+    left join bd_fitting_sku bfs on 
+    bfs.fitting_sku_code = woa.sku_code
+    and bfs.company_id = woa.company_id
+    left join bd_customer bc on
+    bc.customer_code = woa.buyer_code
+    and bc.company_id = woa.company_id
     where woa.order_no = #{orderNo,jdbcType=VARCHAR}
     and
     woa.line_no = #{lineNo,jdbcType=VARCHAR}
@@ -264,5 +293,26 @@
     and
     woa.warehouse_id = #{warehouseId,jdbcType=INTEGER}
   </select>
+  
+  <select id="querySumCostForAccount"   resultType="Double"   parameterType="Map" >
+	SELECT 
+		SUM(woa.cost*woa.outbound_num) as total
+	FROM wm_outbound_alloc woa
+	LEFT JOIN wm_outbound_header woh ON
+	woa.order_no = woh.order_no
+	AND woa.company_id = woh.company_id
+	AND woa.warehouse_id = woh.warehouse_id
+	WHERE
+		1 = 1   
+	<if test="orderNos!=null and orderNos!=''">
+			AND woa.order_no in
+          	<foreach item="item" index="index" collection="orderNos" open="(" separator="," close=")">  
+      			#{item}  
+     	  	</foreach>
+	</if>
+	AND woh.status = '20'
+	AND woa.company_id = #{companyId,jdbcType=INTEGER}
+	AND woa.warehouse_id = #{warehouseId,jdbcType=INTEGER}
+ </select>
   
 </mapper>

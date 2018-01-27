@@ -17,4 +17,6 @@ public interface WmOutboundAllocMapper extends BaseMapper{
     List<WmOutboundAllocQueryItem> selectByKey(@Param("orderNo")String orderNo,@Param("lineNo")String lineNo,@Param("companyId")String companyId,@Param("warehouseId")String warehouseId);
     
     List<WmOutboundAlloc> selectByExample(WmOutboundAlloc example);
+    
+    Double querySumCostForAccount(Map map);
 }

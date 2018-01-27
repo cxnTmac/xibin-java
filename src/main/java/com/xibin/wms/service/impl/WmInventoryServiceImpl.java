@@ -68,7 +68,7 @@ public class WmInventoryServiceImpl  extends BaseManagerImpl implements WmInvent
 	}
 
 	@Override
-	public void updateInventory(InventoryUpdateEntity fmIn) throws BusinessException {
+	public WmActTran updateInventory(InventoryUpdateEntity fmIn) throws BusinessException {
 		// TODO Auto-generated method stub
 		String actionCode = fmIn.getActionCode();
 		WmActTran actTran = new WmActTran();
@@ -94,10 +94,10 @@ public class WmInventoryServiceImpl  extends BaseManagerImpl implements WmInvent
 			throw new BusinessException("操作码["+actionCode+"]有误！");
 		}
 		//写入交易记录
-		addActTran(actTran);
+		return addActTran(actTran);
 	}
 	@Override
-	public void updateInventory(InventoryUpdateEntity fmIn,InventoryUpdateEntity toIn) throws BusinessException {
+	public WmActTran updateInventory(InventoryUpdateEntity fmIn,InventoryUpdateEntity toIn) throws BusinessException {
 		// TODO Auto-generated method stub
 		String actionCode = fmIn.getActionCode();
 		WmActTran actTran = new WmActTran();
@@ -114,7 +114,7 @@ public class WmInventoryServiceImpl  extends BaseManagerImpl implements WmInvent
 			throw new BusinessException("操作码["+actionCode+"]有误！");
 		}
 		//写入交易记录
-		addActTran(actTran);
+		return addActTran(actTran);
 	}
 	private String checkBeforeReceive(InventoryUpdateEntity entity){
 		if(null==entity.getActionCode()||entity.getActionCode().isEmpty()){
@@ -134,6 +134,8 @@ public class WmInventoryServiceImpl  extends BaseManagerImpl implements WmInvent
 		actTran.setOrderType(fmIn.getOrderType());
 		actTran.setTranType(fmIn.getActionCode());
 		actTran.setTranTime(new Date());
+		actTran.setPrice(fmIn.getPrice());
+		actTran.setCost(fmIn.getCost());
 		actTran.setFmSku(fmIn.getSkuCode());
 		actTran.setFmLot(fmIn.getLotNum());
 		actTran.setFmLoc(fmIn.getLocCode());
@@ -152,7 +154,12 @@ public class WmInventoryServiceImpl  extends BaseManagerImpl implements WmInvent
 				actTran.setFmQtyBefore(fmInventory.getInvAvailableNum());
 				actTran.setFmQtyAfter(fmInventory.getInvAvailableNum()-fmIn.getQtyOp());
 				fmInventory.setInvNum(fmInventory.getInvNum() - fmIn.getQtyOp());
-				fmInventory.setInvAvailableNum(fmInventory.getInvAvailableNum()-fmIn.getQtyOp());
+				Double oldAvailableNum = fmInventory.getInvAvailableNum();
+				fmInventory.setInvAvailableNum(oldAvailableNum-fmIn.getQtyOp());
+				
+				//按照计算的成本价格减少库存价值
+				fmInventory.setTotalPrice(fmInventory.getTotalPrice()-fmIn.getQtyOp()*fmIn.getCost());
+				
 				this.save(fmInventory);
 			}
 		}else{
@@ -168,6 +175,8 @@ public class WmInventoryServiceImpl  extends BaseManagerImpl implements WmInvent
 		actTran.setOrderType(toIn.getOrderType());
 		actTran.setTranType(toIn.getActionCode());
 		actTran.setTranTime(new Date());
+		actTran.setCost(toIn.getCost());
+		actTran.setPrice(toIn.getPrice());
 		actTran.setToSku(toIn.getSkuCode());
 		actTran.setToLot(toIn.getLotNum());
 		actTran.setToLoc(toIn.getLocCode());
@@ -184,6 +193,8 @@ public class WmInventoryServiceImpl  extends BaseManagerImpl implements WmInvent
 			actTran.setToQtyAfter(fmInventory.getInvAvailableNum()+toIn.getQtyOp());
 			fmInventory.setInvNum(fmInventory.getInvNum() + toIn.getQtyOp());
 			fmInventory.setInvAvailableNum(fmInventory.getInvAvailableNum()+toIn.getQtyOp());
+			//增加库存价值
+			fmInventory.setTotalPrice(fmInventory.getTotalPrice()+toIn.getQtyOp()*toIn.getCost());
 			this.save(fmInventory);
 		}else{
 			WmInventory toInventory = new WmInventory();
@@ -196,6 +207,8 @@ public class WmInventoryServiceImpl  extends BaseManagerImpl implements WmInvent
 			toInventory.setInvNum(toIn.getQtyOp());
 			toInventory.setLocCode(toIn.getLocCode());
 			toInventory.setSkuCode(toIn.getSkuCode());
+			//增加库存价值
+			toInventory.setTotalPrice(toIn.getQtyOp()*toIn.getCost());
 			this.save(toInventory);
 		}
 		return actTran;
@@ -208,6 +221,8 @@ public class WmInventoryServiceImpl  extends BaseManagerImpl implements WmInvent
 		actTran.setOrderType(fmIn.getOrderType());
 		actTran.setTranType(fmIn.getActionCode());
 		actTran.setTranTime(new Date());
+		actTran.setCost(fmIn.getCost());
+		actTran.setPrice(fmIn.getPrice());
 		actTran.setFmSku(fmIn.getSkuCode());
 		actTran.setFmLot(fmIn.getLotNum());
 		actTran.setFmLoc(fmIn.getLocCode());
@@ -248,6 +263,9 @@ public class WmInventoryServiceImpl  extends BaseManagerImpl implements WmInvent
 			actTran.setToQtyAfter(toInventory.getInvAvailableNum()+toIn.getQtyOp());
 			toInventory.setInvNum(toInventory.getInvNum()+toIn.getQtyOp());
 			toInventory.setInvAvailableNum(toInventory.getInvAvailableNum()+toIn.getQtyOp());
+			
+			//库存价值增加
+			toInventory.setTotalPrice(toInventory.getTotalPrice()+toIn.getQtyOp()*fmIn.getCost());
 			this.save(toInventory);
 		}else{
 			WmInventory toInventory = new WmInventory();
@@ -260,6 +278,8 @@ public class WmInventoryServiceImpl  extends BaseManagerImpl implements WmInvent
 			toInventory.setInvNum(toIn.getQtyOp());
 			toInventory.setLocCode(toIn.getLocCode());
 			toInventory.setSkuCode(toIn.getSkuCode());
+			//库存价值增加
+			toInventory.setTotalPrice(toIn.getQtyOp()*fmIn.getCost());
 			this.save(toInventory);
 		}
 		return actTran;
@@ -295,6 +315,8 @@ public class WmInventoryServiceImpl  extends BaseManagerImpl implements WmInvent
 				actTran.setFmQtyAfter(fmInventory.getInvAvailableNum()-fmIn.getQtyOp());
 				fmInventory.setInvNum(fmInventory.getInvNum() - fmIn.getQtyOp());
 				fmInventory.setInvAvailableNum(fmInventory.getInvAvailableNum() - fmIn.getQtyOp());
+				//减少库存价值
+				fmInventory.setTotalPrice(fmInventory.getTotalPrice() - fmIn.getQtyOp()*fmIn.getCost());
 				this.save(fmInventory);
 			}
 		}else{
@@ -353,8 +375,12 @@ public class WmInventoryServiceImpl  extends BaseManagerImpl implements WmInvent
 			actTran.setFmQtyAfter(targetInv.getInvAvailableNum()+fmIn.getQtyOp());
 			actTran.setToQtyBefore(targetInv.getInvAvailableNum());
 			actTran.setToQtyAfter(targetInv.getInvAvailableNum()+fmIn.getQtyOp());
+			actTran.setCost(fmIn.getCost());
+			actTran.setPrice(fmIn.getPrice());
 			targetInv.setAllocNum(targetInv.getAllocNum()-fmIn.getQtyOp());
 			targetInv.setInvAvailableNum(targetInv.getInvAvailableNum()+fmIn.getQtyOp());
+			//按照原来的成本价格加回库存价值
+			targetInv.setTotalPrice(fmIn.getCost()*fmIn.getQtyOp()+targetInv.getTotalPrice());
 			this.save(targetInv);
 		}else{
 			throw new BusinessException("商品["+fmIn.getSkuCode()+"]在库位["+fmIn.getLocCode()+"]没有库存！");
@@ -374,6 +400,7 @@ public class WmInventoryServiceImpl  extends BaseManagerImpl implements WmInvent
 		actTran.setFmQtyBefore(fmIn.getQtyOpBefore());
 		actTran.setFmQtyOp(fmIn.getQtyOp());
 		actTran.setFmQtyAfter(fmIn.getQtyOpAfter());
+		actTran.setPrice(fmIn.getPrice());
 		actTran.setToSku(fmIn.getSkuCode());
 		actTran.setToLot(fmIn.getLotNum());
 		actTran.setToLoc(fmIn.getLocCode());
@@ -386,8 +413,14 @@ public class WmInventoryServiceImpl  extends BaseManagerImpl implements WmInvent
 			WmInventoryQueryItem queryItem = list.get(0);
 			WmInventory targetInv = new WmInventory();
 			BeanUtils.copyProperties(queryItem, targetInv);
+			//分配时就计算成本
+			Double avg = targetInv.getTotalPrice()/targetInv.getInvAvailableNum();
+			actTran.setCost(avg);
+			
 			targetInv.setAllocNum(targetInv.getAllocNum()+fmIn.getQtyOp());
 			targetInv.setInvAvailableNum(targetInv.getInvAvailableNum()-fmIn.getQtyOp());
+			//按照加权平均数减少库存价值
+			targetInv.setTotalPrice(targetInv.getTotalPrice()-avg*fmIn.getQtyOp());
 			this.save(targetInv);
 		}else{
 			throw new BusinessException("商品["+fmIn.getSkuCode()+"]在库位["+fmIn.getLocCode()+"]没有库存！");
@@ -399,6 +432,7 @@ public class WmInventoryServiceImpl  extends BaseManagerImpl implements WmInvent
 		actTran.setLineNo(fmIn.getLineNo());
 		actTran.setOrderNo(fmIn.getOrderNo());
 		actTran.setOrderType(fmIn.getOrderType());
+		actTran.setPrice(fmIn.getPrice());
 		actTran.setTranType(fmIn.getActionCode());
 		actTran.setTranTime(new Date());
 		WmInventory targetInv = new WmInventory();
@@ -418,21 +452,26 @@ public class WmInventoryServiceImpl  extends BaseManagerImpl implements WmInvent
 			actTran.setToQtyBefore(queryItem.getInvNum());
 			actTran.setToQtyOp(fmIn.getQtyOp());
 			actTran.setToQtyAfter(queryItem.getInvNum()+fmIn.getQtyOp());
+			actTran.setPrice(fmIn.getPrice());
 			BeanUtils.copyProperties(queryItem, targetInv);
 			targetInv.setInvNum(targetInv.getInvNum()+fmIn.getQtyOp());
 			targetInv.setInvAvailableNum(targetInv.getInvAvailableNum()+fmIn.getQtyOp());
+			//增加库存价值
+			targetInv.setTotalPrice(targetInv.getTotalPrice()+fmIn.getPrice()*fmIn.getQtyOp());
 		}//原来没有库存
 		else{
 			actTran.setToQtyBefore(0.0);
 			actTran.setToQtyOp(fmIn.getQtyOp());
 			actTran.setToQtyAfter(fmIn.getQtyOp());
-			
+			actTran.setPrice(fmIn.getPrice());
 			targetInv.setSkuCode(fmIn.getSkuCode());
 			targetInv.setLocCode(fmIn.getLocCode());
 			targetInv.setLot(fmIn.getLotNum());
 			targetInv.setAllocNum(0.0);
 			targetInv.setInvNum(fmIn.getQtyOp());
 			targetInv.setInvAvailableNum(fmIn.getQtyOp());
+			//增加库存价值
+			targetInv.setTotalPrice(fmIn.getPrice()*fmIn.getQtyOp());
 			targetInv.setCompanyId(userDetails.getCompanyId());
 			targetInv.setWarehouseId(userDetails.getWarehouseId());
 		}
@@ -447,11 +486,11 @@ public class WmInventoryServiceImpl  extends BaseManagerImpl implements WmInvent
 		WmActTran actTran = new WmActTran();
 		actTran.setLineNo(fmIn.getLineNo());
 		actTran.setOrderNo(fmIn.getOrderNo());
+		actTran.setPrice(fmIn.getPrice());
 		actTran.setOrderType(fmIn.getOrderType());
 		actTran.setTranType(fmIn.getActionCode());
 		actTran.setTranTime(new Date());
 		WmInventory targetInv = new WmInventory();
-		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
 		List<WmInventoryQueryItem> list = this.selectByKey(fmIn.getSkuCode(), fmIn.getLocCode(), fmIn.getLotNum());
 		//库存已经不存在
 		if(list.isEmpty()){
@@ -468,16 +507,19 @@ public class WmInventoryServiceImpl  extends BaseManagerImpl implements WmInvent
 				actTran.setFmQtyBefore(inventoryQueryItem.getInvNum());
 				actTran.setFmQtyOp(fmIn.getQtyOp());
 				actTran.setFmQtyAfter(inventoryQueryItem.getInvNum()-fmIn.getQtyOp());
-
+					
 				actTran.setToQtyBefore(inventoryQueryItem.getInvNum());
 				actTran.setToQtyOp(fmIn.getQtyOp());
 				actTran.setToQtyAfter(inventoryQueryItem.getInvNum()+fmIn.getQtyOp());
 				actTran.setToSku(inventoryQueryItem.getSkuCode());
 				actTran.setToLot(inventoryQueryItem.getLot());
 				actTran.setToLoc(inventoryQueryItem.getLocCode());
+				actTran.setPrice(fmIn.getPrice());
 				BeanUtils.copyProperties(inventoryQueryItem, targetInv);
 				targetInv.setInvNum(targetInv.getInvNum()-fmIn.getQtyOp());
 				targetInv.setInvAvailableNum(targetInv.getInvAvailableNum()-fmIn.getQtyOp());
+				//减少库存价值
+				targetInv.setTotalPrice(targetInv.getTotalPrice()-fmIn.getPrice()*fmIn.getQtyOp());
 				this.save(targetInv);
 				return actTran;
 			}

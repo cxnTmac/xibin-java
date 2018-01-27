@@ -85,7 +85,7 @@ public class WmInboundRecieveQueryItem implements Serializable{
 	public String getRecLineNo() {
 		return recLineNo;
 	}
-
+	
 	public void setRecLineNo(String recLineNo) {
 		this.recLineNo = recLineNo;
 	}

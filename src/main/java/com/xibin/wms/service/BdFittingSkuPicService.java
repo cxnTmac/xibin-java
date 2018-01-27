@@ -18,4 +18,6 @@ public interface BdFittingSkuPicService {
 	public BdFittingSkuPic saveFittingSkuPic (BdFittingSkuPic model);
 	
 	public List<BdFittingSkuPic> selectByFittingSkuCode(String fittingSkuCode);
+	
+	public List<BdFittingSkuPic> selectByFittingSkuCode(String fittingSkuCode,String companyId);
 }

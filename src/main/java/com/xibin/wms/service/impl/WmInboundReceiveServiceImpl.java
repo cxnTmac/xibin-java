@@ -246,6 +246,7 @@ public class WmInboundReceiveServiceImpl  extends BaseManagerImpl implements WmI
 		inventoryUpdateEntity.setOrderType(WmsCodeMaster.ORDER_INB.getCode());
 		inventoryUpdateEntity.setQtyOp(wmInboundRecieve.getInboundNum());
 		inventoryUpdateEntity.setSkuCode(wmInboundRecieve.getSkuCode());
+		inventoryUpdateEntity.setPrice(wmInboundRecieve.getInboundPrice());
 		wmInventoryService.updateInventory(inventoryUpdateEntity);
 	}
 	private void updateForCancelReceive(WmInboundRecieve wmInboundRecieve) throws BusinessException{
@@ -257,6 +258,7 @@ public class WmInboundReceiveServiceImpl  extends BaseManagerImpl implements WmI
 		inventoryUpdateEntity.setOrderType(WmsCodeMaster.ORDER_INB.getCode());
 		inventoryUpdateEntity.setQtyOp(wmInboundRecieve.getInboundNum());
 		inventoryUpdateEntity.setSkuCode(wmInboundRecieve.getSkuCode());
+		inventoryUpdateEntity.setPrice(wmInboundRecieve.getInboundPrice());
 		wmInventoryService.updateInventory(inventoryUpdateEntity);
 	}	
 

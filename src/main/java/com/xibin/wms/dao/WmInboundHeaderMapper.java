@@ -17,4 +17,8 @@ public interface WmInboundHeaderMapper extends BaseMapper{
     List<WmInboundHeaderQueryItem> selectByKey(@Param("orderNo")String orderNo,@Param("companyId")String companyId,@Param("warehouseId")String warehouseId);
     
     List<WmInboundHeader> selectByExample(WmInboundHeader example);
+    
+    List<String> queryOrderNosByStatus(Map map);
+    
+    void updateStatusByOrderNos(Map map);
 }

@@ -6,8 +6,10 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.annotations.Param;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,10 +19,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sun.swing.internal.plaf.metal.resources.metal_zh_TW;
+import com.xibin.core.costants.Constants;
 import com.xibin.core.exception.BusinessException;
 import com.xibin.core.page.pojo.Page;
 import com.xibin.core.page.pojo.PageEntity;
 import com.xibin.core.pojo.Message;
+import com.xibin.core.security.pojo.UserDetails;
 import com.xibin.wms.pojo.BdArea;
 import com.xibin.wms.pojo.BdFittingSku;
 import com.xibin.wms.pojo.BdFittingSkuPic;
@@ -36,11 +40,14 @@ import com.xibin.wms.service.BdFittingTypeService;
 public class AreaController {
 	@Resource
 	private BdAreaService bdAreaService;
+	@Autowired  
+	private HttpSession session;
 	
 	@RequestMapping("/showAllArea")
 	@ResponseBody
 	public PageEntity<BdArea> showAllArea(HttpServletRequest request,Model model){ 
 	    // 开始分页  
+		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
 		PageEntity<BdArea> pageEntity = new PageEntity<BdArea>();
 		Page<?> page = new Page();
 		//配置分页参数
@@ -48,6 +55,10 @@ public class AreaController {
 		page.setPageSize(Integer.parseInt(request.getParameter("size")));
 		Map map = JSONObject.parseObject(request.getParameter("conditions"));
 		map.put("page", page);
+		if(userDetails != null){
+			map.put("companyId", userDetails.getCompanyId());
+			map.put("warehouseId", userDetails.getWarehouseId());
+		}
 		List<BdArea> list = bdAreaService.getAllAreaByPage(map);
 		pageEntity.setList(list);
 		pageEntity.setSize(page.getTotalRecord());
