@@ -1,54 +1,57 @@
 package com.xibin.fin.pojo;
 
-import java.security.KeyStore.PrivateKeyEntry;
 import java.util.Date;
 
 import com.xibin.core.daosupport.BaseModel;
 
-public class FiVoucher extends BaseModel{
-    /**
+public class FiVoucher extends BaseModel {
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 33040803802413473L;
 
 	private Integer id;
 
-    private Integer voucherNum;
-    
-    private String voucherWord;
-    
-    private String period;
-    
-    private Date billDate;
-    
-    private String status;
-    
-    private Double bill;
+	private Integer voucherNum;
 
-    private Integer checker;
-    
-    private Date completeDate;
-    
-    private String remark;
+	private String voucherWord;
 
-    private Integer creator;
+	private String period;
 
-    private Date createTime;
+	private Date billDate;
 
-    private Integer modifier;
+	private String status;
 
-    private Date modifyTime;
+	private String fromOrderType;
 
-    private Integer recVer;
+	private Double bill;
 
-    private Integer companyId;
-    
-    private Integer bookId;
+	private Integer checker;
 
+	private Date completeDate;
+
+	private String remark;
+
+	private Integer creator;
+
+	private Date createTime;
+
+	private Integer modifier;
+
+	private Date modifyTime;
+
+	private Integer recVer;
+
+	private Integer companyId;
+
+	private Integer bookId;
+
+	@Override
 	public Integer getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(Integer id) {
 		this.id = id;
 	}
@@ -125,42 +128,52 @@ public class FiVoucher extends BaseModel{
 		this.remark = remark;
 	}
 
+	@Override
 	public Integer getCreator() {
 		return creator;
 	}
 
+	@Override
 	public void setCreator(Integer creator) {
 		this.creator = creator;
 	}
 
+	@Override
 	public Date getCreateTime() {
 		return createTime;
 	}
 
+	@Override
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
 
+	@Override
 	public Integer getModifier() {
 		return modifier;
 	}
 
+	@Override
 	public void setModifier(Integer modifier) {
 		this.modifier = modifier;
 	}
 
+	@Override
 	public Date getModifyTime() {
 		return modifyTime;
 	}
 
+	@Override
 	public void setModifyTime(Date modifyTime) {
 		this.modifyTime = modifyTime;
 	}
 
+	@Override
 	public Integer getRecVer() {
 		return recVer;
 	}
 
+	@Override
 	public void setRecVer(Integer recVer) {
 		this.recVer = recVer;
 	}
@@ -181,8 +194,16 @@ public class FiVoucher extends BaseModel{
 		this.bookId = bookId;
 	}
 
-    
-	
+	public String wmToFinService() {
+		return fromOrderType;
+	}
 
-    
+	public void setFromOrderType(String fromOrderType) {
+		this.fromOrderType = fromOrderType;
+	}
+
+	public String getFromOrderType() {
+		return fromOrderType;
+	}
+
 }

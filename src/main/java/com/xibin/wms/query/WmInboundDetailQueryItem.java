@@ -3,52 +3,52 @@ package com.xibin.wms.query;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.xibin.core.daosupport.BaseModel;
+public class WmInboundDetailQueryItem implements Serializable {
+	private Integer id;
 
-public class WmInboundDetailQueryItem implements Serializable{
-    private Integer id;
+	private String orderNo;
 
-    private String orderNo;
+	private String lineNo;
 
-    private String lineNo;
-    
-    private String status;
-    
-    private String headerStatus;
-    
-    private String supplierCode;
-    
-    private String supplierName;
+	private String status;
 
-    private String skuCode;
-    
-    private Double inboundPreNum;
+	private String headerStatus;
 
-    private Double inboundNum;
+	private String isCalculated;
 
-    private Double inboundPrice;
-    
-    private String planLoc;
-    
-    private String isCreatedVoucher;
-    
-    private String voucherNo;
+	private String supplierCode;
 
-    private String remark;
+	private String supplierName;
 
-    private Integer creator;
+	private String skuCode;
 
-    private Date createTime;
+	private Double inboundPreNum;
 
-    private Integer modifier;
+	private Double inboundNum;
 
-    private Date modifyTime;
+	private Double inboundPrice;
 
-    private Integer recVer;
+	private String planLoc;
 
-    private Integer companyId;
+	private String isCreatedVoucher;
 
-    private Integer warehouseId;
+	private String voucherNo;
+
+	private String remark;
+
+	private Integer creator;
+
+	private Date createTime;
+
+	private Integer modifier;
+
+	private Date modifyTime;
+
+	private Integer recVer;
+
+	private Integer companyId;
+
+	private Integer warehouseId;
 
 	public Integer getId() {
 		return id;
@@ -226,7 +226,12 @@ public class WmInboundDetailQueryItem implements Serializable{
 		this.headerStatus = headerStatus;
 	}
 
-	
+	public String getIsCalculated() {
+		return isCalculated;
+	}
 
-    
+	public void setIsCalculated(String isCalculated) {
+		this.isCalculated = isCalculated;
+	}
+
 }

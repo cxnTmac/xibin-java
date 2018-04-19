@@ -21,13 +21,11 @@ public class WmAssembleFDetail extends BaseModel{
 	
 	private String status;
 	
-	private Integer preNum;
+	private Double preNum;
 	
-	private Integer num;
+	private Double num;
 	
 	private String assembleLoc;
-	
-	private String createS;
 	
 	private String remark;
 	
@@ -77,19 +75,19 @@ public class WmAssembleFDetail extends BaseModel{
 		this.status = status;
 	}
 
-	public Integer getPreNum() {
+	public Double getPreNum() {
 		return preNum;
 	}
 
-	public void setPreNum(Integer preNum) {
+	public void setPreNum(Double preNum) {
 		this.preNum = preNum;
 	}
 
-	public Integer getNum() {
+	public Double getNum() {
 		return num;
 	}
 
-	public void setNum(Integer num) {
+	public void setNum(Double num) {
 		this.num = num;
 	}
 
@@ -99,14 +97,6 @@ public class WmAssembleFDetail extends BaseModel{
 
 	public void setAssembleLoc(String assembleLoc) {
 		this.assembleLoc = assembleLoc;
-	}
-
-	public String getCreateS() {
-		return createS;
-	}
-
-	public void setCreateS(String createS) {
-		this.createS = createS;
 	}
 
 	public String getRemark() {

@@ -45,6 +45,8 @@ public class BdFittingSkuAssembleServiceImpl extends BaseManagerImpl implements 
 	@Override
 	public List<BdFittingSkuAssembleQueryItem> getAllFittingSkuByFSkuCode(Map map) {
 		// TODO Auto-generated method stub
+		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
+		map.put("companyId", userDetails.getCompanyId());
 		return bdFittingSkuAssembleMapper.selectAllByFSkuCode(map);
 	}
 

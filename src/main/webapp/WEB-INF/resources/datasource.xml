@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DatasourceManager xmlVersion="20170715" releaseVersion="8.0.0">
+
+<ConnectionMap>
+
+<Connection name="FRDemo" class="com.fr.data.impl.JDBCDatabaseConnection">
+
+<DatabaseAttr originalCharsetName="UTF-8" newCharsetName="UTF-8"/>
+
+<JDBCDatabaseAttr url="jdbc:mysql://localhost:3306/xibin3" driver="com.mysql.jdbc.Driver" user="cxn" password="123456" encryptPassword="true">
+
+<DBCPAttr/>
+
+</JDBCDatabaseAttr>
+
+</Connection>
+
+</ConnectionMap>
+
+</DatasourceManager>

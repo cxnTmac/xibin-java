@@ -24,7 +24,7 @@ public class WmAssembleAlloc extends BaseModel{
 	
 	private String status;
 	
-	private Integer allocNum;
+	private Double allocNum;
 	
 	private String allocLoc;
 	
@@ -33,6 +33,8 @@ public class WmAssembleAlloc extends BaseModel{
 	private Integer pickOp;
 	
 	private Date pickTime;
+	
+	private Double cost;
 	
 	private String remark;
 	
@@ -98,11 +100,11 @@ public class WmAssembleAlloc extends BaseModel{
 		this.status = status;
 	}
 
-	public Integer getAllocNum() {
+	public Double getAllocNum() {
 		return allocNum;
 	}
 
-	public void setAllocNum(Integer allocNum) {
+	public void setAllocNum(Double allocNum) {
 		this.allocNum = allocNum;
 	}
 
@@ -200,6 +202,14 @@ public class WmAssembleAlloc extends BaseModel{
 
 	public void setWarehouseId(Integer warehouseId) {
 		this.warehouseId = warehouseId;
+	}
+
+	public Double getCost() {
+		return cost;
+	}
+
+	public void setCost(Double cost) {
+		this.cost = cost;
 	}
 
 	

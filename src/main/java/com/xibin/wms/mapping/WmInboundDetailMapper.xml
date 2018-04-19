@@ -30,6 +30,7 @@
     <result column="line_no" property="lineNo" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="VARCHAR" />
     <result column="header_status" property="headerStatus" jdbcType="VARCHAR" />
+    <result column="is_calculated" property="isCalculated" jdbcType="VARCHAR" />
     <result column="supplier_code" property="supplierCode" jdbcType="VARCHAR" />
     <result column="supplier_name" property="supplierName" jdbcType="VARCHAR" />
     <result column="sku_code" property="skuCode" jdbcType="VARCHAR" />
@@ -71,9 +72,9 @@
           <if test="voucherNo!=null and voucherNo!=''"> AND wid.voucher_no LIKE CONCAT('%','${voucherNo}','%')</if>
           <if test="companyId!=null and companyId!=''"> AND wid.company_id = #{companyId}</if>
           <if test="warehouseId!=null and warehouseId!=''"> AND wid.warehouse_id = #{warehouseId}</if>
-          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> AND wid.order_no LIKE CONCAT('%','${fuzzyCondition}','%')</if>
-          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> OR wid.line_no LIKE CONCAT('%','${fuzzyCondition}','%')</if>
-          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> OR wid.sku_code LIKE CONCAT('%','${fuzzyCondition}','%')</if>
+          <if test="fuzzyCondition!=null and fuzzyCondition!=''">AND (wid.order_no LIKE CONCAT('%','${fuzzyCondition}','%')
+          OR wid.line_no LIKE CONCAT('%','${fuzzyCondition}','%') 
+          OR wid.sku_code LIKE CONCAT('%','${fuzzyCondition}','%'))</if>
   </sql>
   <!-- 条件 -->
   <sql id="findByExampleWhere">
@@ -289,6 +290,7 @@
     select
     <include refid="Base_Column_List" />
     ,bc.customer_name as supplier_name,
+    wih.is_calculated,
     wih.status as header_status
     from wm_inbound_header wih
     left join bd_customer bc on
@@ -300,6 +302,7 @@
     and wid.warehouse_id = wih.warehouse_id
     <include refid="findByConditionWhere" /> 
     <if test="headerStatus!=null and headerStatus!=''">AND wih.status = #{headerStatus}</if>
+    <if test="isCalculated!=null and isCalculated!=''">AND wih.is_calculated = #{isCalculated}</if>
     <if test="inboundType!=null and inboundType!=''">AND wih.inbound_type = #{inboundType}</if>
     <if test="inboundType!=null and inboundType!=''">AND wih.inbound_type = #{inboundType}</if>
     <if test="orderTimeFm!=null and orderTimeFm!=''"> AND wih.order_time &gt;= #{orderTimeFm}</if>
@@ -329,6 +332,9 @@
           	<foreach item="item" index="index" collection="orderNos" open="(" separator="," close=")">  
       			#{item}  
      	  	</foreach>
+    </if>
+    <if test="inboundType!=null and inboundType!=''">
+    AND wih.inbound_type = #{inboundType}
     </if>
 	AND wih.status = '99'
 	AND wid.company_id = #{companyId}

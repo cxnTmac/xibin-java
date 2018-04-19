@@ -1,12 +1,12 @@
 package com.xibin.fin.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,58 +23,55 @@ import com.xibin.core.pojo.Message;
 import com.xibin.core.security.pojo.UserDetails;
 import com.xibin.fin.entity.FiVoucherDetailQueryItem;
 import com.xibin.fin.entity.FiVoucherEntity;
-import com.xibin.fin.pojo.FiCourse;
 import com.xibin.fin.pojo.FiVoucher;
 import com.xibin.fin.pojo.FiVoucherDetail;
-import com.xibin.fin.service.FiCourseService;
 import com.xibin.fin.service.FiVoucherDetailService;
 import com.xibin.fin.service.FiVoucherService;
 
-
 @Controller
-@RequestMapping(value = "/voucher", produces = {"application/json;charset=UTF-8"})
+@RequestMapping(value = "/voucher", produces = { "application/json;charset=UTF-8" })
 public class VoucherController {
 	@Resource
 	private FiVoucherService fiVoucherService;
 	@Resource
 	private FiVoucherDetailService fiVoucherDetailService;
-	@Autowired  
+	@Autowired
 	private HttpSession session;
-	
+
 	@RequestMapping("/showAllVoucher")
 	@ResponseBody
-	public PageEntity<FiVoucherEntity> showAllVoucher(HttpServletRequest request,Model model){ 
-	    // 开始分页  
-		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
+	public PageEntity<FiVoucherEntity> showAllVoucher(HttpServletRequest request, Model model) {
+		// 开始分页
+		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
 		PageEntity<FiVoucherEntity> pageEntity = new PageEntity<FiVoucherEntity>();
 		Page<?> page = new Page();
-		//配置分页参数
+		// 配置分页参数
 		page.setPageNo(Integer.parseInt(request.getParameter("page")));
 		page.setPageSize(Integer.parseInt(request.getParameter("size")));
 		Map map = JSONObject.parseObject(request.getParameter("conditions"));
-		//map.put("page", page);
-		if(userDetails != null){
+		// map.put("page", page);
+		if (userDetails != null) {
 			map.put("companyId", userDetails.getCompanyId());
-			map.put("bookId",userDetails.getBookId());
+			map.put("bookId", userDetails.getBookId());
 		}
 		List<FiVoucherEntity> list = fiVoucherDetailService.getAllVoucherEntityByPage(map);
 		pageEntity.setList(list);
-		pageEntity.setSize((long)list.size());
-	    return  pageEntity;
+		pageEntity.setSize((long) list.size());
+		return pageEntity;
 	}
-	
+
 	@RequestMapping("/getVoucherById")
 	@ResponseBody
-	public FiVoucher getVoucherById(@RequestParam("id")int id){ 
+	public FiVoucher getVoucherById(@RequestParam("id") int id) {
 		return fiVoucherService.getVoucherById(id);
 
 	}
-	
+
 	@RequestMapping("/checkVoucher")
 	@ResponseBody
-	public Message checkVoucher(HttpServletRequest request,Model model){ 
+	public Message checkVoucher(HttpServletRequest request, Model model) {
 		Message message = new Message();
-		FiVoucher voucher = JSONObject.parseObject(request.getParameter("voucher"),FiVoucher.class);
+		FiVoucher voucher = JSONObject.parseObject(request.getParameter("voucher"), FiVoucher.class);
 		try {
 			message = fiVoucherService.checkVoucher(voucher);
 			return message;
@@ -87,12 +84,19 @@ public class VoucherController {
 		}
 
 	}
-	
+
+	@RequestMapping("/removeVoucher")
+	@ResponseBody
+	public Message removeVoucher(@RequestParam("id") int id) {
+		Message message = new Message();
+		return fiVoucherService.removeVoucher(id);
+	}
+
 	@RequestMapping("/cancelCheckVoucher")
 	@ResponseBody
-	public Message cancelCheckVoucher(HttpServletRequest request,Model model){ 
+	public Message cancelCheckVoucher(HttpServletRequest request, Model model) {
 		Message message = new Message();
-		FiVoucher voucher = JSONObject.parseObject(request.getParameter("voucher"),FiVoucher.class);
+		FiVoucher voucher = JSONObject.parseObject(request.getParameter("voucher"), FiVoucher.class);
 		try {
 			message = fiVoucherService.cancelCheckVoucher(voucher);
 			return message;
@@ -105,31 +109,31 @@ public class VoucherController {
 		}
 
 	}
-	
 
 	@RequestMapping("/getVoucherDetailsByVoucherId")
 	@ResponseBody
-	public PageEntity<FiVoucherDetailQueryItem> getVoucherDetailsByVoucherId(@RequestParam("voucherId")int voucherId){ 
-	    // 开始分页  
-		
+	public PageEntity<FiVoucherDetailQueryItem> getVoucherDetailsByVoucherId(@RequestParam("voucherId") int voucherId) {
+		// 开始分页
+
 		PageEntity<FiVoucherDetailQueryItem> pageEntity = new PageEntity<FiVoucherDetailQueryItem>();
-		//map.put("page", page);
-		
-		List<FiVoucherDetailQueryItem> list = fiVoucherDetailService.selectByVoucherIdForQueryItem(voucherId+"");
+		// map.put("page", page);
+
+		List<FiVoucherDetailQueryItem> list = fiVoucherDetailService.selectByVoucherIdForQueryItem(voucherId + "");
 		pageEntity.setList(list);
-		pageEntity.setSize((long)list.size());
-	    return  pageEntity;
+		pageEntity.setSize((long) list.size());
+		return pageEntity;
 	}
-	
+
 	@RequestMapping("/saveVoucherAndDetail")
 	@ResponseBody
-	public Message saveVoucherAndDetail(HttpServletRequest request,Model model){ 
+	public Message saveVoucherAndDetail(HttpServletRequest request, Model model) {
 		Message message = new Message();
 		FiVoucher voucher = JSONObject.parseObject(request.getParameter("voucher"), FiVoucher.class);
 		List<FiVoucherDetail> details = JSONObject.parseArray(request.getParameter("details"), FiVoucherDetail.class);
-		List<FiVoucherDetail> removeDetails = JSONObject.parseArray(request.getParameter("removeDetails"), FiVoucherDetail.class);
+		List<FiVoucherDetail> removeDetails = JSONObject.parseArray(request.getParameter("removeDetails"),
+				FiVoucherDetail.class);
 		try {
-			message = fiVoucherDetailService.saveVoucherAndDetail(voucher, details,removeDetails);
+			message = fiVoucherDetailService.saveVoucherAndDetail(voucher, details, removeDetails);
 		} catch (BusinessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -139,5 +143,5 @@ public class VoucherController {
 		}
 		return message;
 	}
-	  
+
 }

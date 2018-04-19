@@ -10,168 +10,151 @@
     <result column="parent_company_id" property="parentCompanyId" jdbcType="INTEGER" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
-    <result column="create_time" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="modifier" property="modifier" jdbcType="INTEGER" />
-    <result column="modify_time" property="modifytime" jdbcType="TIMESTAMP" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
     <result column="rec_ver" property="recVer" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, company_code, company_name, address, tel, parent_company_id, remark, creator, 
-    createTime, modifier, modifyTime, rec_ver
+    sc.id, sc.company_code, sc.company_name, sc.address, sc.tel, sc.parent_company_id, sc.remark, sc.creator, 
+    sc.create_time, sc.modifier, sc.modify_time, sc.rec_ver
   </sql>
+   <!-- 条件 -->
+  <sql id="findByConditionWhere">
+      WHERE 1=1
+          <if test="id!=null and id!=''"> AND sc.id = #{id}</if>
+          <if test="companyCode!=null and companyCode!=''"> AND sc.company_code LIKE CONCAT('%','${companyCode}','%')</if>
+          <if test="companyId!=null and companyId!=''"> AND sc.company_id = #{companyId}</if>
+  </sql>
+  <!-- 条件 -->
+  <sql id="findByExampleWhere">
+      WHERE 1=1
+          <if test="id!=null and id!=''"> AND sc.id = #{id}</if>
+          <if test="companyCode!=null and companyCode!=''"> AND sc.company_code LIKE CONCAT('%','${companyCode}','%')</if>
+          <if test="companyId!=null and companyId!=''"> AND sc.company_id = #{companyId}</if>
+  </sql>
+  
+  
+  <!-- 【固定】：按主键查询 -->
+  <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	  select
+      <include refid="Base_Column_List"/>
+      from sys_company sc
+      WHERE id in
+      <foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+	           #{item}
+	  </foreach>
+  </select>
+  
+  <!-- 【固定】：插入记录（支持一条及多条） -->
+  <insert id="insert" parameterType="java.util.Collection">
+  	INSERT INTO sys_company
+          (id,company_code,company_name,address,tel,parent_company_id,remark,creator, 
+    create_time,modifier,modify_time,rec_ver)
+       VALUES
+  		<foreach collection="list" item="item" index="index" separator=",">
+	   		(#{item.id}, #{item.companyCode}, #{item.companyName}, #{item.address},#{item.tel},#{item.parentCompanyId},
+      #{item.remark},#{item.creator},#{item.createTime}, #{item.modifier},  #{item.modifyTime},
+      #{item.recVer}, #{item.companyId})
+  		</foreach>
+  </insert>
+  
+  <!-- 【固定】：删除记录 -->
+  <delete id="delete" parameterType="java.lang.reflect.Array">
+      DELETE FROM sys_company WHERE id in 
+   <foreach collection="array" index="index" item="item" open="(" separator="," close=")">  
+           #{item}   
+   </foreach>
+  </delete>
+  
+  <!-- 【固定】：更新记录（支持一条及多条） -->
+  <update id="update" parameterType="java.util.Collection">
+	UPDATE sys_company
+	<trim prefix="set" suffixOverrides=",">
+		<!-- 更新的字段集合 -->
+		<trim prefix="company_code =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.companyCode}
+             </foreach>
+		</trim>
+		<trim prefix="company_name =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.companyName}
+             </foreach>
+		</trim>
+		<trim prefix="address =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.address}
+             </foreach>
+		</trim>
+		<trim prefix="tel =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.tel}
+             </foreach>
+		</trim>
+		<trim prefix="parent_company_id =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.parentCompanyId}
+             </foreach>
+		</trim>
+		<trim prefix="remark =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.remark}
+             </foreach>
+		</trim>
+		
+		
+		<trim prefix="modifier =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.modifier}
+             </foreach>
+		</trim>
+		<trim prefix="modify_time =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.modifyTime}
+             </foreach>
+		</trim>
+		<trim prefix="rec_ver =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.recVer}
+             </foreach>
+		</trim>
+		<trim prefix="company_id =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.companyId}
+             </foreach>
+		</trim>
+	</trim>
+	WHERE
+	<foreach collection="list" separator="or" item="item" index="index" >
+		<if test="item.id!=null">
+		(ID=#{item.id}) AND (REC_VER=#{item.recVer}-1)
+		</if>
+	</foreach>	
+  </update>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from sys_company
+    from sys_company sc
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from sys_company
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.xibin.wms.pojo.SysCompany" >
-    insert into sys_company (id, company_code, company_name, 
-      address, tel, parent_company_id, 
-      remark, creator, createTime, 
-      modifier, modifyTime, rec_ver
-      )
-    values (#{id,jdbcType=INTEGER}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
-      #{address,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR}, #{parentCompanyId,jdbcType=INTEGER}, 
-      #{remark,jdbcType=VARCHAR}, #{creator,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
-      #{modifier,jdbcType=INTEGER}, #{modifytime,jdbcType=TIMESTAMP}, #{recVer,jdbcType=INTEGER}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.xibin.wms.pojo.SysCompany" >
-    insert into sys_company
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="companyCode != null" >
-        company_code,
-      </if>
-      <if test="companyName != null" >
-        company_name,
-      </if>
-      <if test="address != null" >
-        address,
-      </if>
-      <if test="tel != null" >
-        tel,
-      </if>
-      <if test="parentCompanyId != null" >
-        parent_company_id,
-      </if>
-      <if test="remark != null" >
-        remark,
-      </if>
-      <if test="creator != null" >
-        creator,
-      </if>
-      <if test="createtime != null" >
-        createTime,
-      </if>
-      <if test="modifier != null" >
-        modifier,
-      </if>
-      <if test="modifytime != null" >
-        modifyTime,
-      </if>
-      <if test="recVer != null" >
-        rec_ver,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="companyCode != null" >
-        #{companyCode,jdbcType=VARCHAR},
-      </if>
-      <if test="companyName != null" >
-        #{companyName,jdbcType=VARCHAR},
-      </if>
-      <if test="address != null" >
-        #{address,jdbcType=VARCHAR},
-      </if>
-      <if test="tel != null" >
-        #{tel,jdbcType=VARCHAR},
-      </if>
-      <if test="parentCompanyId != null" >
-        #{parentCompanyId,jdbcType=INTEGER},
-      </if>
-      <if test="remark != null" >
-        #{remark,jdbcType=VARCHAR},
-      </if>
-      <if test="creator != null" >
-        #{creator,jdbcType=INTEGER},
-      </if>
-      <if test="createtime != null" >
-        #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="modifier != null" >
-        #{modifier,jdbcType=INTEGER},
-      </if>
-      <if test="modifytime != null" >
-        #{modifytime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="recVer != null" >
-        #{recVer,jdbcType=INTEGER},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xibin.wms.pojo.SysCompany" >
-    update sys_company
-    <set >
-      <if test="companyCode != null" >
-        company_code = #{companyCode,jdbcType=VARCHAR},
-      </if>
-      <if test="companyName != null" >
-        company_name = #{companyName,jdbcType=VARCHAR},
-      </if>
-      <if test="address != null" >
-        address = #{address,jdbcType=VARCHAR},
-      </if>
-      <if test="tel != null" >
-        tel = #{tel,jdbcType=VARCHAR},
-      </if>
-      <if test="parentCompanyId != null" >
-        parent_company_id = #{parentCompanyId,jdbcType=INTEGER},
-      </if>
-      <if test="remark != null" >
-        remark = #{remark,jdbcType=VARCHAR},
-      </if>
-      <if test="creator != null" >
-        creator = #{creator,jdbcType=INTEGER},
-      </if>
-      <if test="createtime != null" >
-        createTime = #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="modifier != null" >
-        modifier = #{modifier,jdbcType=INTEGER},
-      </if>
-      <if test="modifytime != null" >
-        modifyTime = #{modifytime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="recVer != null" >
-        rec_ver = #{recVer,jdbcType=INTEGER},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.xibin.wms.pojo.SysCompany" >
-    update sys_company
-    set company_code = #{companyCode,jdbcType=VARCHAR},
-      company_name = #{companyName,jdbcType=VARCHAR},
-      address = #{address,jdbcType=VARCHAR},
-      tel = #{tel,jdbcType=VARCHAR},
-      parent_company_id = #{parentCompanyId,jdbcType=INTEGER},
-      remark = #{remark,jdbcType=VARCHAR},
-      creator = #{creator,jdbcType=INTEGER},
-      createTime = #{createtime,jdbcType=TIMESTAMP},
-      modifier = #{modifier,jdbcType=INTEGER},
-      modifyTime = #{modifytime,jdbcType=TIMESTAMP},
-      rec_ver = #{recVer,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+  <select id="selectAllByPage" resultMap="BaseResultMap" parameterType="Map">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_company sc
+    <include refid="findByConditionWhere" />
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.xibin.wms.pojo.SysCompany">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_company sc
+    <include refid="findByExampleWhere" />
+  </select>
+  <select id="selectByKey" resultMap="BaseResultMap" resultType="java.util.List"  parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_company sc
+    where sc.company_code = #{companyCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

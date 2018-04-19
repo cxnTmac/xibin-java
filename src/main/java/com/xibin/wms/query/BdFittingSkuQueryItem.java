@@ -11,61 +11,65 @@ public class BdFittingSkuQueryItem implements Serializable {
 
 	private Integer id;
 
-    private String fittingSkuCode;
+	private String fittingSkuCode;
 
-    private String fittingSkuName;
+	private String quickCode;
 
-    private String fittingSkuStatus;
+	private String fittingSkuName;
 
-    private String fittingSkuRemark;
+	private String fittingSkuStatus;
 
-    private String manufacturer;
+	private String fittingSkuRemark;
 
-    private String materialquality;
+	private String manufacturer;
 
-    private String packageCode;
+	private String materialquality;
 
-    private String uomDesc;
+	private String packageCode;
 
-    private Double price;
+	private String uomDesc;
 
-    private String modelCode;
+	private Double price;
 
-    private String fittingTypeCode;
-    
-    private String fittingTypeName;
+	private String modelCode;
 
-    private String type;
+	private String fittingTypeCode;
 
-    private String def1;
+	private String fittingTypeName;
 
-    private String def2;
+	private String type;
 
-    private String def3;
+	private String isShow;
 
-    private String def4;
+	private String def1;
 
-    private String def5;
-    
-    private String fittingSkuPicUrl;
-    
-    private String fittingSkuPicName;
-    
-    private String needToAssemble;
-    
-    private String assembleType;
+	private String def2;
 
-    private Date createTime;
+	private String def3;
 
-    private Integer creator;
+	private String def4;
 
-    private Date modifyTime;
+	private String def5;
 
-    private Integer modifier;
+	private String fittingSkuPicUrl;
 
-    private Integer recVer;
+	private String fittingSkuPicName;
 
-    private Integer companyId;
+	private String needToAssemble;
+
+	private String assembleType;
+
+	private Date createTime;
+
+	private Integer creator;
+
+	private Date modifyTime;
+
+	private Integer modifier;
+
+	private Integer recVer;
+
+	private Integer companyId;
 
 	public Integer getId() {
 		return id;
@@ -218,7 +222,7 @@ public class BdFittingSkuQueryItem implements Serializable {
 	public void setDef5(String def5) {
 		this.def5 = def5;
 	}
-	
+
 	public String getFittingSkuPicUrl() {
 		return fittingSkuPicUrl;
 	}
@@ -298,6 +302,21 @@ public class BdFittingSkuQueryItem implements Serializable {
 	public void setAssembleType(String assembleType) {
 		this.assembleType = assembleType;
 	}
-    
-    
+
+	public String getQuickCode() {
+		return quickCode;
+	}
+
+	public void setQuickCode(String quickCode) {
+		this.quickCode = quickCode;
+	}
+
+	public String getIsShow() {
+		return isShow;
+	}
+
+	public void setIsShow(String isShow) {
+		this.isShow = isShow;
+	}
+
 }

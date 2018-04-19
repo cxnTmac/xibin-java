@@ -8,6 +8,7 @@
     <result column="period" property="period" jdbcType="VARCHAR" />
     <result column="bill_date" property="billDate" jdbcType="TIMESTAMP" />
     <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="from_order_type" property="fromOrderType" jdbcType="VARCHAR" />
     <result column="bill" property="bill" jdbcType="DOUBLE" />
     <result column="checker" property="checker" jdbcType="DOUBLE" />
     <result column="complete_date" property="completeDate" jdbcType="TIMESTAMP" />
@@ -21,7 +22,7 @@
     <result column="book_id" property="bookId" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    fv.id, fv.voucher_num, fv.voucher_word,fv.period, fv.bill_date, fv.status, fv.bill,fv.checker, fv.complete_date, fv.remark, fv.creator, fv.create_time, fv.modifier, fv.modify_time, fv.rec_ver, 
+    fv.id, fv.voucher_num, fv.voucher_word,fv.period, fv.bill_date, fv.status,fv.from_order_type, fv.bill,fv.checker, fv.complete_date, fv.remark, fv.creator, fv.create_time, fv.modifier, fv.modify_time, fv.rec_ver, 
     fv.company_id,fv.book_id
   </sql>
   
@@ -42,6 +43,8 @@
           <if test="billDate!=null and billDate!=''"> AND fv.bill_date = #{billDate}</if>
           <if test="status!=null and status!=''"> AND fv.status = #{status}</if>
           <if test="bill!=null and bill!=''"> AND fv.bill = #{bill}</if>
+          <if test="billDateFm!=null and billDateFm!=''"> AND fv.bill_date &gt;= #{billDateFm}</if>
+          <if test="billDateTo!=null and billDateTo!=''"> AND fv.bill_date &lt;= #{billDateTo}</if>
           <if test="checker!=null and checker!=''"> AND fv.checker = #{checker}</if>
           <if test="companyId!=null and companyId!=''"> AND fv.company_id = #{companyId}</if>
           <if test="bookId!=null and bookId!=''"> AND fv.book_id = #{bookId}</if>
@@ -60,11 +63,11 @@
   <!-- 【固定】：插入记录（支持一条及多条） -->
   <insert id="insert" parameterType="java.util.Collection">
   	INSERT INTO fi_voucher
-          (id, voucher_num,voucher_word,period,bill_date,status,bill,checker,complete_date,remark, creator, create_time, modifier, modify_time, rec_ver, 
+          (id, voucher_num,voucher_word,period,bill_date,status,from_order_type,bill,checker,complete_date,remark, creator, create_time, modifier, modify_time, rec_ver, 
     company_id,book_id)
        VALUES
   		<foreach collection="list" item="item" index="index" separator=",">
-	   		(#{item.id}, #{item.voucherNum}, #{item.voucherWord},#{item.period}, #{item.billDate},#{item.status}, #{item.bill},#{item.checker}, #{item.completeDate}, 
+	   		(#{item.id}, #{item.voucherNum}, #{item.voucherWord},#{item.period}, #{item.billDate},#{item.status},#{item.fromOrderType}, #{item.bill},#{item.checker}, #{item.completeDate}, 
       #{item.remark},#{item.creator},#{item.createTime}, #{item.modifier},  #{item.modifyTime},
       #{item.recVer}, #{item.companyId},#{item.bookId})
   		</foreach>
@@ -106,6 +109,11 @@
 		<trim prefix="status =case"  suffix="end,"  >
              <foreach collection="list" item="item" index="index">
                      when (ID=#{item.id}) then #{item.status}
+             </foreach>
+		</trim>
+		<trim prefix="from_order_type =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.fromOrderType}
              </foreach>
 		</trim>
 		<trim prefix="bill =case"  suffix="end,"  >
@@ -200,12 +208,10 @@
 	FROM
 		fi_voucher fv
 	WHERE 1=1
-		AND fcb.company_id = #{companyId,jdbcType=INTEGER}
-	    AND fcb.book_id = #{bookId,jdbcType=INTEGER}
 	<if test="companyId!=null and companyId!=''">and fv.company_id = #{companyId,jdbcType=INTEGER}</if>
 	<if test="period!=null and period!=''">and fv.period = #{period,jdbcType=VARCHAR}</if>
 	<if test="voucherWord!=null and voucherWord!=''">and fv.voucher_word = #{voucherWord,jdbcType=VARCHAR}</if>
-	<if test="bookId!=null and bookId!=''">and >fv.book_id = #{bookId,jdbcType=INTEGER}</if>
+	<if test="bookId!=null and bookId!=''">and fv.book_id = #{bookId,jdbcType=INTEGER}</if>
   </select>
   
   <update id="updateStatus" parameterType="Map">

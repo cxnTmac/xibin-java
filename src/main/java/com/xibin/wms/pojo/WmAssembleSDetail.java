@@ -23,13 +23,13 @@ public class WmAssembleSDetail extends BaseModel{
 	
 	private String status;
 	
-	private Integer num;
+	private Double num;
 	
-	private Integer allocNum;
+	private Double allocNum;
 	
-	private Integer pickNum;
+	private Double pickNum;
 	
-	private Integer assembleNum;
+	private Double assembleNum;
 	
 	private String assembleLoc;
 	
@@ -97,35 +97,35 @@ public class WmAssembleSDetail extends BaseModel{
 		this.status = status;
 	}
 
-	public Integer getNum() {
+	public Double getNum() {
 		return num;
 	}
 
-	public void setNum(Integer num) {
+	public void setNum(Double num) {
 		this.num = num;
 	}
 
-	public Integer getAllocNum() {
+	public Double getAllocNum() {
 		return allocNum;
 	}
 
-	public void setAllocNum(Integer allocNum) {
+	public void setAllocNum(Double allocNum) {
 		this.allocNum = allocNum;
 	}
 
-	public Integer getPickNum() {
+	public Double getPickNum() {
 		return pickNum;
 	}
 
-	public void setPickNum(Integer pickNum) {
+	public void setPickNum(Double pickNum) {
 		this.pickNum = pickNum;
 	}
 
-	public Integer getAssembleNum() {
+	public Double getAssembleNum() {
 		return assembleNum;
 	}
 
-	public void setAssembleNum(Integer assembleNum) {
+	public void setAssembleNum(Double assembleNum) {
 		this.assembleNum = assembleNum;
 	}
 

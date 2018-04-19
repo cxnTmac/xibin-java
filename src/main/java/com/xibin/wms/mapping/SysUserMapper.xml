@@ -154,7 +154,7 @@
     from sys_user su
     <include refid="findByConditionWhere" />
   </select>
-  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.xibin.wms.pojo.BdArea">
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.xibin.wms.pojo.SysUser">
     select 
     <include refid="Base_Column_List" />
     from sys_user su

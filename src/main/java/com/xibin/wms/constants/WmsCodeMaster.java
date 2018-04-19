@@ -2,7 +2,7 @@ package com.xibin.wms.constants;
 
 public enum WmsCodeMaster {
 	/****************************************
-	 * AUDIT审核状态 WM_AUDIT_STATUS	    *
+	 * AUDIT审核状态 WM_AUDIT_STATUS *
 	 ****************************************
 	 */
 	/**
@@ -17,9 +17,9 @@ public enum WmsCodeMaster {
 	 * AUDIT不审核
 	 */
 	AUDIT_NOT("99"),
-	
+
 	/****************************************
-	 * 	入库单状态	WM_INBOUND_STATUS	    *
+	 * 入库单状态 WM_INBOUND_STATUS *
 	 ****************************************
 	 */
 	/**
@@ -43,7 +43,47 @@ public enum WmsCodeMaster {
 	 */
 	INB_CLOSE("99"),
 	/****************************************
-	 *  SO出库单状态	SYS_WM_SO_STATUS        *
+	 * 入库单类型 WM_INBOUND_TYPE *
+	 ****************************************
+	 */
+	/**
+	 * 赊购入库
+	 */
+	INB_CI("CI"),
+	/**
+	 * 现购入库
+	 */
+	INB_XG("XG"),
+	/**
+	 * 退货入库
+	 */
+	INB_RI("RI"),
+	/**
+	 * 盘盈入库
+	 */
+	INB_PI("PI"),
+	/****************************************
+	 * 出库单类型 WM_OUTBOUND_TYPE *
+	 ****************************************
+	 */
+	/**
+	 * 赊销出库
+	 */
+	OUB_PO("PO"),
+	/**
+	 * 现销出库
+	 */
+	OUB_XX("XX"),
+	/**
+	 * 退货出库
+	 */
+	OUB_RO("RO"),
+	/**
+	 * 盘亏出库
+	 */
+	OUB_CO("CO"),
+	/****************************************
+	 * SO出库单状态 SYS_WM_SO_STATUS *
 	 ****************************************
 	 */
 	/**
@@ -67,6 +107,10 @@ public enum WmsCodeMaster {
 	 */
 	SO_FULL_PICKING("60"),
 	/**
+	 * SO超量拣货
+	 */
+	SO_OVER_PICKING("65"),
+	/**
 	 * SO部分发货
 	 */
 	SO_PART_SHIPPING("70"),
@@ -83,7 +127,43 @@ public enum WmsCodeMaster {
 	 */
 	SO_CLOSE("99"),
 	/****************************************
-	 * 	库存操作类型	WM_ACT_TRAN_TYPE	    *
+	 * 库存操作类型 WM_ACT_TRAN_TYPE *
+	 ****************************************
+	 */
+	/**
+	 * 创建
+	 */
+	ASS_NEW("00"),
+	/**
+	 * 已生成子件明细
+	 */
+	ASS_CREATE_S("10"),
+	/**
+	 * 部分分配
+	 */
+	ASS_PART_ALLOC("20"),
+	/**
+	 * 完全分配
+	 */
+	ASS_FULL_ALLOC("30"),
+	/**
+	 * 取消拣货
+	 */
+	ASS_PART_PICK("40"),
+	/**
+	 * 完全拣货
+	 */
+	ASS_FULL_PICK("50"),
+	/**
+	 * 部分组装
+	 */
+	ASS_PART("60"),
+	/**
+	 * 完全组装
+	 */
+	ASS_FULL("70"),
+	/****************************************
+	 * 库存操作类型 WM_ACT_TRAN_TYPE *
 	 ****************************************
 	 */
 	/**
@@ -107,9 +187,18 @@ public enum WmsCodeMaster {
 	 */
 	ACT_PICK("PICK"),
 	/**
+	 * 拣货
+	 */
+	ACT_OVER_PICK("OVER_PICK"),
+
+	/**
 	 * 取消拣货
 	 */
 	ACT_CANCEL_PICK("CANCEL_PICK"),
+	/**
+	 * 取消超量拣货
+	 */
+	ACT_CANCEL_OVER_PICK("CANCEL_OVER_PICK"),
 	/**
 	 * 分配
 	 */
@@ -118,10 +207,38 @@ public enum WmsCodeMaster {
 	 * 取消分配
 	 */
 	ACT_CANCEL_ALLOC("CANCEL_ALLOC"),
+	/**
+	 * 组装消耗子件
+	 */
+	ACT_ASSEMBLE_S("ASSEMBLE_S"),
+	/**
+	 * 组装生成父件
+	 */
+	ACT_ASSEMBLE_F("ASSEMBLE_F"),
+	/**
+	 * 库存移动
+	 */
+	ACT_MOVE("MOVE"),
 	/****************************************
-	 * 	库存操作类型	WM_ORDER_TYPE	    *
+	 * 功能权限类型 SYS_FUNCTION_TYPE *
 	 ****************************************
 	 */
+	/**
+	 * 菜单
+	 */
+	FUNCTION_M("M"),
+	/**
+	 * 按钮
+	 */
+	FUNCTION_B("B"),
+	/****************************************
+	 * 库存操作类型 WM_ORDER_TYPE *
+	 ****************************************
+	 */
+	/**
+	 * 组装
+	 */
+	ORDER_ASS("ASS"),
 	/**
 	 * 收货
 	 */
@@ -135,7 +252,7 @@ public enum WmsCodeMaster {
 	public String getCode() {
 		return this.code;
 	}
-	
+
 	private WmsCodeMaster(String code) {
 		this.code = code;
 	}

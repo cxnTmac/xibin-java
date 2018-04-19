@@ -65,16 +65,17 @@
   <sql id="findByConditionWhere">
       WHERE 1=1
           <if test="id!=null and id!=''"> AND woa.id = #{id}</if>
-          <if test="orderNo!=null and orderNo!=''"> AND woa.order_no LIKE CONCAT('%', '${orderNo}','%')</if>
+          <if test="orderNo!=null and orderNo!=''"> AND woa.order_no = #{orderNo}</if>
           <if test="lineNo!=null and lineNo!=''"> AND woa.line_no LIKE CONCAT('%','${lineNo}','%')</if>
           <if test="skuCode!=null and skuCode!=''"> AND woa.sku_code LIKE CONCAT('%','${skuCode}','%')</if>
           <if test="allocLocCode!=null and allocLocCode!=''"> AND woa.alloc_loc_code LIKE CONCAT('%','${allocLocCode}','%')</if>
           <if test="status!=null and status!=''"> AND woa.status = #{status}</if>
+          <if test="multiStatus!=null and multiStatus!=''"> AND woa.status IN (${multiStatus})</if>
           <if test="companyId!=null and companyId!=''"> AND woa.company_id = #{companyId}</if>
           <if test="warehouseId!=null and warehouseId!=''"> AND woa.warehouse_id = #{warehouseId}</if>
-          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> AND woa.order_no LIKE CONCAT('%','${fuzzyCondition}','%')</if>
-          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> OR woa.line_no LIKE CONCAT('%','${fuzzyCondition}','%')</if>
-          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> OR woa.sku_code LIKE CONCAT('%','${fuzzyCondition}','%')</if>
+          <if test="fuzzyCondition!=null and fuzzyCondition!=''">AND (woa.order_no LIKE CONCAT('%','${fuzzyCondition}','%')
+          OR woa.line_no LIKE CONCAT('%','${fuzzyCondition}','%')
+          OR woa.sku_code LIKE CONCAT('%','${fuzzyCondition}','%'))</if>
   </sql>
   <!-- 条件 -->
   <sql id="findByExampleWhere">
@@ -104,7 +105,7 @@
   <!-- 【固定】：插入记录（支持一条及多条） -->
   <insert id="insert" parameterType="java.util.Collection">
   	INSERT INTO wm_outbound_alloc
-          (id, order_no, line_no,alloc_id,status,buyer_code, sku_code, outbound_num, outbound_price, alloc_loc_code,to_loc_code, pick_op,pick_time,ship_op,ship_time,cost,remark, 
+          (id, order_no, line_no,alloc_id,status,buyer_code, sku_code, outbound_num,outbound_price, alloc_loc_code,to_loc_code, pick_op,pick_time,ship_op,ship_time,cost,remark, 
     creator, create_time, modifier, modify_time, rec_ver, company_id, warehouse_id)
        VALUES
   		<foreach collection="list" item="item" index="index" separator=",">
@@ -310,7 +311,10 @@
       			#{item}  
      	  	</foreach>
 	</if>
-	AND woh.status = '20'
+	<if test="outboundType!=null and outboundType!=''">
+    AND woh.outbound_type = #{outboundType}
+    </if>
+	AND woh.status = '99'
 	AND woa.company_id = #{companyId,jdbcType=INTEGER}
 	AND woa.warehouse_id = #{warehouseId,jdbcType=INTEGER}
  </select>

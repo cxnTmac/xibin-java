@@ -67,12 +67,12 @@
           <if test="city!=null and city!=''"> AND bc.status  = #{city}</if>
           <if test="county!=null and county!=''"> AND bc.county  = #{county}</if>
           <if test="companyId!=null and companyId!=''"> AND bc.company_id = #{companyId}</if>
-          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> AND bc.customer_code LIKE CONCAT('%','${fuzzyCondition}','%')</if>
-          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> OR bc.customer_name LIKE CONCAT('%','${fuzzyCondition}','%')</if>
-          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> OR bc.province LIKE CONCAT('%','${fuzzyCondition}','%')</if>
-          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> OR bc.city LIKE CONCAT('%','${fuzzyCondition}','%')</if>
-          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> OR bc.county LIKE CONCAT('%','${fuzzyCondition}','%')</if>
-          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> OR bc.customer_address LIKE CONCAT('%','${fuzzyCondition}','%')</if>
+          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> AND (bc.customer_code LIKE CONCAT('%','${fuzzyCondition}','%') 
+          OR bc.customer_name LIKE CONCAT('%','${fuzzyCondition}','%') 
+          OR bc.province LIKE CONCAT('%','${fuzzyCondition}','%') 
+          OR bc.city LIKE CONCAT('%','${fuzzyCondition}','%') 
+          OR bc.county LIKE CONCAT('%','${fuzzyCondition}','%') 
+          OR bc.customer_address LIKE CONCAT('%','${fuzzyCondition}','%'))</if>
   </sql>
   <!-- 条件 -->
   <sql id="findByExampleWhere">

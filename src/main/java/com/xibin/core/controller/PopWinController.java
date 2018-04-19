@@ -1,6 +1,5 @@
 package com.xibin.core.controller;
 
-
 import java.util.List;
 import java.util.Map;
 
@@ -23,43 +22,46 @@ import com.xibin.core.page.pojo.PageEntity;
 import com.xibin.core.security.pojo.UserDetails;
 
 @Controller
-@RequestMapping(value = "/popWin", produces = {"application/json;charset=UTF-8"})
+@RequestMapping(value = "/popWin", produces = { "application/json;charset=UTF-8" })
 public class PopWinController {
 	@Autowired
 	@Qualifier("sqlSessionFactory")
 	SqlSessionFactory factory;
 	@Autowired
 	HttpSession session;
+
 	/**
 	 * 带分页的放大镜弹出框公用查询方法
+	 * 
 	 * @param request
 	 * @param model
 	 * @return
 	 */
 	@RequestMapping("/query")
 	@ResponseBody
-	public PageEntity<?> query(HttpServletRequest request,Model model){
+	public PageEntity<?> query(HttpServletRequest request, Model model) {
 		PageEntity pageEntity = new PageEntity();
-		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
+		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
 		Page<?> page = new Page();
-		//配置分页参数
+		// 配置分页参数
 		page.setPageNo(Integer.parseInt(request.getParameter("page")));
 		page.setPageSize(Integer.parseInt(request.getParameter("size")));
 		Map map = JSON.parseObject(request.getParameter("queryConditions"));
 		map.put("page", page);
 		map.put("companyId", userDetails.getCompanyId());
-		if(request.getParameter("sys").equals("fin")){
+		if (request.getParameter("sys").equals("fin")) {
 			map.put("bookId", userDetails.getBookId());
 		}
 		SqlSession sqlsession = factory.openSession();
-		List<?> list = sqlsession.selectList(getClassPath(request.getParameter("sys"))+request.getParameter("queryType"),map);
-		
+		List<?> list = sqlsession
+				.selectList(getClassPath(request.getParameter("sys")) + request.getParameter("queryType"), map);
+		sqlsession.close();
 		pageEntity.setList(list);
 		pageEntity.setSize(page.getTotalRecord());
 		return pageEntity;
 	}
-	
-	private String getClassPath(String sys){
-		return "com.xibin."+sys+".dao.";
+
+	private String getClassPath(String sys) {
+		return "com.xibin." + sys + ".dao.";
 	}
 }

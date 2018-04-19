@@ -36,7 +36,7 @@ import com.xibin.wms.service.WmInboundHeaderService;
 import com.xibin.wms.service.WmInboundReceiveService;
 
 @Controller
-@RequestMapping(value = "/inbound", produces = {"application/json;charset=UTF-8"})
+@RequestMapping(value = "/inbound", produces = { "application/json;charset=UTF-8" })
 public class InboundController {
 	@Resource
 	private WmInboundHeaderService inboundHeaderService;
@@ -46,94 +46,98 @@ public class InboundController {
 	private WmInboundReceiveService inboundReceiveService;
 	@Autowired
 	private UtVoucherService utVoucherService;
-	@Autowired  
+	@Autowired
 	private HttpSession session;
+
 	@RequestMapping("/showAllInboundOrder")
 	@ResponseBody
-	public PageEntity<WmInboundHeaderQueryItem> showAllInboundOrder(HttpServletRequest request,Model model){ 
-	    // 开始分页 
-		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
+	public PageEntity<WmInboundHeaderQueryItem> showAllInboundOrder(HttpServletRequest request, Model model) {
+		// 开始分页
+		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
 		PageEntity<WmInboundHeaderQueryItem> pageEntity = new PageEntity<WmInboundHeaderQueryItem>();
 		Page<?> page = new Page();
 		Map map = new HashMap<>();
-		//配置分页参数
-		if(request.getParameter("page")!=null&&request.getParameter("size")!=null){
+		// 配置分页参数
+		if (request.getParameter("page") != null && request.getParameter("size") != null) {
 			page.setPageNo(Integer.parseInt(request.getParameter("page")));
 			page.setPageSize(Integer.parseInt(request.getParameter("size")));
 			map = JSONObject.parseObject(request.getParameter("conditions"));
 			map.put("page", page);
-			
-		}else{
-		    map = JSONObject.parseObject(request.getParameter("conditions"));
+
+		} else {
+			map = JSONObject.parseObject(request.getParameter("conditions"));
 		}
-		if(userDetails != null){
+		if (userDetails != null) {
 			map.put("companyId", userDetails.getCompanyId());
 			map.put("warehouseId", userDetails.getWarehouseId());
 		}
 		List<WmInboundHeaderQueryItem> list = inboundHeaderService.getAllInboundOrderByPage(map);
 		pageEntity.setList(list);
 		pageEntity.setSize(page.getTotalRecord());
-	    return  pageEntity;
-	 }
+		return pageEntity;
+	}
+
 	@RequestMapping("/showAllInboundDetail")
 	@ResponseBody
-	public PageEntity<WmInboundDetailQueryItem> showAllInboundDetail(HttpServletRequest request,Model model){ 
-	    // 开始分页 
-		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
+	public PageEntity<WmInboundDetailQueryItem> showAllInboundDetail(HttpServletRequest request, Model model) {
+		// 开始分页
+		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
 		PageEntity<WmInboundDetailQueryItem> pageEntity = new PageEntity<WmInboundDetailQueryItem>();
 		Page<?> page = new Page();
-		//配置分页参数
+		// 配置分页参数
 		page.setPageNo(Integer.parseInt(request.getParameter("page")));
 		page.setPageSize(Integer.parseInt(request.getParameter("size")));
 		Map map = JSONObject.parseObject(request.getParameter("conditions"));
 		map.put("page", page);
-		if(userDetails != null){
+		if (userDetails != null) {
 			map.put("companyId", userDetails.getCompanyId());
 			map.put("warehouseId", userDetails.getWarehouseId());
 		}
 		List<WmInboundDetailQueryItem> list = inboundDetailService.getAllInboundDetailByPage(map);
 		pageEntity.setList(list);
 		pageEntity.setSize(page.getTotalRecord());
-	    return  pageEntity;
-	 }
-	
+		return pageEntity;
+	}
+
 	@RequestMapping("/showAllClosedOrderInboundDetail")
 	@ResponseBody
-	public List<WmInboundDetailQueryItem> showAllClosedOrderInboundDetail(HttpServletRequest request,Model model){ 
-	    // 开始分页 
-		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
+	public List<WmInboundDetailQueryItem> showAllClosedOrderInboundDetail(HttpServletRequest request, Model model) {
+		// 开始分页
+		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
 		Map map = JSONObject.parseObject(request.getParameter("conditions"));
-		if(userDetails != null){
+		if (userDetails != null) {
 			map.put("companyId", userDetails.getCompanyId());
 			map.put("warehouseId", userDetails.getWarehouseId());
 		}
-		return  inboundDetailService.selectClosedOrderDetail(map);
+		return inboundDetailService.selectClosedOrderDetail(map);
 
-	 }
+	}
+
 	@RequestMapping("/showAllInboundRecieve")
 	@ResponseBody
-	public PageEntity<WmInboundRecieveQueryItem> showAllInboundRecieve(HttpServletRequest request,Model model){ 
-	    // 开始分页  
-		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
+	public PageEntity<WmInboundRecieveQueryItem> showAllInboundRecieve(HttpServletRequest request, Model model) {
+		// 开始分页
+		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
 		PageEntity<WmInboundRecieveQueryItem> pageEntity = new PageEntity<WmInboundRecieveQueryItem>();
 		Page<?> page = new Page();
-		//配置分页参数
+		// 配置分页参数
 		page.setPageNo(Integer.parseInt(request.getParameter("page")));
 		page.setPageSize(Integer.parseInt(request.getParameter("size")));
 		Map map = JSONObject.parseObject(request.getParameter("conditions"));
 		map.put("page", page);
-		if(userDetails != null){
+		if (userDetails != null) {
 			map.put("companyId", userDetails.getCompanyId());
 			map.put("warehouseId", userDetails.getWarehouseId());
 		}
 		List<WmInboundRecieveQueryItem> list = inboundReceiveService.getAllInboundRecByPage(map);
 		pageEntity.setList(list);
 		pageEntity.setSize(page.getTotalRecord());
-	    return  pageEntity;
-	 }
+		return pageEntity;
+	}
+
 	@RequestMapping("/saveInboundOrder")
 	@ResponseBody
-	public Message  saveInboundOrder(HttpServletRequest request,Model model){ 
+	public Message saveInboundOrder(HttpServletRequest request, Model model) {
 		Message message = new Message();
 		String str = request.getParameter("order");
 		WmInboundHeader bean = JSON.parseObject(str, WmInboundHeader.class);
@@ -142,7 +146,7 @@ public class InboundController {
 			message.setCode(200);
 			message.setData(queryItem);
 			message.setMsg("操作成功！");
-			
+
 		} catch (BusinessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -150,15 +154,18 @@ public class InboundController {
 			message.setMsg(e.getMessage());
 		}
 		return message;
-	 }
+	}
+
 	@RequestMapping("/createVoucher")
 	@ResponseBody
-	public Message  createVoucher(@RequestParam("ids") String ids,@RequestParam("period")String period,@RequestParam("type")String type){ 
-		return utVoucherService.createVoucher(ids.split(","),period,type);
+	public Message createVoucher(@RequestParam("ids") String ids, @RequestParam("period") String period,
+			@RequestParam("type") String type) {
+		return utVoucherService.createVoucher(ids.split(","), period, type);
 	}
+
 	@RequestMapping("/removeInboundDetail")
 	@ResponseBody
-	public Message  removeInboundDetail(@RequestParam("ids") int [] ids,@RequestParam("orderNo") String  orderNo){ 
+	public Message removeInboundDetail(@RequestParam("ids") int[] ids, @RequestParam("orderNo") String orderNo) {
 		Message message = new Message();
 		try {
 			this.inboundDetailService.removeInboundDetail(ids, orderNo);
@@ -172,9 +179,10 @@ public class InboundController {
 		}
 		return message;
 	}
+
 	@RequestMapping("/saveInboundDetail")
 	@ResponseBody
-	public Message  saveInboundDetail(HttpServletRequest request,Model model){ 
+	public Message saveInboundDetail(HttpServletRequest request, Model model) {
 		Message message = new Message();
 		String str = request.getParameter("detail");
 		WmInboundDetail bean = JSON.parseObject(str, WmInboundDetail.class);
@@ -190,30 +198,29 @@ public class InboundController {
 		}
 		return message;
 	}
+
 	@RequestMapping("/getInboundHeaderByOderNo")
 	@ResponseBody
-	public WmInboundHeaderQueryItem getInboundHeaderByOderNo(HttpServletRequest request,Model model){
+	public WmInboundHeaderQueryItem getInboundHeaderByOderNo(HttpServletRequest request, Model model) {
 		String orderNo = request.getParameter("orderNo");
 		List<WmInboundHeaderQueryItem> list = inboundHeaderService.selectByKey(orderNo);
-		if(!list.isEmpty()){
+		if (!list.isEmpty()) {
 			return list.get(0);
 		}
 		return new WmInboundHeaderQueryItem();
 	}
-	
+
 	@RequestMapping("/receiveByDetailRecIds")
 	@ResponseBody
-	public Message  receiveByDetailRecIds(@RequestParam("detailRecIds") int [] detailRecIds){ 
+	public Message receiveByDetailRecIds(@RequestParam("detailRecIds") int[] detailRecIds) {
 		Message message = new Message();
-		
+
 		return message;
 	}
-	
-	
-	
+
 	@RequestMapping("/receive")
 	@ResponseBody
-	public Message  receive(HttpServletRequest request,Model model){ 
+	public Message receive(HttpServletRequest request, Model model) {
 		Message message = new Message();
 		String str = request.getParameter("receive");
 		WmInboundRecieve bean = JSON.parseObject(str, WmInboundRecieve.class);
@@ -227,24 +234,25 @@ public class InboundController {
 		}
 		return message;
 	}
+
 	@RequestMapping("/cancelReceive")
 	@ResponseBody
-	public Message  cancelReceive(HttpServletRequest request,Model model){ 
+	public Message cancelReceive(HttpServletRequest request, Model model) {
 		Message message = new Message();
 		String str = request.getParameter("receive");
 		WmInboundRecieve bean = JSON.parseObject(str, WmInboundRecieve.class);
 		message = this.inboundReceiveService.cancelReceiveByRecieve(bean);
 		return message;
 	}
-	 
+
 	@RequestMapping("/audit")
 	@ResponseBody
-	public Message  audit(@RequestParam("orderNos") String [] orderNos){ 
+	public Message audit(@RequestParam("orderNos") String[] orderNos) {
 		Message message = new Message();
 		List<String> errors = new ArrayList<String>();
 		WmInboundHeaderQueryItem queryItem = new WmInboundHeaderQueryItem();
 		try {
-			for(String orderNo:orderNos){
+			for (String orderNo : orderNos) {
 				queryItem = inboundHeaderService.audit(orderNo);
 			}
 		} catch (BusinessException e) {
@@ -252,27 +260,28 @@ public class InboundController {
 			e.printStackTrace();
 			errors.add(e.getMessage());
 		}
-		if(errors.size()==0){
+		if (errors.size() == 0) {
 			message.setCode(200);
 			message.setMsg("操作成功！");
-			if(orderNos.length == 1){
+			if (orderNos.length == 1) {
 				message.setData(queryItem);
 			}
-		}else{
+		} else {
 			message.setCode(100);
 			message.setMsgs(errors);
 		}
 		message.converMsgsToMsg("</br>");
 		return message;
-	} 
+	}
+
 	@RequestMapping("/cancelAudit")
 	@ResponseBody
-	public Message  cancelAudit(@RequestParam("orderNos") String [] orderNos){ 
+	public Message cancelAudit(@RequestParam("orderNos") String[] orderNos) {
 		Message message = new Message();
 		List<String> errors = new ArrayList<String>();
 		WmInboundHeaderQueryItem queryItem = new WmInboundHeaderQueryItem();
 		try {
-			for(String orderNo:orderNos){
+			for (String orderNo : orderNos) {
 				queryItem = inboundHeaderService.cancelAudit(orderNo);
 			}
 		} catch (BusinessException e) {
@@ -280,28 +289,29 @@ public class InboundController {
 			e.printStackTrace();
 			errors.add(e.getMessage());
 		}
-		if(errors.size()==0){
+		if (errors.size() == 0) {
 			message.setCode(200);
 			message.setMsg("操作成功！");
-			if(orderNos.length == 1){
+			if (orderNos.length == 1) {
 				message.setData(queryItem);
 			}
-		}else{
+		} else {
 			message.setCode(100);
 			message.setMsgs(errors);
 		}
 		message.converMsgsToMsg("</br>");
 		return message;
 	}
+
 	@RequestMapping("/close")
 	@ResponseBody
-	public Message  close(@RequestParam("orderNos") String  orderNos){ 
+	public Message close(@RequestParam("orderNos") String orderNos) {
 		Message message = new Message();
-		String []orderArray = orderNos.split(",");
+		String[] orderArray = orderNos.split(",");
 		List<String> errors = new ArrayList<String>();
 		WmInboundHeaderQueryItem queryItem = new WmInboundHeaderQueryItem();
 		try {
-			for(String orderNo:orderArray){
+			for (String orderNo : orderArray) {
 				queryItem = inboundHeaderService.close(orderNo);
 			}
 		} catch (BusinessException e) {
@@ -309,26 +319,27 @@ public class InboundController {
 			e.printStackTrace();
 			errors.add(e.getMessage());
 		}
-		if(errors.size()==0){
+		if (errors.size() == 0) {
 			message.setCode(200);
 			message.setMsg("操作成功！");
-			if(orderArray.length == 1){
+			if (orderArray.length == 1) {
 				message.setData(queryItem);
 			}
-		}else{
+		} else {
 			message.setCode(100);
 			message.setMsgs(errors);
 		}
 		message.converMsgsToMsg("</br>");
 		return message;
 	}
+
 	@RequestMapping("/remove")
 	@ResponseBody
-	public Message  remove(@RequestParam("orderNos") String [] orderNos){ 
+	public Message remove(@RequestParam("orderNos") String[] orderNos) {
 		Message message = new Message();
 		List<String> errors = new ArrayList<String>();
 		try {
-			for(String orderNo:orderNos){
+			for (String orderNo : orderNos) {
 				inboundHeaderService.remove(orderNo);
 			}
 		} catch (BusinessException e) {
@@ -336,22 +347,22 @@ public class InboundController {
 			e.printStackTrace();
 			errors.add(e.getMessage());
 		}
-		if(errors.size()==0){
+		if (errors.size() == 0) {
 			message.setCode(200);
 			message.setMsg("操作成功！");
-		}else{
+		} else {
 			message.setCode(100);
 			message.setMsgs(errors);
 		}
 		message.converMsgsToMsg("");
 		return message;
 	}
-	
+
 	@RequestMapping("/accountByOrderNo")
 	@ResponseBody
-	public Message accountByOrderNo(HttpServletRequest request,Model model){
+	public Message accountByOrderNo(HttpServletRequest request, Model model) {
 		String orderNo = request.getParameter("orderNo");
-		Message message= new Message();
+		Message message = new Message();
 		try {
 			message = inboundHeaderService.accountByOrderNo(orderNo);
 			return message;
@@ -363,18 +374,19 @@ public class InboundController {
 			return message;
 		}
 	}
-	
+
 	@RequestMapping("/accountByOrderNos")
 	@ResponseBody
-	public Message accountByOrderNos(@RequestParam("orderNos") String  orderNos){
+	public Message accountByOrderNos(@RequestParam("orderNos") String orderNos,
+			@RequestParam("inboundType") String inboundType) {
 		List<String> orderNoList = new ArrayList<String>();
-		String []orderArray = orderNos.split(",");
-		for(String orderNo:orderArray){
+		String[] orderArray = orderNos.split(",");
+		for (String orderNo : orderArray) {
 			orderNoList.add(orderNo);
 		}
-		Message message= new Message();
+		Message message = new Message();
 		try {
-			message = inboundHeaderService.accountByOrderNos(orderNoList);
+			message = inboundHeaderService.accountByOrderNos(orderNoList, inboundType);
 			return message;
 		} catch (BusinessException e) {
 			// TODO Auto-generated catch block

@@ -9,7 +9,9 @@
     <result column="type" property="type" jdbcType="VARCHAR" />
     <result column="balance" property="balance" jdbcType="DOUBLE" />
     <result column="is_parent" property="isParent" jdbcType="VARCHAR" />
+    <result column="is_child" property="isChild" jdbcType="VARCHAR" />
     <result column="auxiliary" property="auxiliary" jdbcType="INTEGER" />
+    <result column="book_id" property="bookId" jdbcType="INTEGER" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -19,7 +21,7 @@
     <result column="company_id" property="companyId" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    fc.id, fc.course_no, fc.course_name,fc.to_go, fc.type, fc.balance, fc.is_parent,fc.auxiliary,fc.remark, fc.creator, fc.create_time, fc.modifier, fc.modify_time, fc.rec_ver, 
+    fc.id, fc.course_no, fc.course_name,fc.to_go, fc.type, fc.balance, fc.is_parent,fc.is_child,fc.auxiliary,fc.book_id,fc.remark, fc.creator, fc.create_time, fc.modifier, fc.modify_time, fc.rec_ver, 
     fc.company_id,fc.book_id
   </sql>
   
@@ -37,13 +39,22 @@
           
           <if test="courseNo!=null and courseNo!=''"> AND fc.course_no = #{courseNo}</if>
           <if test="courseName!=null and courseName!=''"> AND fc.course_name = #{courseName}</if>
+          <if test="isChild!=null and isChild!=''"> AND fc.is_child = #{isChild}</if>
           <if test="companyId!=null and companyId!=''"> AND fc.company_id = #{companyId}</if>
+          <if test="bookId!=null and bookId!=''"> AND fc.book_id = #{bookId}</if>
+          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> 
+          AND (fc.course_no LIKE CONCAT('%','${fuzzyCondition}','%')
+          OR fc.course_name LIKE CONCAT('%','${fuzzyCondition}','%'))</if>
   </sql>
   <!-- 条件 -->
   <sql id="findByExampleWhere">
       WHERE 1=1
           <if test="id!=null and id!=''"> AND fc.id = #{id}</if>
+          <if test="courseNo!=null and courseNo!=''"> AND fc.course_no = #{courseNo}</if>
+          <if test="courseName!=null and courseName!=''"> AND fc.course_name = #{courseName}</if>
+          <if test="isChild!=null and isChild!=''"> AND fc.is_child = #{isChild}</if>
           <if test="companyId!=null and companyId!=''"> AND fc.company_id = #{companyId}</if>
+          <if test="bookId!=null and bookId!=''"> AND fc.book_id = #{bookId}</if>
   </sql>
   <!-- 【固定】：按主键查询 -->
   <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String">
@@ -59,11 +70,11 @@
   <!-- 【固定】：插入记录（支持一条及多条） -->
   <insert id="insert" parameterType="java.util.Collection">
   	INSERT INTO fi_course
-          (id, course_no,course_name,to_go,type,balance,is_parent,auxiliary,remark, creator, create_time, modifier, modify_time, rec_ver, 
+          (id, course_no,course_name,to_go,type,balance,is_parent,is_child,auxiliary,book_id,remark, creator, create_time, modifier, modify_time, rec_ver, 
     company_id)
        VALUES
   		<foreach collection="list" item="item" index="index" separator=",">
-	   		(#{item.id}, #{item.courseNo}, #{item.courseName},#{item.toGo}, #{item.type},#{item.balance}, #{item.isParent},#{item.auxiliary},
+	   		(#{item.id}, #{item.courseNo}, #{item.courseName},#{item.toGo}, #{item.type},#{item.balance}, #{item.isParent},#{item.isChild},#{item.auxiliary},#{item.bookId},
       #{item.remark},#{item.creator},#{item.createTime}, #{item.modifier},  #{item.modifyTime},
       #{item.recVer}, #{item.companyId})
   		</foreach>
@@ -112,9 +123,19 @@
                      when (ID=#{item.id}) then #{item.isParent}
              </foreach>
 		</trim>
+		<trim prefix="is_child =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.isChild}
+             </foreach>
+		</trim>
 		<trim prefix="auxiliary =case"  suffix="end,"  >
              <foreach collection="list" item="item" index="index">
                      when (ID=#{item.id}) then #{item.auxiliary}
+             </foreach>
+		</trim>
+		<trim prefix="book_id =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.bookId}
              </foreach>
 		</trim>
 		<trim prefix="remark =case"  suffix="end,"  >

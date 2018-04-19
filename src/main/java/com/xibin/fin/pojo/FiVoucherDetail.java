@@ -2,58 +2,60 @@ package com.xibin.fin.pojo;
 
 import java.util.Date;
 
-import javax.lang.model.type.PrimitiveType;
-
 import com.xibin.core.daosupport.BaseModel;
 
-public class FiVoucherDetail extends BaseModel{
-    /**
+public class FiVoucherDetail extends BaseModel {
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 33040803802413473L;
 
 	private Integer id;
 
-    private Integer voucherId;
-    
-    private String courseNo;
-    
-    private Integer lineNo;
-    
-    private String toGo;
-    
-    private Double debit;
-    
-    private Double credit;
-    
-    private String summary;
+	private Integer voucherId;
 
-    private Integer auxiId;
-    
-    private Double amount;
-    
-    private Double price;
-    
-    private String remark;
+	private String courseNo;
 
-    private Integer creator;
+	private String editable;
 
-    private Date createTime;
+	private Integer lineNo;
 
-    private Integer modifier;
+	private String toGo;
 
-    private Date modifyTime;
+	private Double debit;
 
-    private Integer recVer;
+	private Double credit;
 
-    private Integer companyId;
-    
-    private Integer bookId;
+	private String summary;
 
+	private Integer auxiId;
+
+	private Double amount;
+
+	private Double price;
+
+	private String remark;
+
+	private Integer creator;
+
+	private Date createTime;
+
+	private Integer modifier;
+
+	private Date modifyTime;
+
+	private Integer recVer;
+
+	private Integer companyId;
+
+	private Integer bookId;
+
+	@Override
 	public Integer getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(Integer id) {
 		this.id = id;
 	}
@@ -146,42 +148,52 @@ public class FiVoucherDetail extends BaseModel{
 		this.remark = remark;
 	}
 
+	@Override
 	public Integer getCreator() {
 		return creator;
 	}
 
+	@Override
 	public void setCreator(Integer creator) {
 		this.creator = creator;
 	}
 
+	@Override
 	public Date getCreateTime() {
 		return createTime;
 	}
 
+	@Override
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
 
+	@Override
 	public Integer getModifier() {
 		return modifier;
 	}
 
+	@Override
 	public void setModifier(Integer modifier) {
 		this.modifier = modifier;
 	}
 
+	@Override
 	public Date getModifyTime() {
 		return modifyTime;
 	}
 
+	@Override
 	public void setModifyTime(Date modifyTime) {
 		this.modifyTime = modifyTime;
 	}
 
+	@Override
 	public Integer getRecVer() {
 		return recVer;
 	}
 
+	@Override
 	public void setRecVer(Integer recVer) {
 		this.recVer = recVer;
 	}
@@ -200,6 +212,14 @@ public class FiVoucherDetail extends BaseModel{
 
 	public void setBookId(Integer bookId) {
 		this.bookId = bookId;
+	}
+
+	public String getEditable() {
+		return editable;
+	}
+
+	public void setEditable(String editable) {
+		this.editable = editable;
 	}
 
 }

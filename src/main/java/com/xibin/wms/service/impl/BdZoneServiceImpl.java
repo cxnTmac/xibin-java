@@ -7,22 +7,19 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.xibin.core.costants.Constants;
 import com.xibin.core.daosupport.BaseManagerImpl;
 import com.xibin.core.daosupport.BaseMapper;
 import com.xibin.core.exception.BusinessException;
 import com.xibin.core.security.pojo.UserDetails;
-import com.xibin.wms.dao.BdAreaMapper;
 import com.xibin.wms.dao.BdZoneMapper;
-import com.xibin.wms.pojo.BdArea;
 import com.xibin.wms.pojo.BdZone;
 import com.xibin.wms.query.BdZoneQueryItem;
-import com.xibin.wms.service.BdAreaService;
 import com.xibin.wms.service.BdZoneService;
 
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.REQUIRED)
 @Service
 public class BdZoneServiceImpl extends BaseManagerImpl implements BdZoneService {
@@ -30,11 +27,13 @@ public class BdZoneServiceImpl extends BaseManagerImpl implements BdZoneService 
 	private HttpSession session;
 	@Autowired
 	private BdZoneMapper bdZoneMapper;
+
 	@Override
 	public BdZone getZoneById(int id) {
 		// TODO Auto-generated method stub
 		return bdZoneMapper.selectByPrimaryKey(id);
 	}
+
 	@Override
 	public List<BdZoneQueryItem> getAllZoneByPage(Map map) {
 		// TODO Auto-generated method stub
@@ -42,25 +41,26 @@ public class BdZoneServiceImpl extends BaseManagerImpl implements BdZoneService 
 	}
 
 	@Override
-	public int removeZone(int id, String zoneCode) throws BusinessException{
+	public int removeZone(int id, String zoneCode) throws BusinessException {
 		// TODO Auto-generated method stub
-		if(!deleteBeforeCheck(zoneCode)){
-			throw new BusinessException("该区域编码["+zoneCode+"]已被库区引用，不能删除");
-		}else{
-			int []ids = {id};
+		if (!deleteBeforeCheck(zoneCode)) {
+			throw new BusinessException("该区域编码[" + zoneCode + "]已被库区引用，不能删除");
+		} else {
+			int[] ids = { id };
 			return this.delete(ids);
 		}
 	}
 
 	@Override
-	public BdZone saveZone(BdZone model) throws BusinessException{
+	public BdZone saveZone(BdZone model) throws BusinessException {
 		// TODO Auto-generated method stub
-		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
+		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
 		model.setCompanyId(userDetails.getCompanyId());
 		model.setWarehouseId(userDetails.getWarehouseId());
-		List<BdZoneQueryItem> list = bdZoneMapper.selectByKey(model.getZoneCode(),model.getCompanyId().toString(),model.getWarehouseId().toString());
-		if(list.size()>0&&model.getId()==0){
-			throw new BusinessException("编码：["+model.getZoneCode()+"] 已存在，不能重复！");
+		List<BdZoneQueryItem> list = bdZoneMapper.selectByKey(model.getZoneCode(), model.getCompanyId().toString(),
+				model.getWarehouseId().toString());
+		if (list.size() > 0 && model.getId() == 0) {
+			throw new BusinessException("编码：[" + model.getZoneCode() + "] 已存在，不能重复！");
 		}
 		return (BdZone) this.save(model);
 	}
@@ -68,8 +68,9 @@ public class BdZoneServiceImpl extends BaseManagerImpl implements BdZoneService 
 	@Override
 	public List<BdZoneQueryItem> selectByKey(String zoneCode) {
 		// TODO Auto-generated method stub
-		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
-		return bdZoneMapper.selectByKey(zoneCode,userDetails.getCompanyId().toString(),userDetails.getWarehouseId().toString());
+		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
+		return bdZoneMapper.selectByKey(zoneCode, userDetails.getCompanyId().toString(),
+				userDetails.getWarehouseId().toString());
 	}
 
 	@Override
@@ -78,7 +79,7 @@ public class BdZoneServiceImpl extends BaseManagerImpl implements BdZoneService 
 		return bdZoneMapper;
 	}
 
-	private boolean deleteBeforeCheck(String areaCode){
+	private boolean deleteBeforeCheck(String areaCode) {
 		return true;
 	}
 }

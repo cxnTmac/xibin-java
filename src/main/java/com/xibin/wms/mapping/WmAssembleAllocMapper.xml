@@ -10,7 +10,8 @@
     <result column="status" property="status" jdbcType="VARCHAR" />
     <result column="alloc_loc" property="allocLoc" jdbcType="VARCHAR" />
   	<result column="to_loc" property="toLoc" jdbcType="VARCHAR" />	
-    <result column="alloc_num" property="allocNum" jdbcType="INTEGER" />
+    <result column="alloc_num" property="allocNum" jdbcType="DOUBLE" />
+    <result column="cost" property="cost" jdbcType="DOUBLE" />
     <result column="pick_op" property="pickOp" jdbcType="INTEGER" />
     <result column="pick_time" property="pickTime" jdbcType="TIMESTAMP" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
@@ -32,7 +33,8 @@
     <result column="status" property="status" jdbcType="VARCHAR" />
     <result column="alloc_loc" property="allocLoc" jdbcType="VARCHAR" />
   	<result column="to_loc" property="toLoc" jdbcType="VARCHAR" />	
-    <result column="alloc_num" property="allocNum" jdbcType="INTEGER" />
+    <result column="alloc_num" property="allocNum" jdbcType="DOUBLE" />
+    <result column="cost" property="cost" jdbcType="DOUBLE" />
     <result column="pick_op" property="pickOp" jdbcType="INTEGER" />
     <result column="pick_time" property="pickTime" jdbcType="TIMESTAMP" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
@@ -45,7 +47,7 @@
     <result column="warehouse_id" property="warehouseId" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    waa.id, waa.order_no,waa.s_line_no,waa.alloc_id,waa.fitting_sku_code,waa.status,waa.alloc_loc, waa.to_loc,waa.alloc_num,waa.pick_op,waa.pick_time,waa.remark, 
+    waa.id, waa.order_no,waa.s_line_no,waa.alloc_id,waa.fitting_sku_code,waa.status,waa.alloc_loc, waa.to_loc,waa.alloc_num,waa.pick_op,waa.pick_time,waa.cost,waa.remark, 
     waa.creator, waa.create_time, waa.modifier, waa.modify_time, waa.rec_ver, waa.company_id, waa.warehouse_id
   </sql>
   
@@ -67,7 +69,7 @@
           <if test="orderNo!=null and orderNo!=''"> AND waa.order_no = #{orderNo}</if>
           <if test="sLineNo!=null and sLineNo!=''"> AND waa.s_line_no = #{sLineNo}</if>
           <if test="allocId!=null and allocId!=''"> AND waa.alloc_id = #{allocId}</if>
-          <if test="fittingSkuCode!=null and fittingSkuCode''"> AND waa.fitting_sku_code = #{fittingSkuCode}</if>
+          <if test="fittingSkuCode!=null and fittingSkuCode!=''"> AND waa.fitting_sku_code = #{fittingSkuCode}</if>
           <if test="companyId!=null and companyId!=''"> AND waa.company_id = #{companyId}</if>
           <if test="warehouseId!=null and warehouseId!=''"> AND waa.warehouse_id = #{warehouseId}</if>
   </sql>
@@ -85,12 +87,12 @@
   <!-- 【固定】：插入记录（支持一条及多条） -->
   <insert id="insert" parameterType="java.util.Collection">
   	INSERT INTO wm_assemble_alloc
-          (id, order_no,s_line_no,alloc_id,fitting_sku_code,status,alloc_num,alloc_loc,to_loc,pick_op,pick_time,remark, 
+          (id, order_no,s_line_no,alloc_id,fitting_sku_code,status,alloc_num,alloc_loc,to_loc,pick_op,pick_time,cost,remark, 
     creator,create_time,modifier, modify_time, rec_ver, company_id, warehouse_id)
        VALUES
   		<foreach collection="list" item="item" index="index" separator=",">
 	   		(#{item.id}, #{item.orderNo}, #{item.sLineNo},#{item.allocId},#{item.fittingSkuCode},#{item.status},#{item.allocNum},#{item.allocLoc},#{item.toLoc},
-      #{item.pickOp}, #{item.pickTime},#{item.remark}, #{item.creator},#{item.createTime},#{item.modifier}, #{item.modifyTime}, 
+      #{item.pickOp}, #{item.pickTime},#{item.cost},#{item.remark}, #{item.creator},#{item.createTime},#{item.modifier}, #{item.modifyTime}, 
       #{item.recVer}, #{item.companyId},#{item.warehouseId})
   		</foreach>
   </insert>
@@ -157,6 +159,11 @@
 		<trim prefix="pick_time =case"  suffix="end,"  >
              <foreach collection="list" item="item" index="index">
                      when (ID=#{item.id}) then #{item.pickTime}
+             </foreach>
+		</trim>
+		<trim prefix="cost =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.cost}
              </foreach>
 		</trim>
 		<trim prefix="remark =case"  suffix="end,"  >

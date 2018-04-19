@@ -10,24 +10,24 @@ import com.xibin.wms.query.WmInboundHeaderQueryItem;
 
 public interface WmInboundHeaderService {
 	public WmInboundHeader getInboundOrderById(int userId);
-	
+
 	public List<WmInboundHeaderQueryItem> getAllInboundOrderByPage(Map map);
-	
+
 	public List<WmInboundHeaderQueryItem> selectByKey(String orderNo);
-	
+
 	public List<WmInboundHeader> selectByExample(WmInboundHeader model);
-	
-	public WmInboundHeaderQueryItem saveInbound (WmInboundHeader model) throws BusinessException;
-	
+
+	public WmInboundHeaderQueryItem saveInbound(WmInboundHeader model) throws BusinessException;
+
 	public int remove(String orderNo) throws BusinessException;
-	
+
 	public WmInboundHeaderQueryItem audit(String orderNo) throws BusinessException;
-	
+
 	public WmInboundHeaderQueryItem close(String orderNo) throws BusinessException;
-	
+
 	public WmInboundHeaderQueryItem cancelAudit(String orderNo) throws BusinessException;
-	
-	public Message accountByOrderNo(String orderNo)  throws BusinessException;
-	
-	public Message accountByOrderNos(List<String> orderNos)  throws BusinessException;
+
+	public Message accountByOrderNo(String orderNo) throws BusinessException;
+
+	public Message accountByOrderNos(List<String> orderNos, String inboundType) throws BusinessException;
 }

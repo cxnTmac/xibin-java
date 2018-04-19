@@ -3,48 +3,50 @@ package com.xibin.wms.query;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.xibin.core.daosupport.BaseModel;
-
-public class WmOutboundHeaderQueryItem implements Serializable{
+public class WmOutboundHeaderQueryItem implements Serializable {
 	private Integer id;
 
-    private String orderNo;
+	private String orderNo;
 
-    private String buyerCode;
-    
-    private String status;
+	private String buyerCode;
 
-    private Date orderTime;
+	private String buyerName;
 
-    private Integer auditOp;
-    
-    private String auditStatus;
+	private String status;
 
-    private Date auditTime;
+	private Date orderTime;
 
-    private String outboundType;
-    
-    private String isCalculated;
-    
-    private Integer voucherId;
-    
-    private Integer costVoucherId;
+	private Integer auditOp;
 
-    private String remark;
+	private String auditStatus;
 
-    private Integer creator;
+	private Date auditTime;
 
-    private Date createTime;
+	private String outboundType;
 
-    private Integer modifier;
+	private String isCalculated;
 
-    private Date modifyTime;
+	private String isCostCalculated;
 
-    private Integer recVer;
+	private Integer voucherId;
 
-    private Integer companyId;
+	private Integer costVoucherId;
 
-    private Integer warehouseId;
+	private String remark;
+
+	private Integer creator;
+
+	private Date createTime;
+
+	private Integer modifier;
+
+	private Date modifyTime;
+
+	private Integer recVer;
+
+	private Integer companyId;
+
+	private Integer warehouseId;
 
 	public Integer getId() {
 		return id;
@@ -205,5 +207,21 @@ public class WmOutboundHeaderQueryItem implements Serializable{
 	public void setCostVoucherId(Integer costVoucherId) {
 		this.costVoucherId = costVoucherId;
 	}
-	
+
+	public String getIsCostCalculated() {
+		return isCostCalculated;
+	}
+
+	public void setIsCostCalculated(String isCostCalculated) {
+		this.isCostCalculated = isCostCalculated;
+	}
+
+	public String getBuyerName() {
+		return buyerName;
+	}
+
+	public void setBuyerName(String buyerName) {
+		this.buyerName = buyerName;
+	}
+
 }

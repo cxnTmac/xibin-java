@@ -34,6 +34,16 @@
     <result column="outbound_price" property="outboundPrice" jdbcType="DOUBLE" />
     <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
   </resultMap>
+  <resultMap id="SaleHistoryResultMap" type="com.xibin.wms.query.WmOutboundDetailSaleHistoryQueryItem" >
+    <result column="fitting_sku_name" property="fittingSkuName" jdbcType="VARCHAR" />
+    <result column="model_code" property="modelCode" jdbcType="VARCHAR" />
+    <result column="sku_code" property="skuCode" jdbcType="VARCHAR" />
+    <result column="buyer_code" property="buyerCode" jdbcType="VARCHAR" />
+    <result column="customer_name" property="customerName" jdbcType="VARCHAR" />
+    <result column="outbound_num" property="outboundNum" jdbcType="DOUBLE" />
+    <result column="outbound_price" property="outboundPrice" jdbcType="DOUBLE" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+  </resultMap>
   <resultMap id="QueryResultMap" type="com.xibin.wms.query.WmOutboundDetailQueryItem" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="order_no" property="orderNo" jdbcType="VARCHAR" />
@@ -90,9 +100,9 @@
           <if test="costVoucherNo!=null and costVoucherNo!=''"> AND wod.cost_voucher_no LIKE CONCAT('%','${costVoucherNo}','%')</if>
           <if test="companyId!=null and companyId!=''"> AND wod.company_id = #{companyId}</if>
           <if test="warehouseId!=null and warehouseId!=''"> AND wod.warehouse_id = #{warehouseId}</if>
-          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> AND wod.order_no LIKE CONCAT('%','${fuzzyCondition}','%')</if>
-          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> OR wod.line_no LIKE CONCAT('%','${fuzzyCondition}','%')</if>
-          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> OR wod.sku_code LIKE CONCAT('%','${fuzzyCondition}','%')</if>
+          <if test="fuzzyCondition!=null and fuzzyCondition!=''">AND (wod.order_no LIKE CONCAT('%','${fuzzyCondition}','%')
+          OR wod.line_no LIKE CONCAT('%','${fuzzyCondition}','%')
+          OR wod.sku_code LIKE CONCAT('%','${fuzzyCondition}','%'))</if>
   </sql>
   <!-- 条件 -->
   <sql id="findByExampleWhere">
@@ -350,6 +360,36 @@
     wod.warehouse_id = #{warehouseId,jdbcType=INTEGER}
   </select>
   
+  <select id="queryHistorySale" resultMap="SaleHistoryResultMap" resultType="java.util.List"  parameterType="Map" >
+    SELECT
+	  	bfs.fitting_sku_name,
+		bfs.model_code,
+		wod.sku_code,
+		wod.buyer_code,
+		bc.customer_name,
+		wod.modify_time,
+		wod.outbound_num,
+		wod.outbound_price
+	FROM
+		wm_outbound_detail wod
+	LEFT JOIN bd_fitting_sku bfs ON bfs.company_id = wod.company_id
+	AND bfs.fitting_sku_code = wod.sku_code
+	LEFT JOIN bd_customer bc ON bc.customer_code = wod.buyer_code
+	AND bc.company_id = wod.company_id
+    WHERE 1=1
+    and wod.status = '80'
+    <if test="buyerCode!=null and buyerCode!=''">and wod.buyer_code = #{buyerCode}</if>
+    <if test="fittingSkuName!=null and fittingSkuName!=''"> AND bfs.fitting_sku_name LIKE CONCAT('%','${fittingSkuName}','%')</if>
+    <if test="modelCode!=null and modelCode!=''"> AND bfs.model_code LIKE CONCAT('%','${modelCode}','%')</if>
+    <if test="fittingTypeCode!=null and fittingTypeCode!=''"> AND bfs.fitting_type_code = #{fittingTypeCode}</if>
+    <if test="fittingSkuCode!=null and fittingSkuCode!=''">and wod.sku_code = #{fittingSkuCode}</if>
+    <if test="orderTimeFm!=null and orderTimeFm!=''"> AND wod.modify_time &gt;= #{orderTimeFm}</if>
+    <if test="orderTimeTo!=null and orderTimeTo!=''"> AND wod.modify_time &lt;= #{orderTimeTo}</if>
+    <if test="companyId!=null and companyId!=''">and wod.company_id = #{companyId}</if>
+    <if test="warehouseId!=null and warehouseId!=''">and wod.warehouse_id = #{warehouseId}</if>
+    order by wod.buyer_code,wod.sku_code,wod.modify_time
+  </select>
+  
   
   <select id="selectClosedOrderDetail"   resultMap="QueryResultMap"   parameterType="Map" >
     select
@@ -367,6 +407,8 @@
     <include refid="findByConditionWhere" /> 
     <if test="headerStatus!=null and headerStatus!=''">AND woh.status = #{headerStatus}</if>
     <if test="outboundType!=null and outboundType!=''">AND woh.outbound_type = #{outboundType}</if>
+    <if test="isCalculated!=null and isCalculated!=''">AND woh.is_calculated = #{isCalculated}</if>
+    <if test="isCostCalculated!=null and isCostCalculated!=''">AND woh.is_cost_calculated = #{isCostCalculated}</if>
     <if test="orderTimeFm!=null and orderTimeFm!=''"> AND woh.order_time &gt;= #{orderTimeFm}</if>
     <if test="orderTimeTo!=null and orderTimeTo!=''"> AND woh.order_time &lt;= #{orderTimeTo} </if>
     order by woh.order_no,wod.line_no
@@ -395,6 +437,9 @@
       			#{item}  
      	  	</foreach>
 	</if>
+	<if test="outboundType!=null and outboundType!=''">
+    AND woh.outbound_type = #{outboundType}
+    </if>
 	AND woh.status = '99'
 	AND wod.company_id = #{companyId,jdbcType=INTEGER}
 	AND wod.warehouse_id = #{warehouseId,jdbcType=INTEGER}

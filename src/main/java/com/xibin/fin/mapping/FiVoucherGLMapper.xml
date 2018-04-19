@@ -25,6 +25,7 @@
 	LEFT JOIN fi_course fc ON 
 			fvd.course_no = fc.course_no 
 			AND fvd.company_id = fc.company_id
+			AND fvd.book_id = fc.book_id
 	LEFT JOIN fi_voucher fv ON 
 			fvd.voucher_id = fv.id 
 			AND fvd.company_id = fv.company_id
@@ -66,6 +67,7 @@
 	LEFT JOIN fi_course fc ON 
 			fvd.course_no = fc.course_no 
 			AND fvd.company_id = fc.company_id
+			AND fvd.book_id = fc.book_id
 	LEFT JOIN fi_voucher fv ON 
 			fvd.voucher_id = fv.id 
 			AND fvd.company_id = fv.company_id

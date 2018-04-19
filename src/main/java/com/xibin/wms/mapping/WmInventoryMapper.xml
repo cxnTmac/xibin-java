@@ -188,13 +188,13 @@
     wi.company_id = bfs.company_id
     <include refid="findByConditionWhere" />
   </select>
-  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.xibin.wms.pojo.BdLoc">
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.xibin.wms.pojo.WmInventory">
     select 
     <include refid="Base_Column_List" />
     from wm_inventory wi
     <include refid="findByExampleWhere" />
   </select>
-  <select id="getAvailableInvByExample" resultMap="BaseResultMap" parameterType="com.xibin.wms.pojo.BdLoc">
+  <select id="getAvailableInvByExample" resultMap="BaseResultMap" parameterType="com.xibin.wms.pojo.WmInventory">
     select 
     <include refid="Base_Column_List" />
     from wm_inventory wi
@@ -206,7 +206,25 @@
     and wi.inv_available_num>0
     and bl.use_type not in('SS','KT')
   </select>
-  <select id="selectByKey" resultMap="QueryResultMap" resultType="java.util.List"  parameterType="java.lang.String" >
+  <select id="getAvailableInvByPage" resultMap="QueryResultMap" parameterType="Map">
+    select 
+    <include refid="Base_Column_List" />
+    ,bfs.fitting_sku_name as sku_name
+    ,bfs.model_code
+    from wm_inventory wi
+    left join bd_fitting_sku bfs on
+    wi.sku_code = bfs.fitting_sku_code
+    and 
+    wi.company_id = bfs.company_id
+    left join bd_loc bl on
+    bl.loc_code = wi.loc_code
+    and bl.company_id =wi.company_id
+    and bl.warehouse_id = wi.warehouse_id
+    <include refid="findByExampleWhere" />
+    and wi.inv_available_num>0
+    and bl.use_type not in('SS','KT')
+  </select>
+  <select id="selectByKey" resultMap="QueryResultMap" resultType="java.util.List"  parameterType="Map" >
     select 
     <include refid="Base_Column_List" />
     ,bfs.fitting_sku_name as sku_name

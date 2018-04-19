@@ -4,51 +4,55 @@ import java.util.Date;
 
 import com.xibin.core.daosupport.BaseModel;
 
-public class WmOutboundHeader extends BaseModel{
-    private Integer id;
+public class WmOutboundHeader extends BaseModel {
+	private Integer id;
 
-    private String orderNo;
+	private String orderNo;
 
-    private String buyerCode;
-    
-    private String status;
+	private String buyerCode;
 
-    private Date orderTime;
+	private String status;
 
-    private Integer auditOp;
-    
-    private String auditStatus;
+	private Date orderTime;
 
-    private Date auditTime;
+	private Integer auditOp;
 
-    private String outboundType;
+	private String auditStatus;
 
-    private String isCalculated;
-    
-    private Integer voucherId;
-    
-    private Integer costVoucherId;
+	private Date auditTime;
 
-    private String remark;
+	private String outboundType;
 
-    private Integer creator;
+	private String isCalculated;
 
-    private Date createTime;
+	private String isCostCalculated;
 
-    private Integer modifier;
+	private Integer voucherId;
 
-    private Date modifyTime;
+	private Integer costVoucherId;
 
-    private Integer recVer;
+	private String remark;
 
-    private Integer companyId;
+	private Integer creator;
 
-    private Integer warehouseId;
+	private Date createTime;
 
+	private Integer modifier;
+
+	private Date modifyTime;
+
+	private Integer recVer;
+
+	private Integer companyId;
+
+	private Integer warehouseId;
+
+	@Override
 	public Integer getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(Integer id) {
 		this.id = id;
 	}
@@ -117,42 +121,52 @@ public class WmOutboundHeader extends BaseModel{
 		this.remark = remark;
 	}
 
+	@Override
 	public Integer getCreator() {
 		return creator;
 	}
 
+	@Override
 	public void setCreator(Integer creator) {
 		this.creator = creator;
 	}
 
+	@Override
 	public Date getCreateTime() {
 		return createTime;
 	}
 
+	@Override
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
 
+	@Override
 	public Integer getModifier() {
 		return modifier;
 	}
 
+	@Override
 	public void setModifier(Integer modifier) {
 		this.modifier = modifier;
 	}
 
+	@Override
 	public Date getModifyTime() {
 		return modifyTime;
 	}
 
+	@Override
 	public void setModifyTime(Date modifyTime) {
 		this.modifyTime = modifyTime;
 	}
 
+	@Override
 	public Integer getRecVer() {
 		return recVer;
 	}
 
+	@Override
 	public void setRecVer(Integer recVer) {
 		this.recVer = recVer;
 	}
@@ -204,6 +218,13 @@ public class WmOutboundHeader extends BaseModel{
 	public void setCostVoucherId(Integer costVoucherId) {
 		this.costVoucherId = costVoucherId;
 	}
-	
-	
+
+	public String getIsCostCalculated() {
+		return isCostCalculated;
+	}
+
+	public void setIsCostCalculated(String isCostCalculated) {
+		this.isCostCalculated = isCostCalculated;
+	}
+
 }

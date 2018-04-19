@@ -7,147 +7,153 @@
     <result column="function_name" property="functionName" jdbcType="VARCHAR" />
     <result column="is_enable" property="isEnable" jdbcType="VARCHAR" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="component" property="component" jdbcType="VARCHAR" />
+    <result column="path" property="path" jdbcType="VARCHAR" />
+    <result column="icon" property="icon" jdbcType="VARCHAR" />
+    <result column="f_id" property="fId" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
-    <result column="create_time" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="modifier" property="modifier" jdbcType="INTEGER" />
-    <result column="modify_time" property="modifytime" jdbcType="TIMESTAMP" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
     <result column="rec_ver" property="recVer" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, function_code, function_name, is_enable, remark, creator, createTime, modifier, 
-    modifyTime, rec_ver
+    sf.id, sf.function_code, sf.function_name, sf.is_enable, sf.component,sf.path,sf.icon,sf.f_id,sf.type,sf.remark, sf.creator, sf.create_time, sf.modifier, 
+    sf.modify_time, sf.rec_ver
   </sql>
+  
+  <!-- 条件 -->
+  <sql id="findByExampleWhere">
+      WHERE 1=1
+          <if test="id!=null and id!=''"> AND sf.id = #{id}</if>
+          <if test="functionCode!=null and functionCode!=''"> AND function_code= #{functionCode}</if>
+          <if test="component!=null and component!=''"> AND component= #{component}</if>
+          <if test="isEnable!=null and isEnable!=''"> AND is_enable = #{isEnable}</if>
+  </sql>
+  <!-- 【固定】：按主键查询 -->
+  <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	  select
+      <include refid="Base_Column_List"/>
+      from sys_function
+      WHERE id in
+      <foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+	           #{item}
+	  </foreach>
+  </select>
+  
+  <!-- 【固定】：插入记录（支持一条及多条） -->
+  <insert id="insert" parameterType="java.util.Collection">
+  	INSERT INTO sys_function
+          (id,function_code,function_name,is_enable,component,path,icon,f_id,type,remark,creator,create_time,modifier, 
+    modify_time,rec_ver)
+       VALUES
+  		<foreach collection="list" item="item" index="index" separator=",">
+	   		(#{item.id}, #{item.functionCode}, #{item.functionName},#{item.isEnable}, #{item.component},#{item.path}, #{item.icon},#{item.fId},#{item.type},
+      #{item.remark}, #{item.createTime}, 
+      #{item.creator}, #{item.modifyTime}, #{item.modifier}, 
+      #{item.recVer}, #{item.companyId})
+  		</foreach>
+  </insert>
+  
+  <!-- 【固定】：删除记录 -->
+  <delete id="delete" parameterType="java.lang.reflect.Array">
+      DELETE FROM sys_function WHERE ID in 
+   <foreach collection="array" index="index" item="item" open="(" separator="," close=")">  
+           #{item}   
+   </foreach>
+  </delete>
+  
+  <!-- 【固定】：更新记录（支持一条及多条） -->
+  <update id="update" parameterType="java.util.Collection">
+	UPDATE sys_function
+	<trim prefix="set" suffixOverrides=",">
+		<!-- 更新的字段集合 -->
+		<trim prefix="function_code =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.functionCode}
+             </foreach>
+		</trim>
+		<trim prefix="function_name =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.functionName}
+             </foreach>
+		</trim>
+		<trim prefix="is_enable =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.isEnable}
+             </foreach>
+		</trim>
+		<trim prefix="component =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.component}
+             </foreach>
+		</trim>
+		<trim prefix="path =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.path}
+             </foreach>
+		</trim>
+		<trim prefix="icon =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.icon}
+             </foreach>
+		</trim>
+		<trim prefix="f_id =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.fId}
+             </foreach>
+		</trim>
+		<trim prefix="type =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.type}
+             </foreach>
+		</trim>
+		<trim prefix="remark =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.remark}
+             </foreach>
+		</trim>
+		<trim prefix="modifier =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.modifier}
+             </foreach>
+		</trim>
+		<trim prefix="modify_time =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.modifyTime}
+             </foreach>
+		</trim>
+		<trim prefix="rec_ver =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.recVer}
+             </foreach>
+		</trim>
+	</trim>
+	WHERE
+	<foreach collection="list" separator="or" item="item" index="index" >
+		<if test="item.id!=null">
+		(ID=#{item.id}) AND (REC_VER=#{item.recVer}-1)
+		</if>
+	</foreach>	
+  </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from sys_function
-    where id = #{id,jdbcType=INTEGER}
+    from sys_function sf
+    where sf.id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from sys_function
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.xibin.wms.pojo.SysFunction" >
-    insert into sys_function (id, function_code, function_name, 
-      is_enable, remark, creator, 
-      createTime, modifier, modifyTime, 
-      rec_ver)
-    values (#{id,jdbcType=INTEGER}, #{functionCode,jdbcType=VARCHAR}, #{functionName,jdbcType=VARCHAR}, 
-      #{isEnable,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{creator,jdbcType=INTEGER}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{modifier,jdbcType=INTEGER}, #{modifytime,jdbcType=TIMESTAMP}, 
-      #{recVer,jdbcType=INTEGER})
-  </insert>
-  <insert id="insertSelective" parameterType="com.xibin.wms.pojo.SysFunction" >
-    insert into sys_function
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="functionCode != null" >
-        function_code,
-      </if>
-      <if test="functionName != null" >
-        function_name,
-      </if>
-      <if test="isEnable != null" >
-        is_enable,
-      </if>
-      <if test="remark != null" >
-        remark,
-      </if>
-      <if test="creator != null" >
-        creator,
-      </if>
-      <if test="createtime != null" >
-        createTime,
-      </if>
-      <if test="modifier != null" >
-        modifier,
-      </if>
-      <if test="modifytime != null" >
-        modifyTime,
-      </if>
-      <if test="recVer != null" >
-        rec_ver,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="functionCode != null" >
-        #{functionCode,jdbcType=VARCHAR},
-      </if>
-      <if test="functionName != null" >
-        #{functionName,jdbcType=VARCHAR},
-      </if>
-      <if test="isEnable != null" >
-        #{isEnable,jdbcType=VARCHAR},
-      </if>
-      <if test="remark != null" >
-        #{remark,jdbcType=VARCHAR},
-      </if>
-      <if test="creator != null" >
-        #{creator,jdbcType=INTEGER},
-      </if>
-      <if test="createtime != null" >
-        #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="modifier != null" >
-        #{modifier,jdbcType=INTEGER},
-      </if>
-      <if test="modifytime != null" >
-        #{modifytime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="recVer != null" >
-        #{recVer,jdbcType=INTEGER},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xibin.wms.pojo.SysFunction" >
-    update sys_function
-    <set >
-      <if test="functionCode != null" >
-        function_code = #{functionCode,jdbcType=VARCHAR},
-      </if>
-      <if test="functionName != null" >
-        function_name = #{functionName,jdbcType=VARCHAR},
-      </if>
-      <if test="isEnable != null" >
-        is_enable = #{isEnable,jdbcType=VARCHAR},
-      </if>
-      <if test="remark != null" >
-        remark = #{remark,jdbcType=VARCHAR},
-      </if>
-      <if test="creator != null" >
-        creator = #{creator,jdbcType=INTEGER},
-      </if>
-      <if test="createtime != null" >
-        createTime = #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="modifier != null" >
-        modifier = #{modifier,jdbcType=INTEGER},
-      </if>
-      <if test="modifytime != null" >
-        modifyTime = #{modifytime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="recVer != null" >
-        rec_ver = #{recVer,jdbcType=INTEGER},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.xibin.wms.pojo.SysFunction" >
-    update sys_function
-    set function_code = #{functionCode,jdbcType=VARCHAR},
-      function_name = #{functionName,jdbcType=VARCHAR},
-      is_enable = #{isEnable,jdbcType=VARCHAR},
-      remark = #{remark,jdbcType=VARCHAR},
-      creator = #{creator,jdbcType=INTEGER},
-      createTime = #{createtime,jdbcType=TIMESTAMP},
-      modifier = #{modifier,jdbcType=INTEGER},
-      modifyTime = #{modifytime,jdbcType=TIMESTAMP},
-      rec_ver = #{recVer,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+  <select id="selectAllByPage" resultMap="BaseResultMap" parameterType="Map">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_function sf
+    <include refid="findByExampleWhere"/>
+  </select>
+  <select id="selectByKey" resultMap="BaseResultMap" resultType="java.util.List">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_function sf
+    where sf,function_code = #{functionCode,jdbcType=VARCHAR}
+  </select>
+  
 </mapper>

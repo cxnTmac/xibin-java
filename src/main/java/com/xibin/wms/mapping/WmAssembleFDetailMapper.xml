@@ -8,9 +8,8 @@
     <result column="fitting_sku_code" property="fittingSkuCode" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="VARCHAR" />
     <result column="assemble_loc" property="assembleLoc" jdbcType="VARCHAR" />
-    <result column="create_s" property="createS" jdbcType="VARCHAR" />
-    <result column="pre_num" property="preNum" jdbcType="INTEGER" />
-    <result column="num" property="num" jdbcType="INTEGER" />
+    <result column="pre_num" property="preNum" jdbcType="DOUBLE" />
+    <result column="num" property="num" jdbcType="DOUBLE" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -28,9 +27,8 @@
     <result column="fitting_sku_name" property="fittingSkuName" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="VARCHAR" />
     <result column="assemble_loc" property="assembleLoc" jdbcType="VARCHAR" />
-    <result column="create_s" property="createS" jdbcType="VARCHAR" />
-    <result column="pre_num" property="preNum" jdbcType="INTEGER" />
-    <result column="num" property="num" jdbcType="INTEGER" />
+    <result column="pre_num" property="preNum" jdbcType="DOUBLE" />
+    <result column="num" property="num" jdbcType="DOUBLE" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -41,7 +39,7 @@
     <result column="warehouse_id" property="warehouseId" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    wafd.id, wafd.order_no,wafd.line_no,wafd.status,wafd.fitting_sku_code,wafd.assemble_loc, wafd.create_s,wafd.pre_num, wafd.num,wafd.remark, 
+    wafd.id, wafd.order_no,wafd.line_no,wafd.status,wafd.fitting_sku_code,wafd.assemble_loc,wafd.pre_num, wafd.num,wafd.remark, 
     wafd.creator, wafd.create_time, wafd.modifier, wafd.modify_time, wafd.rec_ver, wafd.company_id, wafd.warehouse_id
   </sql>
   
@@ -77,12 +75,12 @@
   <!-- 【固定】：插入记录（支持一条及多条） -->
   <insert id="insert" parameterType="java.util.Collection">
   	INSERT INTO wm_assemble_f_detail
-          (id, order_no,line_no,status,fitting_sku_code,assemble_loc,create_s,pre_num,num,remark, 
+          (id, order_no,line_no,status,fitting_sku_code,assemble_loc,pre_num,num,remark, 
     creator,create_time,modifier, modify_time, rec_ver, company_id, warehouse_id)
        VALUES
   		<foreach collection="list" item="item" index="index" separator=",">
 	   		(#{item.id}, #{item.orderNo}, #{item.lineNo},#{item.status},#{item.fittingSkuCode},
-      #{item.assembleLoc}, #{item.createS},#{item.preNum},#{item.num},
+      #{item.assembleLoc},#{item.preNum},#{item.num},
       #{item.remark}, #{item.creator},#{item.createTime},#{item.modifier}, #{item.modifyTime}, 
       #{item.recVer}, #{item.companyId},#{item.warehouseId})
   		</foreach>
@@ -124,11 +122,6 @@
 		<trim prefix="assemble_loc =case"  suffix="end,"  >
              <foreach collection="list" item="item" index="index">
                      when (ID=#{item.id}) then #{item.assembleLoc}
-             </foreach>
-		</trim>
-		<trim prefix="create_s =case"  suffix="end,"  >
-             <foreach collection="list" item="item" index="index">
-                     when (ID=#{item.id}) then #{item.createS}
              </foreach>
 		</trim>
 		<trim prefix="pre_num =case"  suffix="end,"  >

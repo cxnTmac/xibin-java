@@ -63,9 +63,9 @@
           <if test="skuCode!=null and skuCode!=''"> AND wir.sku_code LIKE CONCAT('%','${skuCode}','%')</if>
           <if test="companyId!=null and companyId!=''"> AND wir.company_id = #{companyId}</if>
           <if test="warehouseId!=null and warehouseId!=''"> AND wir.warehouse_id = #{warehouseId}</if>
-          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> AND wir.order_no LIKE CONCAT('%','${fuzzyCondition}','%')</if>
-          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> OR wir.line_no LIKE CONCAT('%','${fuzzyCondition}','%')</if>
-          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> OR wir.sku_code LIKE CONCAT('%','${fuzzyCondition}','%')</if>
+          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> AND (wir.order_no LIKE CONCAT('%','${fuzzyCondition}','%')
+          OR wir.line_no LIKE CONCAT('%','${fuzzyCondition}','%')
+          OR wir.sku_code LIKE CONCAT('%','${fuzzyCondition}','%'))</if>
   </sql>
   <!-- 条件 -->
   <sql id="findByExampleWhere">

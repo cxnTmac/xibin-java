@@ -2,7 +2,9 @@ package com.xibin.wms.pojo;
 
 import java.util.Date;
 
-public class SysRole2Function {
+import com.xibin.core.daosupport.BaseModel;
+
+public class SysRole2Function extends BaseModel{
     private Integer id;
 
     private String roleCode;
@@ -13,11 +15,11 @@ public class SysRole2Function {
 
     private Integer creator;
 
-    private Date createtime;
+    private Date createTime;
 
     private Integer modifier;
 
-    private Date modifytime;
+    private Date modifyTime;
 
     private Integer recVer;
 
@@ -63,13 +65,7 @@ public class SysRole2Function {
         this.creator = creator;
     }
 
-    public Date getCreatetime() {
-        return createtime;
-    }
-
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
-    }
+    
 
     public Integer getModifier() {
         return modifier;
@@ -79,15 +75,25 @@ public class SysRole2Function {
         this.modifier = modifier;
     }
 
-    public Date getModifytime() {
-        return modifytime;
-    }
+    
 
-    public void setModifytime(Date modifytime) {
-        this.modifytime = modifytime;
-    }
+    public Date getCreateTime() {
+		return createTime;
+	}
 
-    public Integer getRecVer() {
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public Date getModifyTime() {
+		return modifyTime;
+	}
+
+	public void setModifyTime(Date modifyTime) {
+		this.modifyTime = modifyTime;
+	}
+
+	public Integer getRecVer() {
         return recVer;
     }
 

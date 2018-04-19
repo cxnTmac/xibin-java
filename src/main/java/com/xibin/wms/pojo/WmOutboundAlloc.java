@@ -4,59 +4,61 @@ import java.util.Date;
 
 import com.xibin.core.daosupport.BaseModel;
 
-public class WmOutboundAlloc extends BaseModel{
-    private Integer id;
+public class WmOutboundAlloc extends BaseModel {
+	private Integer id;
 
-    private String orderNo;
+	private String orderNo;
 
-    private String lineNo;
-    
-    private String allocId;
-    
-    private String status;
-    
-    private String buyerCode;
+	private String lineNo;
 
-    private String skuCode;
+	private String allocId;
 
-    private Double outboundNum;
+	private String status;
 
-    private Double outboundPrice;
+	private String buyerCode;
 
-    private String allocLocCode;
-    
-    private String toLocCode;
-    
-    private Integer pickOp;
-    
-    private Double cost;
-    
-    private Date pickTime;
-    
-    private Integer shipOp;
-    
-    private Date shipTime;
+	private String skuCode;
 
-    private String remark;
+	private Double outboundNum;
 
-    private Integer creator;
+	private Double outboundPrice;
 
-    private Date createTime;
+	private String allocLocCode;
 
-    private Integer modifier;
+	private String toLocCode;
 
-    private Date modifyTime;
+	private Integer pickOp;
 
-    private Integer recVer;
+	private Double cost;
 
-    private Integer companyId;
+	private Date pickTime;
 
-    private Integer warehouseId;
+	private Integer shipOp;
 
+	private Date shipTime;
+
+	private String remark;
+
+	private Integer creator;
+
+	private Date createTime;
+
+	private Integer modifier;
+
+	private Date modifyTime;
+
+	private Integer recVer;
+
+	private Integer companyId;
+
+	private Integer warehouseId;
+
+	@Override
 	public Integer getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(Integer id) {
 		this.id = id;
 	}
@@ -125,42 +127,52 @@ public class WmOutboundAlloc extends BaseModel{
 		this.remark = remark;
 	}
 
+	@Override
 	public Integer getCreator() {
 		return creator;
 	}
 
+	@Override
 	public void setCreator(Integer creator) {
 		this.creator = creator;
 	}
 
+	@Override
 	public Date getCreateTime() {
 		return createTime;
 	}
 
+	@Override
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
 
+	@Override
 	public Integer getModifier() {
 		return modifier;
 	}
 
+	@Override
 	public void setModifier(Integer modifier) {
 		this.modifier = modifier;
 	}
 
+	@Override
 	public Date getModifyTime() {
 		return modifyTime;
 	}
 
+	@Override
 	public void setModifyTime(Date modifyTime) {
 		this.modifyTime = modifyTime;
 	}
 
+	@Override
 	public Integer getRecVer() {
 		return recVer;
 	}
 
+	@Override
 	public void setRecVer(Integer recVer) {
 		this.recVer = recVer;
 	}
@@ -244,8 +256,5 @@ public class WmOutboundAlloc extends BaseModel{
 	public void setCost(Double cost) {
 		this.cost = cost;
 	}
-	
-	
 
-    
 }

@@ -6,6 +6,7 @@
     <result column="voucher_id" property="voucherId" jdbcType="INTEGER" />
     <result column="line_no" property="lineNo" jdbcType="INTEGER" />
     <result column="course_no" property="courseNo" jdbcType="VARCHAR" />
+    <result column="editable" property="editable" jdbcType="VARCHAR" />
     <result column="to_go" property="toGo" jdbcType="VARCHAR" />
     <result column="debit" property="debit" jdbcType="DOUBLE" />
     <result column="credit" property="credit" jdbcType="DOUBLE" />
@@ -43,6 +44,7 @@
     <result column="voucher_id" property="voucherId" jdbcType="INTEGER" />
     <result column="line_no" property="lineNo" jdbcType="INTEGER" />
     <result column="course_no" property="courseNo" jdbcType="VARCHAR" />
+    <result column="editable" property="editable" jdbcType="VARCHAR" />
     <result column="to_go" property="toGo" jdbcType="VARCHAR" />
     <result column="debit" property="debit" jdbcType="DOUBLE" />
     <result column="credit" property="credit" jdbcType="DOUBLE" />
@@ -66,6 +68,7 @@
     <result column="voucher_id" property="voucherId" jdbcType="INTEGER" />
     <result column="line_no" property="lineNo" jdbcType="INTEGER" />
     <result column="course_no" property="courseNo" jdbcType="VARCHAR" />
+    <result column="editable" property="editable" jdbcType="VARCHAR" />
     <result column="course_name" property="courseName" jdbcType="VARCHAR" />
     <result column="to_go" property="toGo" jdbcType="VARCHAR" />
     <result column="debit" property="debit" jdbcType="DOUBLE" />
@@ -97,7 +100,7 @@
   </resultMap>
   
   <sql id="Base_Column_List" >
-    fvd.id, fvd.voucher_id, fvd.course_no,fvd.line_no,fvd.debit, fvd.credit,fvd.summary, fvd.auxi_id, fvd.amount,fvd.price, 
+    fvd.id, fvd.voucher_id, fvd.course_no,fvd.editable,fvd.line_no,fvd.debit, fvd.credit,fvd.summary, fvd.auxi_id, fvd.amount,fvd.price, 
     fvd.remark, fvd.creator, fvd.create_time, fvd.modifier, fvd.modify_time, fvd.rec_ver, 
     fvd.company_id,fvd.book_id
   </sql>
@@ -130,11 +133,11 @@
   <!-- 【固定】：插入记录（支持一条及多条） -->
   <insert id="insert" parameterType="java.util.Collection">
   	INSERT INTO fi_voucher_detail
-          (id, voucher_id,course_no,line_no,debit,credit,summary,auxi_id,amount,price,
+          (id, voucher_id,course_no,editable,line_no,debit,credit,summary,auxi_id,amount,price,
           remark, creator, create_time, modifier, modify_time,rec_ver,company_id,book_id)
        VALUES
   		<foreach collection="list" item="item" index="index" separator=",">
-	   		(#{item.id}, #{item.voucherId}, #{item.courseNo},#{item.lineNo},#{item.debit}, #{item.credit},#{item.summary}, #{item.auxiId}, #{item.amount},#{item.price},  
+	   		(#{item.id}, #{item.voucherId}, #{item.courseNo}, #{item.editable},#{item.lineNo},#{item.debit}, #{item.credit},#{item.summary}, #{item.auxiId}, #{item.amount},#{item.price},  
       #{item.remark},#{item.creator},#{item.createTime}, #{item.modifier},  #{item.modifyTime},
       #{item.recVer}, #{item.companyId}, #{item.bookId})
   		</foreach>
@@ -161,6 +164,11 @@
 		<trim prefix="course_no =case"  suffix="end,"  >
              <foreach collection="list" item="item" index="index">
                      when (ID=#{item.id}) then #{item.courseNo}
+             </foreach>
+		</trim>
+		<trim prefix="editable =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.editable}
              </foreach>
 		</trim>
 		<trim prefix="line_no =case"  suffix="end,"  >
@@ -275,10 +283,15 @@
     left join fi_course fc on
     fc.course_no = fvd.course_no
     and fc.company_id = fvd.company_id
+    AND fvd.book_id = fc.book_id
     <include refid="findByConditionWhere" />
+    <if test="period!=null and period!=''"> AND fv.period = #{period}</if>
+    <if test="billDateFm!=null and billDateFm!=''"> AND fv.bill_date &gt;= #{billDateFm}</if>
+    <if test="billDateTo!=null and billDateTo!=''"> AND fv.bill_date &lt;= #{billDateTo}</if>
     order by 
     fv.voucher_num,
-    fv.voucher_word
+    fv.voucher_word,
+    fvd.line_no
   </select>
   
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.xibin.fin.pojo.FiVoucherDetail">
@@ -310,6 +323,7 @@
     left join fi_course fc on
     fc.course_no = fvd.course_no
     and fc.company_id = fvd.company_id
+    AND fvd.book_id = fc.book_id
     left join fi_auxiliary fa
     on fa.id = fvd.auxi_id
     and fa.company_id = fvd.company_id
@@ -331,6 +345,7 @@
 		fi_voucher_detail fvd
 	LEFT JOIN fi_course fc ON fc.course_no = fvd.course_no
 	AND fc.company_id = fvd.company_id
+	AND fvd.book_id = fc.book_id
 	LEFT JOIN fi_voucher fv ON fv.id = fvd.voucher_id
 	AND fv.company_id = fvd.company_id
 	AND fv.book_id = fvd.book_id

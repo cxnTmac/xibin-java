@@ -2,22 +2,26 @@ package com.xibin.wms.pojo;
 
 import java.util.Date;
 
-public class SysRole {
+import com.xibin.core.daosupport.BaseModel;
+
+public class SysRole extends BaseModel{
     private Integer id;
 
     private String roleCode;
 
     private String roleName;
+    
+    private String status;
 
     private String remark;
 
     private Integer creator;
 
-    private Date createtime;
+    private Date createTime;
 
     private Integer modifier;
 
-    private Date modifytime;
+    private Date modifyTime;
 
     private Integer recVer;
 
@@ -63,13 +67,7 @@ public class SysRole {
         this.creator = creator;
     }
 
-    public Date getCreatetime() {
-        return createtime;
-    }
-
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
-    }
+    
 
     public Integer getModifier() {
         return modifier;
@@ -79,15 +77,25 @@ public class SysRole {
         this.modifier = modifier;
     }
 
-    public Date getModifytime() {
-        return modifytime;
-    }
+    
 
-    public void setModifytime(Date modifytime) {
-        this.modifytime = modifytime;
-    }
+    public Date getCreateTime() {
+		return createTime;
+	}
 
-    public Integer getRecVer() {
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public Date getModifyTime() {
+		return modifyTime;
+	}
+
+	public void setModifyTime(Date modifyTime) {
+		this.modifyTime = modifyTime;
+	}
+
+	public Integer getRecVer() {
         return recVer;
     }
 
@@ -102,4 +110,14 @@ public class SysRole {
     public void setCompanyId(Integer companyId) {
         this.companyId = companyId;
     }
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+    
+    
 }

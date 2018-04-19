@@ -261,15 +261,20 @@
 		</if>
 	
 	AND wih.status = #{status}
+	AND wih.is_calculated = #{isCalculated}
 	AND wih.company_id = #{companyId,jdbcType=INTEGER}
     AND wih.warehouse_id = #{warehouseId,jdbcType=INTEGER}
   </select>
   
   <update id="updateStatusByOrderNos" parameterType="Map">
   	UPDATE wm_inbound_header wih
-  	set wih.status = #{toStatus}
-  	<if test="voucherId!=null and voucherId!=''">
-  	, wih.voucher_id = #{voucherId}
+  	set 
+  	wih.is_calculated = #{isCalculated}
+  	<if test="toStatus!=null and toStatus!=''">
+  	,wih.status = #{toStatus}
+  	</if>
+  	<if test="toVoucherId!=null and toVoucherId!=''">
+  	, wih.voucher_id = #{toVoucherId}
   	</if>
   	WHERE 1=1
 		<if test="orderNos!=null and orderNos!=''">
@@ -278,6 +283,12 @@
       			#{item}  
      	  	</foreach>
 		</if>
+	<if test="voucherId!=null and voucherId!=''">
+	AND wih.voucher_id = #{voucherId}
+	</if>
+	<if test="inboundType!=null and inboundType!=''">
+	AND wih.inbound_type = #{inboundType}
+	</if>
 	AND wih.company_id = #{companyId}
     AND wih.warehouse_id = #{warehouseId}
   	

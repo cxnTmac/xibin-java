@@ -254,6 +254,7 @@
 			fi_course_balance fcb
 		LEFT JOIN fi_course fc on fcb.course_no = fc.course_no
 			and fcb.company_id = fc.company_id
+			and fcb.book_id = fc.book_id
 		WHERE fcb.course_no in(
 		  select DISTINCT(fvd.course_no) from fi_voucher_detail fvd 
 		  left join fi_voucher fv on fv.id= fvd.voucher_id
@@ -278,6 +279,7 @@
 		 FROM fi_course_balance fcb
 		LEFT JOIN fi_course fc on fcb.course_no = fc.course_no
 		AND fcb.company_id = fc.company_id
+		and fcb.book_id = fc.book_id
 		WHERE 1=1
 		<if test="types!=null and types!=''">
 			AND fc.type in

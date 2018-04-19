@@ -51,8 +51,8 @@
           <if test="remark!=null and remark!=''"> AND bl.remark LIKE CONCAT('%','${remark}','%')</if>
           <if test="companyId!=null and companyId!=''"> AND bl.company_id = #{companyId}</if>
           <if test="warehouseId!=null and warehouseId!=''"> AND bl.warehouse_id = #{warehouseId}</if>
-          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> AND bl.loc_name LIKE CONCAT('%','${fuzzyCondition}','%')</if>
-          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> OR bl.loc_code LIKE CONCAT('%','${fuzzyCondition}','%')</if>
+          <if test="fuzzyCondition!=null and fuzzyCondition!=''">AND (bl.loc_name LIKE CONCAT('%','${fuzzyCondition}','%')
+          OR bl.loc_code LIKE CONCAT('%','${fuzzyCondition}','%'))</if>
   </sql>
   <!-- 条件 -->
   <sql id="findByExampleWhere">

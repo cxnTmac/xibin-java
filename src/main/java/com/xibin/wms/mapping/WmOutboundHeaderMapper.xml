@@ -11,6 +11,7 @@
     <result column="audit_status" property="auditStatus" jdbcType="VARCHAR" />
     <result column="audit_time" property="auditTime" jdbcType="TIMESTAMP" />
     <result column="is_calculated" property="isCalculated" jdbcType="VARCHAR" />
+    <result column="is_cost_calculated" property="isCostCalculated" jdbcType="VARCHAR" />
     <result column="outbound_type" property="outboundType" jdbcType="VARCHAR" />
     <result column="voucher_id" property="voucherId" jdbcType="INTEGER" />
     <result column="cost_voucher_id" property="costVoucherId" jdbcType="INTEGER" />
@@ -27,12 +28,14 @@
     <id column="id" property="id" jdbcType="INTEGER"/>
     <result column="order_no" property="orderNo" jdbcType="VARCHAR" />
     <result column="buyer_code" property="buyerCode" jdbcType="VARCHAR" />
+    <result column="buyer_name" property="buyerName" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="VARCHAR" />
     <result column="order_time" property="orderTime" jdbcType="TIMESTAMP" />
     <result column="audit_op" property="auditOp" jdbcType="INTEGER" />
     <result column="audit_status" property="auditStatus" jdbcType="VARCHAR" />
     <result column="audit_time" property="auditTime" jdbcType="TIMESTAMP" />
     <result column="is_calculated" property="isCalculated" jdbcType="VARCHAR" />
+    <result column="is_cost_calculated" property="isCostCalculated" jdbcType="VARCHAR" />
     <result column="outbound_type" property="outboundType" jdbcType="VARCHAR" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="voucher_id" property="voucherId" jdbcType="INTEGER" />
@@ -46,7 +49,7 @@
     <result column="warehouse_id" property="warehouseId" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    woh.id, woh.order_no, woh.buyer_code, woh.status,woh.order_time,woh.audit_op,woh.audit_status, woh.audit_time, woh.outbound_type, woh.is_calculated,woh.voucher_id,woh.cost_voucher_id,woh.remark, 
+    woh.id, woh.order_no, woh.buyer_code, woh.status,woh.order_time,woh.audit_op,woh.audit_status, woh.audit_time, woh.outbound_type, woh.is_calculated,woh.is_cost_calculated,woh.voucher_id,woh.cost_voucher_id,woh.remark, 
     woh.creator, woh.create_time, woh.modifier, woh.modify_time, woh.rec_ver, woh.company_id, woh.warehouse_id
   </sql>
   
@@ -63,11 +66,13 @@
           <if test="orderTimeFm!=null and orderTimeFm!=''"> AND woh.order_time &gt;= #{orderTimeFm}</if>
           <if test="orderTimeTo!=null and orderTimeTo!=''"> AND woh.order_time &lt;= #{orderTimeTo}</if>
           <if test="isCalculated!=null and isCalculated!=''"> AND woh.is_calculated = #{isCalculated}</if>
+          <if test="isCostCalculated!=null and isCostCalculated!=''"> AND woh.is_cost_calculated = #{isCostCalculated}</if>
           <if test="companyId!=null and companyId!=''"> AND woh.company_id = #{companyId}</if>
           <if test="warehouseId!=null and warehouseId!=''"> AND woh.warehouse_id = #{warehouseId}</if>
-          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> AND woh.order_no LIKE CONCAT('%','${fuzzyCondition}','%')</if>
-          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> OR woh.line_no LIKE CONCAT('%','${fuzzyCondition}','%')</if>
-          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> OR woh.sku_code LIKE CONCAT('%','${fuzzyCondition}','%')</if>
+          <if test="multiStatus!=null and multiStatus!=''"> AND woh.status IN (${multiStatus})</if>
+          <if test="fuzzyCondition!=null and fuzzyCondition!=''"> AND (woh.order_no LIKE CONCAT('%','${fuzzyCondition}','%')
+          OR woh.line_no LIKE CONCAT('%','${fuzzyCondition}','%')
+          OR woh.sku_code LIKE CONCAT('%','${fuzzyCondition}','%'))</if>
   </sql>
   <!-- 条件 -->
   <sql id="findByExampleWhere">
@@ -80,6 +85,7 @@
           <if test="auditOp!=null and auditOp!=''"> AND woh.audit_op = #{auditOp}</if>
           <if test="outboundType!=null and outboundType!=''"> AND woh.outbound_type = #{outboundType}</if>
           <if test="isCalculated!=null and isCalculated!=''"> AND woh.is_calculated = #{isCalculated}</if>
+          <if test="isCostCalculated!=null and isCostCalculated!=''"> AND woh.is_cost_calculated = #{isCostCalculated}</if>
           <if test="companyId!=null and companyId!=''"> AND woh.company_id = #{companyId}</if>
           <if test="warehouseId!=null and warehouseId!=''"> AND woh.warehouse_id = #{warehouseId}</if>
   </sql>
@@ -98,11 +104,11 @@
   <!-- 【固定】：插入记录（支持一条及多条） -->
   <insert id="insert" parameterType="java.util.Collection">
   	INSERT INTO wm_outbound_header
-          (id, order_no,buyer_code,status,order_time,audit_op,audit_status,audit_time,outbound_type,is_calculated,voucher_id,cost_voucher_id,
+          (id, order_no,buyer_code,status,order_time,audit_op,audit_status,audit_time,outbound_type,is_calculated,is_cost_calculated,voucher_id,cost_voucher_id,
           remark,creator,create_time, modifier,modify_time,rec_ver,company_id,warehouse_id)
        VALUES
   		<foreach collection="list" item="item" index="index" separator=",">
-	   	(#{item.id}, #{item.orderNo},#{item.buyerCode},#{item.status},#{item.orderTime},#{item.auditOp},#{item.auditStatus},#{item.auditTime},#{item.outboundType},#{item.isCalculated},#{item.voucherId},#{item.costVoucherId},
+	   	(#{item.id}, #{item.orderNo},#{item.buyerCode},#{item.status},#{item.orderTime},#{item.auditOp},#{item.auditStatus},#{item.auditTime},#{item.outboundType},#{item.isCalculated},#{item.isCostCalculated},#{item.voucherId},#{item.costVoucherId},
       #{item.remark},#{item.creator},#{item.createTime}, #{item.modifier},#{item.modifyTime},#{item.recVer},#{item.companyId},#{item.warehouseId})
   		</foreach>
   </insert>
@@ -158,6 +164,11 @@
 		<trim prefix="is_calculated =case"  suffix="end,"  >
              <foreach collection="list" item="item" index="index">
                      when (ID=#{item.id}) then #{item.isCalculated}
+             </foreach>
+		</trim>
+		<trim prefix="is_cost_calculated =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.isCostCalculated}
              </foreach>
 		</trim>
 		<trim prefix="outbound_type =case"  suffix="end,"  >
@@ -218,14 +229,20 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
+    
     from wm_outbound_header woh
+   
+    
     where id = #{id,jdbcType=INTEGER}
   </select>
   
   <select id="selectAllByPage" resultMap="QueryResultMap" parameterType="Map">
     select 
     <include refid="Base_Column_List" />
+    ,bc.customer_name as buyer_name
     from wm_outbound_header woh
+    left join bd_customer bc on
+    bc.customer_code = woh.buyer_code
     <include refid="findByConditionWhere" />
   </select>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.xibin.wms.pojo.BdLoc">
@@ -261,15 +278,22 @@
 		</if>
 	
 	AND woh.status = #{status}
+	<if test="isCalculated!=null and isCalculated!=''">
+	AND woh.is_calculated = #{isCalculated}
+	</if>
+	<if test="isCostCalculated!=null and isCostCalculated!=''">
+	AND woh.is_cost_calculated = #{isCostCalculated}
+	</if>
 	AND woh.company_id = #{companyId,jdbcType=INTEGER}
     AND woh.warehouse_id = #{warehouseId,jdbcType=INTEGER}
   </select>
   
-  <update id="updateStatusByOrderNos" parameterType="Map">
+  <update id="updateCalculateByOrderNos" parameterType="Map">
   	UPDATE wm_outbound_header woh
-  	set woh.status = #{toStatus}
-  	<if test="voucherId!=null and voucherId!=''">
-  	, woh.voucher_id = #{voucherId}
+  	set 
+  	woh.voucher_id = #{toVoucherId}
+  	<if test="isCalculated!=null and isCalculated!=''">
+  	,woh.is_calculated = #{isCalculated}
   	</if>
   	WHERE 1=1
 		<if test="orderNos!=null and orderNos!=''">
@@ -278,6 +302,36 @@
       			#{item}  
      	  	</foreach>
 		</if>
+	<if test="voucherId!=null and voucherId!=''">
+	AND woh.voucher_id = #{voucherId}
+	</if>
+	<if test="outboundType!=null and outboundType!=''">
+	AND woh.outbound_type = #{outboundType}
+	</if>
+	AND woh.company_id = #{companyId}
+    AND woh.warehouse_id = #{warehouseId}
+  </update>
+  
+  <update id="updateCostCalculateByOrderNos" parameterType="Map">
+  	UPDATE wm_outbound_header woh
+  	set 
+  	woh.cost_voucher_id = #{toCostVoucherId}
+  	<if test="isCostCalculated!=null and isCostCalculated!=''">
+  	,woh.is_cost_calculated = #{isCostCalculated}
+  	</if>
+  	WHERE 1=1
+		<if test="orderNos!=null and orderNos!=''">
+			AND woh.order_no in
+          	<foreach item="item" index="index" collection="orderNos" open="(" separator="," close=")">  
+      			#{item}  
+     	  	</foreach>
+		</if>
+	<if test="costVoucherId!=null and costVoucherId!=''">
+	AND woh.cost_voucher_id = #{costVoucherId}
+	</if>
+	<if test="outboundType!=null and outboundType!=''">
+	AND woh.outbound_type = #{outboundType}
+	</if>
 	AND woh.company_id = #{companyId}
     AND woh.warehouse_id = #{warehouseId}
   </update>

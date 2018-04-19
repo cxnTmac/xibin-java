@@ -2,7 +2,9 @@ package com.xibin.wms.pojo;
 
 import java.util.Date;
 
-public class SysFunction {
+import com.xibin.core.daosupport.BaseModel;
+
+public class SysFunction extends BaseModel{
     private Integer id;
 
     private String functionCode;
@@ -12,14 +14,24 @@ public class SysFunction {
     private String isEnable;
 
     private String remark;
+    
+    private String component;
+    
+    private String path;
+    
+    private String icon;
+    
+    private String type;
+    
+    private Integer fId;
 
     private Integer creator;
 
-    private Date createtime;
+    private Date createTime;
 
     private Integer modifier;
 
-    private Date modifytime;
+    private Date modifyTime;
 
     private Integer recVer;
 
@@ -71,13 +83,7 @@ public class SysFunction {
         this.creator = creator;
     }
 
-    public Date getCreatetime() {
-        return createtime;
-    }
-
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
-    }
+    
 
     public Integer getModifier() {
         return modifier;
@@ -87,19 +93,72 @@ public class SysFunction {
         this.modifier = modifier;
     }
 
-    public Date getModifytime() {
-        return modifytime;
-    }
+    
 
-    public void setModifytime(Date modifytime) {
-        this.modifytime = modifytime;
-    }
+    public Date getCreateTime() {
+		return createTime;
+	}
 
-    public Integer getRecVer() {
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public Date getModifyTime() {
+		return modifyTime;
+	}
+
+	public void setModifyTime(Date modifyTime) {
+		this.modifyTime = modifyTime;
+	}
+
+	public Integer getRecVer() {
         return recVer;
     }
 
     public void setRecVer(Integer recVer) {
         this.recVer = recVer;
     }
+
+	public String getComponent() {
+		return component;
+	}
+
+	public void setComponent(String component) {
+		this.component = component;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
+	public Integer getfId() {
+		return fId;
+	}
+
+	public void setfId(Integer fId) {
+		this.fId = fId;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+    
+    
 }

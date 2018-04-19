@@ -9,10 +9,10 @@
     <result column="fitting_sku_code" property="fittingSkuCode" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="VARCHAR" />
     <result column="assemble_loc" property="assembleLoc" jdbcType="VARCHAR" />
-    <result column="num" property="num" jdbcType="INTEGER" />
-    <result column="alloc_num" property="allocNum" jdbcType="INTEGER" />
-    <result column="pick_num" property="pickNum" jdbcType="INTEGER" />
-    <result column="assemble_num" property="assembleNum" jdbcType="INTEGER" />
+    <result column="num" property="num" jdbcType="DOUBLE" />
+    <result column="alloc_num" property="allocNum" jdbcType="DOUBLE" />
+    <result column="pick_num" property="pickNum" jdbcType="DOUBLE" />
+    <result column="assemble_num" property="assembleNum" jdbcType="DOUBLE" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -31,10 +31,10 @@
     <result column="fitting_sku_name" property="fittingSkuName" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="VARCHAR" />
     <result column="assemble_loc" property="assembleLoc" jdbcType="VARCHAR" />
-    <result column="num" property="num" jdbcType="INTEGER" />
-    <result column="alloc_num" property="allocNum" jdbcType="INTEGER" />
-    <result column="pick_num" property="pickNum" jdbcType="INTEGER" />
-    <result column="assemble_num" property="assembleNum" jdbcType="INTEGER" />
+    <result column="num" property="num" jdbcType="DOUBLE" />
+    <result column="alloc_num" property="allocNum" jdbcType="DOUBLE" />
+    <result column="pick_num" property="pickNum" jdbcType="DOUBLE" />
+    <result column="assemble_num" property="assembleNum" jdbcType="DOUBLE" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -45,7 +45,7 @@
     <result column="warehouse_id" property="warehouseId" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    wasd.id, wafd.order_no,wasd.line_no,wasd.f_line_no,wasd.status,wasd.assemble_loc,wasd.num, wasd.alloc_num,wasd.pick_num,wasd.assemble_num,wasd.remark, 
+    wasd.id, wasd.order_no,wasd.line_no,wasd.f_line_no,wasd.fitting_sku_code,wasd.status,wasd.assemble_loc,wasd.num, wasd.alloc_num,wasd.pick_num,wasd.assemble_num,wasd.remark, 
     wasd.creator, wasd.create_time, wasd.modifier, wasd.modify_time, wasd.rec_ver, wasd.company_id, wasd.warehouse_id
   </sql>
   
@@ -54,7 +54,7 @@
       WHERE 1=1
           <if test="id!=null and id!=''"> AND wasd.id = #{id}</if>
           <if test="orderNo!=null and orderNo!=''"> AND wasd.order_no = #{orderNo}</if>
-          <if test="fittingSkuCode!=null and fittingSkuCode''"> AND wasd.fitting_sku_code LIKE CONCAT('%','${fittingSkuCode}','%')</if>
+          <if test="fittingSkuCode!=null and fittingSkuCode!=''"> AND wasd.fitting_sku_code LIKE CONCAT('%','${fittingSkuCode}','%')</if>
           <if test="companyId!=null and companyId!=''"> AND wasd.company_id = #{companyId}</if>
           <if test="warehouseId!=null and warehouseId!=''"> AND wasd.warehouse_id = #{warehouseId}</if>
   </sql>
@@ -63,7 +63,9 @@
       WHERE 1=1
          <if test="id!=null and id!=''"> AND wasd.id = #{id}</if>
           <if test="orderNo!=null and orderNo!=''"> AND wasd.order_no = #{orderNo}</if>
-          <if test="fittingSkuCode!=null and fittingSkuCode''"> AND wasd.fitting_sku_code = #{fittingSkuCode}</if>
+          <if test="lineNo!=null and lineNo!=''"> AND wasd.line_no = #{lineNo}</if>
+          <if test="fLineNo!=null and fLineNo!=''"> AND wasd.f_line_no = #{fLineNo}</if>
+          <if test="fittingSkuCode!=null and fittingSkuCode!=''"> AND wasd.fitting_sku_code = #{fittingSkuCode}</if>
           <if test="companyId!=null and companyId!=''"> AND wasd.company_id = #{companyId}</if>
           <if test="warehouseId!=null and warehouseId!=''"> AND wasd.warehouse_id = #{warehouseId}</if>
   </sql>
@@ -81,11 +83,11 @@
   <!-- 【固定】：插入记录（支持一条及多条） -->
   <insert id="insert" parameterType="java.util.Collection">
   	INSERT INTO wm_assemble_s_detail
-          (id, order_no,line_no,f_line_no,status,assemble_loc,num,alloc_num,pick_num,assemble_num,remark, 
+          (id, order_no,line_no,f_line_no,fitting_sku_code,status,assemble_loc,num,alloc_num,pick_num,assemble_num,remark, 
     creator,create_time,modifier, modify_time, rec_ver, company_id, warehouse_id)
        VALUES
   		<foreach collection="list" item="item" index="index" separator=",">
-	   		(#{item.id}, #{item.orderNo}, #{item.lineNo},#{item.fLineNo},,#{item.status},
+	   		(#{item.id}, #{item.orderNo}, #{item.lineNo},#{item.fLineNo},#{item.fittingSkuCode},#{item.status},
       #{item.assembleLoc},#{item.num},#{item.allocNum},#{item.pickNum},#{item.assembleNum},
       #{item.remark}, #{item.creator},#{item.createTime},#{item.modifier}, #{item.modifyTime}, 
       #{item.recVer}, #{item.companyId},#{item.warehouseId})
@@ -118,6 +120,11 @@
 		<trim prefix="f_line_no =case"  suffix="end,"  >
              <foreach collection="list" item="item" index="index">
                      when (ID=#{item.id}) then #{item.fLineNo}
+             </foreach>
+		</trim>
+		<trim prefix="fitting_sku_code =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.fittingSkuCode}
              </foreach>
 		</trim>
 		<trim prefix="status =case"  suffix="end,"  >
