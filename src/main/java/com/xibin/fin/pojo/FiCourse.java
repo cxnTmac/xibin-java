@@ -26,7 +26,7 @@ public class FiCourse extends BaseModel {
 
 	private String isChild;
 
-	private Integer auxiliary;
+	private String auxiliary;
 
 	private Integer bookId;
 
@@ -118,11 +118,11 @@ public class FiCourse extends BaseModel {
 		this.companyId = companyId;
 	}
 
-	public Integer getAuxiliary() {
+	public String getAuxiliary() {
 		return auxiliary;
 	}
 
-	public void setAuxiliary(Integer auxiliary) {
+	public void setAuxiliary(String auxiliary) {
 		this.auxiliary = auxiliary;
 	}
 

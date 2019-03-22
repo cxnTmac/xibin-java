@@ -4,50 +4,54 @@ import java.util.Date;
 
 import com.xibin.core.daosupport.BaseModel;
 
-public class FiCourseBalance extends BaseModel{
-    /**
+public class FiCourseBalance extends BaseModel {
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 33040803802413473L;
 
 	private Integer id;
 
-    private String courseNo;
-    
-    private String period;
-    
-    private Double startBalance;
-    
-    private Double endBalance;
-    
-    private Double sumDebit;
-    
-    private Double sumCredit;
-    
-    private Double accumulateDebit;
-    
-    private Double accumulateCredit;
-    
-    private Integer bookId;
+	private String courseNo;
 
-    private String remark;
+	private String period;
 
-    private Integer creator;
+	private Double startBalance;
 
-    private Date createTime;
+	private Double endBalance;
 
-    private Integer modifier;
+	private Double sumDebit;
 
-    private Date modifyTime;
+	private Double sumCredit;
 
-    private Integer recVer;
+	private Double accumulateDebit;
 
-    private Integer companyId;
+	private Double accumulateCredit;
 
+	private Double yearBalance;
+
+	private Integer bookId;
+
+	private String remark;
+
+	private Integer creator;
+
+	private Date createTime;
+
+	private Integer modifier;
+
+	private Date modifyTime;
+
+	private Integer recVer;
+
+	private Integer companyId;
+
+	@Override
 	public Integer getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(Integer id) {
 		this.id = id;
 	}
@@ -132,42 +136,52 @@ public class FiCourseBalance extends BaseModel{
 		this.remark = remark;
 	}
 
+	@Override
 	public Integer getCreator() {
 		return creator;
 	}
 
+	@Override
 	public void setCreator(Integer creator) {
 		this.creator = creator;
 	}
 
+	@Override
 	public Date getCreateTime() {
 		return createTime;
 	}
 
+	@Override
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
 
+	@Override
 	public Integer getModifier() {
 		return modifier;
 	}
 
+	@Override
 	public void setModifier(Integer modifier) {
 		this.modifier = modifier;
 	}
 
+	@Override
 	public Date getModifyTime() {
 		return modifyTime;
 	}
 
+	@Override
 	public void setModifyTime(Date modifyTime) {
 		this.modifyTime = modifyTime;
 	}
 
+	@Override
 	public Integer getRecVer() {
 		return recVer;
 	}
 
+	@Override
 	public void setRecVer(Integer recVer) {
 		this.recVer = recVer;
 	}
@@ -180,6 +194,12 @@ public class FiCourseBalance extends BaseModel{
 		this.companyId = companyId;
 	}
 
-	
-    
+	public Double getYearBalance() {
+		return yearBalance;
+	}
+
+	public void setYearBalance(Double yearBalance) {
+		this.yearBalance = yearBalance;
+	}
+
 }

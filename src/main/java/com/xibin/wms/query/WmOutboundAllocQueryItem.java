@@ -3,62 +3,64 @@ package com.xibin.wms.query;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.xibin.core.daosupport.BaseModel;
-
-public class WmOutboundAllocQueryItem implements Serializable{
+public class WmOutboundAllocQueryItem implements Serializable {
 	private Integer id;
 
-    private String orderNo;
+	private String orderNo;
 
-    private String lineNo;
-    
-    private String allocId;
-    
-    private String status;
-    
-    private String buyerCode;
-    
-    private String buyerName;
+	private String lineNo;
 
-    private String skuCode;
-    
-    private String skuName;
-    
-    private String modelCode;
+	private String allocId;
 
-    private Double outboundNum;
+	private String status;
 
-    private Double outboundPrice;
+	private String allocType;
 
-    private String allocLocCode;
-    
-    private String toLocCode;
-    
-    private Integer pickOp;
-    
-    private Date pickTime;
-    
-    private Integer shipOp;
-    
-    private Date shipTime;
-    
-    private Double cost;
+	private String buyerCode;
 
-    private String remark;
+	private String buyerName;
 
-    private Integer creator;
+	private String skuCode;
 
-    private Date createTime;
+	private String skuName;
 
-    private Integer modifier;
+	private String modelCode;
 
-    private Date modifyTime;
+	private Double outboundNum;
 
-    private Integer recVer;
+	private Double pickNum;
 
-    private Integer companyId;
+	private Double outboundPrice;
 
-    private Integer warehouseId;
+	private String allocLocCode;
+
+	private String toLocCode;
+
+	private Integer pickOp;
+
+	private Date pickTime;
+
+	private Integer shipOp;
+
+	private Date shipTime;
+
+	private Double cost;
+
+	private String remark;
+
+	private Integer creator;
+
+	private Date createTime;
+
+	private Integer modifier;
+
+	private Date modifyTime;
+
+	private Integer recVer;
+
+	private Integer companyId;
+
+	private Integer warehouseId;
 
 	public Integer getId() {
 		return id;
@@ -276,7 +278,20 @@ public class WmOutboundAllocQueryItem implements Serializable{
 		this.cost = cost;
 	}
 
-	
+	public Double getPickNum() {
+		return pickNum;
+	}
 
-    
+	public void setPickNum(Double pickNum) {
+		this.pickNum = pickNum;
+	}
+
+	public String getAllocType() {
+		return allocType;
+	}
+
+	public void setAllocType(String allocType) {
+		this.allocType = allocType;
+	}
+
 }

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xibin.crm.dao.CrmCaseMapper" >
+  <resultMap id="BaseResultMap" type="com.xibin.crm.pojo.CrmCase" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name_cn" property="nameCn" jdbcType="VARCHAR" />
+    <result column="name_en" property="nameEn" jdbcType="VARCHAR" />
+    <result column="old_stu_num" property="oldStuNum" jdbcType="VARCHAR" />
+    <result column="stu_num" property="stuNum" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="case_time" property="caseTime" jdbcType="TIMESTAMP" />
+    <result column="visa" property="visa" jdbcType="VARCHAR" />
+    <result column="country" property="country" jdbcType="VARCHAR" />
+    <result column="in_charge_of_case" property="inChargeOfCase" jdbcType="VARCHAR" />
+    <result column="in_charge_of_visa" property="inChargeOfVisa" jdbcType="VARCHAR" />
+    <result column="enrolment_time" property="enrolmentTime" jdbcType="TIMESTAMP" />
+    <result column="tutition" property="tutition" jdbcType="DOUBLE" />
+    <result column="commission_rate" property="commissionRate" jdbcType="DOUBLE" />
+    <result column="commission_type" property="commissionType" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="INTEGER" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="rec_ver" property="recVer" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    cc.id, cc.name_cn, cc.name_en, cc.old_stu_num, cc.stu_num,cc.status,cc.case_time,cc.visa,cc.country,cc.in_charge_of_case,cc.in_charge_of_visa,cc.enrolment_time,cc.tutition,
+    cc.commission_rate,cc.commission_type,
+    cc.creator,cc.create_time, cc.modifier, cc.modify_time, cc.rec_ver
+  </sql>
+  
+  <!-- 条件 -->
+  <sql id="findByConditionWhere">
+      WHERE 1=1
+          <if test="id!=null and id!=''"> AND ba.id = #{id}</if>
+          <if test="nameCn!=null and nameCn!=''"> AND cc.name_cn LIKE CONCAT('%','${nameCn}','%')</if>
+          <if test="nameEn!=null and nameEn!=''"> AND cc.name_en LIKE CONCAT('%','${nameEn}','%')</if>
+          <if test="oldStuNum!=null and oldStuNum!=''"> AND cc.old_stu_num LIKE CONCAT('%','${oldStuNum}','%')</if>
+          <if test="stuNum!=null and stuNum!=''"> AND cc.stu_num LIKE CONCAT('%','${stuNum}','%')</if>
+          <if test="status!=null and status!=''"> AND cc.status = #{status}</if>
+          
+          <if test="caseTimeFm!=null and caseTimeFm!=''"> AND cc.case_time &gt;= #{caseTimeFm}</if>
+          <if test="caseTimeTo!=null and caseTimeTo!=''"> AND cc.case_time &lt;= #{caseTimeTo}</if>
+          
+          <if test="visa!=null and visa!=''"> AND cc.visa = #{visa}</if>
+          <if test="country!=null and country!=''"> AND cc.country = #{country}</if>
+          <if test="inChargeOfCase!=null and inChargeOfCase!=''"> AND cc.in_charge_of_case = #{inChargeOfCase}</if>
+          <if test="inChargeOfVisa!=null and inChargeOfVisa!=''"> AND cc.in_charge_of_visa = #{inChargeOfVisa}</if>
+          <if test="enrolmentTime!=null and enrolmentTime!=''"> AND cc.enrolment_time = #{enrolmentTime}</if>
+          
+          <if test="enrolmentTimeFm!=null and enrolmentTimeFm!=''"> AND cc.enrolment_time &gt;= #{enrolmentTimeFm}</if>
+          <if test="enrolmentTimeTo!=null and enrolmentTimeTo!=''"> AND cc.enrolment_time &lt;= #{enrolmentTimeTo}</if>
+
+  </sql>
+  <!-- 条件 -->
+  <sql id="findByExampleWhere">
+      WHERE 1=1
+           <if test="id!=null and id!=''"> AND ba.id = #{id}</if>
+          <if test="nameCn!=null and nameCn!=''"> AND cc.name_cn = #{nameCn}</if>
+          <if test="nameEn!=null and nameEn!=''"> AND cc.name_en = #{nameEn}</if>
+          <if test="oldStuNum!=null and oldStuNum!=''"> AND cc.old_stu_num = #{oldStuNum}</if>
+          <if test="stuNum!=null and stuNum!=''"> AND cc.stu_num = #{stuNum}</if>
+          <if test="status!=null and status!=''"> AND cc.status = #{status}</if>
+          <if test="visa!=null and visa!=''"> AND cc.visa = #{visa}</if>
+          <if test="country!=null and country!=''"> AND cc.country = #{country}</if>
+  </sql>
+  <!-- 【固定】：按主键查询 -->
+  <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	  select
+      <include refid="Base_Column_List"/>
+      from crm_case cc
+      WHERE id in
+      <foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+	           #{item}
+	  </foreach>
+  </select>
+  
+  <!-- 【固定】：插入记录（支持一条及多条） -->
+  <insert id="insert" parameterType="java.util.Collection">
+  	INSERT INTO crm_case
+          (id, name_cn, name_en, old_stu_num, stu_num,status,case_time,
+          visa,country,in_charge_of_case,in_charge_of_visa,
+          enrolment_time,tutition,commission_rate,commission_type,
+          creator, create_time, modifier, modify_time, rec_ver)
+       VALUES
+  		<foreach collection="list" item="item" index="index" separator=",">
+	   		(#{item.id}, #{item.nameCn}, #{item.nameEn},#{item.oldStuNum},#{item.stuNum}, #{item.status},#{item.caseTime},
+	   		#{item.visa},#{item.country},#{item.inChargeOfCase},#{item.inChargeOfVisa},
+	   		#{item.enrolmentTime},#{item.tutition},#{item.commissionRate},#{item.commissionType},
+      		#{item.creator},#{item.createTime},#{item.modifier},#{item.modifyTime},#{item.recVer})
+  		</foreach>
+  </insert>
+  
+  <!-- 【固定】：删除记录 -->
+  <delete id="delete" parameterType="java.lang.reflect.Array">
+      DELETE FROM crm_case WHERE id in 
+   <foreach collection="array" index="index" item="item" open="(" separator="," close=")">  
+           #{item}   
+   </foreach>
+  </delete>
+  
+  <!-- 【固定】：更新记录（支持一条及多条） -->
+  <update id="update" parameterType="java.util.Collection">
+	UPDATE crm_case
+	<trim prefix="set" suffixOverrides=",">
+		<!-- 更新的字段集合 -->
+		<trim prefix="name_cn =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.nameCn}
+             </foreach>
+		</trim>
+		<trim prefix="name_en =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.nameEn}
+             </foreach>
+		</trim>
+		<trim prefix="old_stu_num =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.oldStuNum}
+             </foreach>
+		</trim>
+		<trim prefix="stu_num =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.stuNum}
+             </foreach>
+		</trim>
+		<trim prefix="status =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.status}
+             </foreach>
+		</trim>
+		<trim prefix="case_time =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.caseTime}
+             </foreach>
+		</trim>
+		<trim prefix="visa =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.visa}
+             </foreach>
+		</trim>
+		<trim prefix="country =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.country}
+             </foreach>
+		</trim>
+		<trim prefix="in_charge_of_case =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.inChargeOfCase}
+             </foreach>
+		</trim>
+		<trim prefix="in_charge_of_visa =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.inChargeOfVisa}
+             </foreach>
+		</trim>
+		<trim prefix="enrolment_time =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.enrolmentTime}
+             </foreach>
+		</trim>
+		<trim prefix="tutition =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.tutition}
+             </foreach>
+		</trim>
+		<trim prefix="commission_rate =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.commission_rate}
+             </foreach>
+		</trim>
+		<trim prefix="commission_type =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.commissionType}
+             </foreach>
+		</trim>
+		
+		
+		
+		
+		<trim prefix="modifier =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.modifier}
+             </foreach>
+		</trim>
+		<trim prefix="modify_time =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.modifyTime}
+             </foreach>
+		</trim>
+		<trim prefix="rec_ver =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.recVer}
+             </foreach>
+		</trim>
+	</trim>
+	WHERE
+	<foreach collection="list" separator="or" item="item" index="index" >
+		<if test="item.id!=null">
+		(ID=#{item.id}) AND (REC_VER=#{item.recVer}-1)
+		</if>
+	</foreach>	
+  </update>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from crm_case cc
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAllByPage" resultMap="BaseResultMap" parameterType="Map">
+    select 
+    <include refid="Base_Column_List" />
+    from crm_case cc
+    <include refid="findByConditionWhere" />
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.xibin.wms.pojo.BdArea">
+    select 
+    <include refid="Base_Column_List" />
+    from crm_case cc
+    <include refid="findByExampleWhere" />
+  </select>
+  <select id="selectByKey" resultMap="BaseResultMap" resultType="java.util.List"  parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from crm_case cc
+    where cc.stu_num = #{stuNum,jdbcType=VARCHAR}
+  </select>
+</mapper>

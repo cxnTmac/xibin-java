@@ -1,5 +1,7 @@
 package com.xibin.wms.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,21 +11,26 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baidu.aip.ocr.AipOcr;
 import com.xibin.core.costants.Constants;
 import com.xibin.core.exception.BusinessException;
 import com.xibin.core.page.pojo.Page;
 import com.xibin.core.page.pojo.PageEntity;
 import com.xibin.core.pojo.Message;
 import com.xibin.core.security.pojo.UserDetails;
+import com.xibin.core.utils.CustomizedPropertyConfigurer;
 import com.xibin.fin.service.UtVoucherService;
 import com.xibin.wms.constants.WmsCodeMaster;
 import com.xibin.wms.pojo.WmOutboundAlloc;
@@ -33,6 +40,7 @@ import com.xibin.wms.query.WmOutboundAllocQueryItem;
 import com.xibin.wms.query.WmOutboundDetailPriceQueryItem;
 import com.xibin.wms.query.WmOutboundDetailQueryItem;
 import com.xibin.wms.query.WmOutboundDetailSaleHistoryQueryItem;
+import com.xibin.wms.query.WmOutboundDetailSkuQueryItem;
 import com.xibin.wms.query.WmOutboundHeaderQueryItem;
 import com.xibin.wms.service.WmOutboundAllocService;
 import com.xibin.wms.service.WmOutboundDetailService;
@@ -185,19 +193,55 @@ public class OutboundController {
 
 	@RequestMapping("/removeOutboundDetail")
 	@ResponseBody
-	public Message removeOutboundDetail(@RequestParam("ids") int[] ids, @RequestParam("orderNo") String orderNo) {
+	public Message removeOutboundDetail(@RequestParam("ids") String idsStr, @RequestParam("orderNo") String orderNo) {
 		Message message = new Message();
+		String[] idsStrs = idsStr.split(",");
+		if (idsStrs.length == 0) {
+			message.setCode(0);
+			message.setMsg("参数有误，请联系管理员");
+			return message;
+		}
+		int[] ids = new int[idsStrs.length];
+		for (int i = 0; i < idsStrs.length; i++) {
+			ids[i] = Integer.parseInt(idsStrs[i]);
+		}
 		try {
-			this.outboundDetailService.removeOutboundDetail(ids, orderNo);
-			message.setCode(200);
-			message.setMsg("操作成功！");
+			return this.outboundDetailService.removeOutboundDetail(ids, orderNo);
 		} catch (BusinessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+
 			message.setCode(0);
 			message.setMsg(e.getMessage());
+			return message;
 		}
-		return message;
+	}
+
+	@RequestMapping("/removeOutboundDetailAndCreateNewOrder")
+	@ResponseBody
+	public Message removeOutboundDetailAndCreateNewOrder(@RequestParam("ids") String idsStr,
+			@RequestParam("orderNo") String orderNo) {
+		Message message = new Message();
+		String[] idsStrs = idsStr.split(",");
+		if (idsStrs.length == 0) {
+			message.setCode(0);
+			message.setMsg("参数有误，请联系管理员");
+			return message;
+		}
+		int[] ids = new int[idsStrs.length];
+		for (int i = 0; i < idsStrs.length; i++) {
+			ids[i] = Integer.parseInt(idsStrs[i]);
+		}
+		try {
+			return this.outboundDetailService.removeOutboundDetailAndCreateNewOrder(ids, orderNo);
+		} catch (BusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+			message.setCode(0);
+			message.setMsg(e.getMessage());
+			return message;
+		}
 	}
 
 	@RequestMapping("/saveOutboundDetail")
@@ -209,6 +253,28 @@ public class OutboundController {
 		WmOutboundDetail bean = JSON.parseObject(str, WmOutboundDetail.class);
 		try {
 			WmOutboundDetailQueryItem item = this.outboundDetailService.saveOutboundDetail(bean);
+			message.setData(item);
+			message.setCode(200);
+			message.setMsg("操作成功！");
+		} catch (BusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			message.setCode(0);
+			message.setMsg(e.getMessage());
+		}
+		return message;
+	}
+
+	// 只用于更新分配明细的成本
+	@RequestMapping("/saveOutboundDetailAlloc")
+	@ResponseBody
+	public Message saveOutboundDetailAlloc(HttpServletRequest request, Model model) {
+		Message message = new Message();
+		String str = request.getParameter("detailAlloc");
+
+		WmOutboundAlloc bean = JSON.parseObject(str, WmOutboundAlloc.class);
+		try {
+			WmOutboundAlloc item = this.outboundAllocService.saveOutboundAllocForEditCost(bean);
 			message.setData(item);
 			message.setCode(200);
 			message.setMsg("操作成功！");
@@ -321,14 +387,27 @@ public class OutboundController {
 		return new WmOutboundHeaderQueryItem();
 	}
 
+	@RequestMapping("/allocByOrderNo")
+	@ResponseBody
+	public Message allocByOrderNo(@RequestParam("orderNo") String orderNo) {
+		return outboundDetailService.allocByOrderNo(orderNo);
+	}
+
+	@RequestMapping("/cancelAllocByOrderNo")
+	@ResponseBody
+	public Message cancelAllocByOrderNo(@RequestParam("orderNo") String orderNo) {
+		return outboundDetailService.cancelAllocByOrderNo(orderNo);
+	}
+
 	@RequestMapping("/alloc")
 	@ResponseBody
-	public Message alloc(@RequestParam("orderNo") String orderNo, @RequestParam("lineNos") String[] lineNos) {
+	public Message alloc(@RequestParam("orderNo") String orderNo, @RequestParam("lineNos") String[] lineNos,
+			@RequestParam("type") String type) {
 		Message message = new Message();
 		List<String> errors = new ArrayList<String>();
 		for (String lineNo : lineNos) {
 			try {
-				Message singleMessage = outboundDetailService.allocByKey(orderNo, lineNo);
+				Message singleMessage = outboundDetailService.allocByKey(orderNo, lineNo, type);
 				if (singleMessage.getCode() != 200) {
 					errors.add(singleMessage.getMsg());
 				}
@@ -547,6 +626,23 @@ public class OutboundController {
 		return message;
 	}
 
+	@RequestMapping("/pickByHeader")
+	@ResponseBody
+	public Message pickByHeader(HttpServletRequest request, Model model) {
+		Message message = new Message();
+		String orderNo = request.getParameter("orderNo");
+		try {
+			message = this.outboundAllocService.pickByOrderNo(orderNo);
+		} catch (BusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			message.setCode(0);
+			message.setMsg(e.getMessage());
+			return message;
+		}
+		return message;
+	}
+
 	@RequestMapping("/queryHistoryPrice")
 	@ResponseBody
 	public PageEntity<WmOutboundDetailPriceQueryItem> queryHistoryPrice(HttpServletRequest request, Model model) {
@@ -664,5 +760,104 @@ public class OutboundController {
 			message.setMsg(e.getMessage());
 			return message;
 		}
+	}
+
+	@RequestMapping("/aiForOrders")
+	@ResponseBody
+	public Message aiForOrders(HttpServletRequest request, Model model) {
+
+		Message message = new Message();
+		String url = "https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic";
+		AipOcr client = new AipOcr("15621731", "cQQezpqmic8ufarsd6OweZOB", "860k5mUIRujlIjUpkM3nRG3HIeOpqdo2");
+		// 可选：设置网络连接参数
+		// client.setConnectionTimeoutInMillis(2000);
+		// client.setSocketTimeoutInMillis(60000);
+		String path = "D:\\4.jpg";
+		org.json.JSONObject res = client.handwriting(path, new HashMap<String, String>());
+		System.out.println(res.toString(2));
+		// try {
+		// String sign = TXCloudSign.appSign(1253892890,
+		// "AKIDM0g7Rc7JK72zHScxvjJi5C5om6nJELH3",
+		// "geNsbAUdcMekbhCF3cw5k7PSnO4VFyfB", "", 86400);
+		// System.out.println(sign);
+		// } catch (Exception e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		return null;
+	}
+
+	@RequestMapping(value = "/uploadOrderPic", consumes = "multipart/form-data", method = RequestMethod.POST)
+	@ResponseBody
+	public Message uploadOrderPic(HttpServletRequest request, @RequestParam("file") MultipartFile pic) {
+		String webPicUploadUrl = (String) CustomizedPropertyConfigurer.getContextProperty("webPicUploadUrl");
+		Message message = new Message();
+		// String realPath =
+		// request.getSession().getServletContext().getRealPath("/WEB-INF/upload/FittingSkuPic/"+fittingSkuCode+"-"+userDetails.getCompanyId());
+		String realPath = webPicUploadUrl + "/outboundOrderPic/";
+		System.out.println("图片上传路径：" + realPath);
+		try {
+			String fileName = System.currentTimeMillis() + "";
+			File originFile = new File(realPath, fileName + ".jpg");
+			FileUtils.copyInputStreamToFile(pic.getInputStream(), originFile);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			message.setCode(0);
+			message.setMsg("文件[" + pic.getOriginalFilename() + "]上传失败!");
+			return message;
+		}
+		message.setCode(200);
+		return message;
+	}
+
+	@RequestMapping(value = "/importOutboundDetailByExcel", consumes = "multipart/form-data", method = RequestMethod.POST)
+	@ResponseBody
+	public Message importOutboundDetailByExcel(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
+		String orderNo = request.getParameter("orderNo");
+		String loc = request.getParameter("loc");
+		String skuCodeColumnName = request.getParameter("skuCodeColumnName");
+		String priceColumnName = request.getParameter("priceColumnName");
+		String numColumnName = request.getParameter("numColumnName");
+		try {
+			return outboundDetailService.importByExcel(file, orderNo, loc, skuCodeColumnName, priceColumnName,
+					numColumnName);
+		} catch (BusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			Message message = new Message();
+			message.setCode(0);
+			message.setMsg(e.getMessage());
+			return message;
+		}
+	}
+
+	@RequestMapping("/queryWmOutboundDetailByPage")
+	@ResponseBody
+	public PageEntity<WmOutboundDetailSkuQueryItem> queryWmOutboundDetailByPage(HttpServletRequest request,
+			Model model) {
+		// 开始分页
+		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
+		PageEntity<WmOutboundDetailSkuQueryItem> pageEntity = new PageEntity<WmOutboundDetailSkuQueryItem>();
+		Page<?> page = new Page();
+		Map map = new HashMap<>();
+		// 配置分页参数
+		if (request.getParameter("page") != null && request.getParameter("size") != null) {
+			page.setPageNo(Integer.parseInt(request.getParameter("page")));
+			page.setPageSize(Integer.parseInt(request.getParameter("size")));
+			map = JSONObject.parseObject(request.getParameter("conditions"));
+			map.put("page", page);
+
+		} else {
+			map = JSONObject.parseObject(request.getParameter("conditions"));
+		}
+		if (userDetails != null) {
+			map.put("companyId", userDetails.getCompanyId());
+			map.put("warehouseId", userDetails.getWarehouseId());
+		}
+		List<WmOutboundDetailSkuQueryItem> list = outboundDetailService.queryWmOutboundDetailByPage(map);
+		pageEntity.setList(list);
+		pageEntity.setSize(page.getTotalRecord());
+		return pageEntity;
 	}
 }

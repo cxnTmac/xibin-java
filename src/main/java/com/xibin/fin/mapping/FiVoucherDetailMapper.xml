@@ -39,6 +39,7 @@
     <result column="checker_name" property="checkerName" jdbcType="VARCHAR" />
     <result column="complete_date" property="completeDate" jdbcType="TIMESTAMP" />
     <result column="course_name" property="courseName" jdbcType="VARCHAR" />
+    <result column="auxiliary_name" property="auxiliaryName" jdbcType="VARCHAR" />
     
     
     <result column="voucher_id" property="voucherId" jdbcType="INTEGER" />
@@ -93,12 +94,22 @@
     <result column="sum_debit" property="sumDebit" jdbcType="DOUBLE" />
     <result column="sum_credit" property="sumCredit" jdbcType="DOUBLE" />
     <result column="course_no" property="courseNo" jdbcType="VARCHAR" />
+    
     <result column="type" property="type" jdbcType="VARCHAR" />
     <result column="to_go" property="toGo" jdbcType="VARCHAR" />
     <result column="balance" property="balance" jdbcType="DOUBLE" />
     
   </resultMap>
-  
+  <resultMap id="BaseSumQueryAuxiliaryItemMap" type="com.xibin.fin.entity.FiVoucherDetailAuxiliarySumQueryItem" >
+  	
+    <result column="sum_debit" property="sumDebit" jdbcType="DOUBLE" />
+    <result column="sum_credit" property="sumCredit" jdbcType="DOUBLE" />
+    <result column="course_no" property="courseNo" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="to_go" property="toGo" jdbcType="VARCHAR" />
+    
+  </resultMap>
   <sql id="Base_Column_List" >
     fvd.id, fvd.voucher_id, fvd.course_no,fvd.editable,fvd.line_no,fvd.debit, fvd.credit,fvd.summary, fvd.auxi_id, fvd.amount,fvd.price, 
     fvd.remark, fvd.creator, fvd.create_time, fvd.modifier, fvd.modify_time, fvd.rec_ver, 
@@ -272,6 +283,7 @@
     fv.checker as checker_name,
     fv.complete_date,
     fc.course_name,
+    fa.name as auxiliary_name,
     <include refid="Base_Column_List" />
     from fi_voucher_detail fvd
     left join fi_voucher fv on
@@ -284,14 +296,21 @@
     fc.course_no = fvd.course_no
     and fc.company_id = fvd.company_id
     AND fvd.book_id = fc.book_id
+    left join fi_auxiliary fa on
+    fa.company_id = fvd.company_id
+    AND fa.id = fvd.auxi_id
     <include refid="findByConditionWhere" />
     <if test="period!=null and period!=''"> AND fv.period = #{period}</if>
     <if test="billDateFm!=null and billDateFm!=''"> AND fv.bill_date &gt;= #{billDateFm}</if>
     <if test="billDateTo!=null and billDateTo!=''"> AND fv.bill_date &lt;= #{billDateTo}</if>
     order by 
+    fv.period DESC,
     fv.voucher_num,
     fv.voucher_word,
-    fvd.line_no
+    fvd.line_no,
+    fvd.debit desc,
+	fvd.credit desc,
+	fc.course_no asc
   </select>
   
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.xibin.fin.pojo.FiVoucherDetail">
@@ -327,10 +346,11 @@
     left join fi_auxiliary fa
     on fa.id = fvd.auxi_id
     and fa.company_id = fvd.company_id
-    and fa.book_id = fvd.book_id
     where fvd.voucher_id = #{voucherId,jdbcType=VARCHAR}
     order by
-    fvd.line_no
+    	fvd.debit desc,
+		fvd.credit desc, 
+		fc.course_no asc
   </select>
   
   <select id="selectByVoucherIdForSum" resultMap="BaseSumQueryItemMap" resultType="java.util.List" >
@@ -353,4 +373,29 @@
 		fvd.voucher_id = #{voucherId,jdbcType=VARCHAR}
 	GROUP BY fvd.course_no
   </select>
+  
+  <select id="selectByVoucherIdForAuxiliarySum" resultMap="BaseSumQueryAuxiliaryItemMap" resultType="java.util.List" >
+  SELECT
+	fc.to_go,
+	fvd.course_no,
+  	fvd.auxi_id,
+  	fa.code,
+	fc.type,
+	sum(fvd.debit) AS sumDebit,
+	sum(fvd.credit) AS sumCredit
+	FROM
+		fi_voucher_detail fvd
+	LEFT JOIN fi_auxiliary fa ON fa.id = fvd.auxi_id
+	AND fa.company_id = fvd.company_id
+	LEFT JOIN fi_course fc ON fc.course_no = fvd.course_no
+	AND fc.company_id = fvd.company_id
+	AND fvd.book_id = fc.book_id
+	LEFT JOIN fi_voucher fv ON fv.id = fvd.voucher_id
+	AND fv.company_id = fvd.company_id
+	AND fv.book_id = fvd.book_id
+	WHERE
+		fvd.voucher_id = #{voucherId,jdbcType=VARCHAR}
+	GROUP BY
+		fvd.course_no,fvd.auxi_id
+	</select>
 </mapper>

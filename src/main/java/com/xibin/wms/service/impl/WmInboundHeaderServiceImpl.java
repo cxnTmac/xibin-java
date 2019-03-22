@@ -1,5 +1,6 @@
 package com.xibin.wms.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,13 +27,14 @@ import com.xibin.fin.pojo.FiVoucher;
 import com.xibin.wms.constants.WmsCodeMaster;
 import com.xibin.wms.dao.WmInboundDetailMapper;
 import com.xibin.wms.dao.WmInboundHeaderMapper;
+import com.xibin.wms.dao.WmInboundRecieveMapper;
 import com.xibin.wms.pojo.WmInboundHeader;
 import com.xibin.wms.query.WmInboundDetailSumPriceQueryItem;
 import com.xibin.wms.query.WmInboundHeaderQueryItem;
 import com.xibin.wms.service.WmInboundHeaderService;
 import com.xibin.wms.service.WmToFinService;
 
-@Transactional(propagation = Propagation.REQUIRED)
+@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 @Service
 public class WmInboundHeaderServiceImpl extends BaseManagerImpl implements WmInboundHeaderService {
 	@Autowired
@@ -41,7 +43,8 @@ public class WmInboundHeaderServiceImpl extends BaseManagerImpl implements WmInb
 	private WmInboundHeaderMapper wmInboundHeaderMapper;
 	@Resource
 	private WmInboundDetailMapper wmInboundDetailMapper;
-
+	@Resource
+	private WmInboundRecieveMapper wmInboundRecieveMapper;
 	@Resource
 	private WmToFinService wmToFinService;
 
@@ -254,6 +257,92 @@ public class WmInboundHeaderServiceImpl extends BaseManagerImpl implements WmInb
 		updateMap.put("inboundType", inboundType);
 		updateMap.put("toVoucherId", voucher.getId());
 		wmInboundHeaderMapper.updateStatusByOrderNos(updateMap);
+		return message;
+	}
+
+	// 成本核算(针对退货入库单)
+	@Override
+	public Message accountForCostByOrderNo(String orderNo) throws BusinessException {
+		Message message = new Message();
+		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
+		List<WmInboundHeaderQueryItem> results = this.selectByKey(orderNo);
+		if (results.isEmpty()) {
+			message.setCode(0);
+			message.setMsg("出库单[" + orderNo + "]不存在");
+			return message;
+		} else if (results.get(0).getIsCostCalculated().equals("Y")) {
+			message.setCode(0);
+			message.setMsg("出库单[" + orderNo + "]已经生成了成本凭证！");
+			return message;
+		}
+		WmInboundHeaderQueryItem headerQueryItem = results.get(0);
+		Map map = new HashMap<>();
+		map.put("companyId", userDetails.getCompanyId());
+		map.put("warehouseId", userDetails.getWarehouseId());
+		List<String> orderNos = new ArrayList<String>();
+		orderNos.add(headerQueryItem.getOrderNo());
+		map.put("orderNos", orderNos);
+		// map.put("outboundType", headerQueryItem.getOutboundType());
+		Double sumResults = wmInboundRecieveMapper.querySumCostForAccount(map);
+		// 对金额取两位小数
+		BigDecimal bg = new BigDecimal(sumResults);
+		sumResults = bg.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+		message = wmToFinService.accountInboundCost(sumResults, headerQueryItem.getInboundType());
+
+		FiVoucher voucher = (FiVoucher) message.getData();
+		if (message.getCode() == 200) {
+			message.setMsg("生成了凭证：" + voucher.getVoucherWord() + voucher.getVoucherNum());
+		}
+		// 更新所有订单状态
+		Map updateMap = new HashMap<>();
+		updateMap.put("companyId", userDetails.getCompanyId());
+		updateMap.put("warehouseId", userDetails.getWarehouseId());
+		updateMap.put("orderNos", orderNos);
+		// updateMap.put("outboundType", headerQueryItem.getOutboundType());
+		updateMap.put("toCostVoucherId", voucher.getId());
+		updateMap.put("isCostCalculated", "Y");
+		wmInboundHeaderMapper.updateCostCalculateByOrderNos(updateMap);
+		return message;
+	}
+
+	@Override
+	public Message accountForCostByOrderNos(List<String> orderNos, String inboundType) throws BusinessException {
+		Message message = new Message();
+		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
+		Map map = new HashMap<>();
+		map.put("companyId", userDetails.getCompanyId());
+		map.put("warehouseId", userDetails.getWarehouseId());
+		map.put("orderNos", orderNos);
+		map.put("status", "99");
+		map.put("isCostCalculated", "N");
+		List<String> resultOrders = wmInboundHeaderMapper.queryOrderNosByStatus(map);
+		orderNos.removeAll(resultOrders);
+		List<String> errors = new ArrayList<String>();
+		for (String orderNo : orderNos) {
+			errors.add("订单：[" + orderNo + "]不存在或者不是完成销售核算状态，不能核算生成成本凭证!");
+		}
+		if (errors.size() > 0) {
+			message.setCode(100);
+		}
+		if (resultOrders.size() == 0) {
+			message.setCode(0);
+			return message;
+		}
+		map.put("orderNos", resultOrders);
+		Double sumResults = wmInboundRecieveMapper.querySumCostForAccount(map);
+		// 对金额取两位小数
+		BigDecimal bg = new BigDecimal(sumResults);
+		sumResults = bg.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+		message = wmToFinService.accountOutboundCost(sumResults, inboundType);
+		FiVoucher voucher = (FiVoucher) message.getData();
+		// 更新所有订单状态
+		Map updateMap = new HashMap<>();
+		updateMap.put("companyId", userDetails.getCompanyId());
+		updateMap.put("warehouseId", userDetails.getWarehouseId());
+		updateMap.put("orderNos", resultOrders);
+		updateMap.put("toCostVoucherId", voucher.getId());
+		updateMap.put("isCostCalculated", "Y");
+		wmInboundHeaderMapper.updateCostCalculateByOrderNos(updateMap);
 		return message;
 	}
 }

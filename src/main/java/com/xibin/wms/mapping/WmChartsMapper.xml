@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xibin.wms.dao.WmChartsMapper" >
+  <resultMap id="pieChartForCurrentMonthSaleByTypeMap" type="com.xibin.wms.pojo.PieChartForCurrentMonthSaleByType" >
+    <result column="sales" property="sales" jdbcType="DOUBLE" />
+    <result column="fitting_type_code" property="fittingTypeCode" jdbcType="VARCHAR" />
+    <result column="fitting_type_name" property="fittingTypeName" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap type="Map" id="pieChartAndMapForMonthSaleByProvinceMap">
+      <result column="sales" property="sales"/>
+      <result column="province" property="province"/>
+  </resultMap>
+  <resultMap type="Map" id="monthSaleByDateMap">
+      <result column="sales" property="sales"/>
+      <result column="datx" property="datx"/>
+  </resultMap>
+
+  <select id="pieChartForCurrentMonthSaleByType" resultMap="pieChartForCurrentMonthSaleByTypeMap" resultType="java.util.List"  parameterType="Map" >
+    SELECT
+		round(sum(
+			wod.outbound_price * wod.outbound_ship_num
+		),2) as sales,
+		bft.fitting_type_code,
+		bft.fitting_type_name
+	FROM
+		wm_outbound_detail wod
+	LEFT JOIN wm_outbound_header woh ON woh.order_no = wod.order_no
+	AND wod.company_id = woh.company_id
+	LEFT JOIN bd_fitting_sku bfs ON wod.sku_code = bfs.fitting_sku_code
+	AND bfs.company_id = wod.company_id
+	LEFT JOIN bd_fitting_type bft ON bfs.fitting_type_code = bft.fitting_type_code
+	AND bft.company_id = bfs.company_id
+	WHERE
+		date_format(woh.order_time,'%Y-%m')=date_format(now(),'%Y-%m')
+	AND 
+	wod.company_id = #{companyId}
+	AND
+	wod.warehouse_id = #{warehouseId}
+	GROUP BY
+		bfs.fitting_type_code
+  </select>
+  <select id="pieChartAndMapForMonthSaleByProvince" resultMap="pieChartAndMapForMonthSaleByProvinceMap" resultType="java.util.List"  parameterType="Map" >
+    SELECT
+	bc.province,
+	round(
+		sum(
+			wod.outbound_ship_num * wod.outbound_price
+		),
+		2
+	) as sales
+	FROM
+		wm_outbound_detail wod
+	LEFT JOIN bd_customer bc ON wod.buyer_code = bc.customer_code
+	AND wod.company_id = bc.company_id
+	WHERE 
+	1=1
+	AND 
+	wod.company_id = #{companyId}
+	AND
+	wod.warehouse_id = #{warehouseId}
+	GROUP BY
+		bc.province
+  </select>
+  
+  
+  <select id="monthSaleByDate" resultMap="monthSaleByDateMap" resultType="java.util.List"  parameterType="Map" >
+	  SELECT
+		date(woh.order_time) as datex,
+		round(
+			sum(
+				wod.outbound_ship_num * wod.outbound_price
+			),
+			2
+		) as sales
+		FROM
+			wm_outbound_detail wod
+		LEFT JOIN wm_outbound_header woh ON wod.order_no = woh.order_no
+		AND woh.company_id = wod.company_id
+		WHERE 
+			1=1
+			AND 
+			wod.company_id = #{companyId}
+			AND
+			wod.warehouse_id = #{warehouseId}
+		GROUP BY
+			date(woh.order_time)
+   </select>
+</mapper>

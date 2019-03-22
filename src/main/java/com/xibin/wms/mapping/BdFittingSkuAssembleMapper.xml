@@ -5,7 +5,7 @@
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="f_sku_code" property="fSkuCode" jdbcType="VARCHAR" />
     <result column="s_sku_code" property="sSkuCode" jdbcType="VARCHAR" />
-	<result column="num" property="num" jdbcType="INTEGER" />
+	<result column="num" property="num" jdbcType="DOUBLE" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
@@ -21,7 +21,7 @@
     <result column="s_sku_code" property="sSkuCode" jdbcType="VARCHAR" />
     <result column="f_sku_name" property="fSkuName" jdbcType="VARCHAR" />
     <result column="s_sku_name" property="sSkuName" jdbcType="VARCHAR" />
-	<result column="num" property="num" jdbcType="INTEGER" />
+	<result column="num" property="num" jdbcType="DOUBLE" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="creator" property="creator" jdbcType="INTEGER" />

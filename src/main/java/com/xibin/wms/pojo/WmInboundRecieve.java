@@ -4,53 +4,57 @@ import java.util.Date;
 
 import com.xibin.core.daosupport.BaseModel;
 
-public class WmInboundRecieve extends BaseModel{
-    private Integer id;
+public class WmInboundRecieve extends BaseModel {
+	private Integer id;
 
-    private String orderNo;
+	private String orderNo;
 
-    private String lineNo;
-    
-    private String status;
-    
-    private String recLineNo;
-    
-    private String supplierCode;
+	private String lineNo;
 
-    private String skuCode;
-    
-    private Double inboundPreNum;
+	private String status;
 
-    private Double inboundNum;
+	private String recLineNo;
 
-    private Double inboundPrice;
-    
-    private String planLoc;
+	private String supplierCode;
 
-    private String inboundLocCode;
-    
-    private Date recTime;
+	private String skuCode;
 
-    private String remark;
+	private Double inboundPreNum;
 
-    private Integer creator;
+	private Double inboundNum;
 
-    private Date createTime;
+	private Double inboundPrice;
 
-    private Integer modifier;
+	private Double cost;
 
-    private Date modifyTime;
+	private String planLoc;
 
-    private Integer recVer;
+	private String inboundLocCode;
 
-    private Integer companyId;
+	private Date recTime;
 
-    private Integer warehouseId;
+	private String remark;
 
+	private Integer creator;
+
+	private Date createTime;
+
+	private Integer modifier;
+
+	private Date modifyTime;
+
+	private Integer recVer;
+
+	private Integer companyId;
+
+	private Integer warehouseId;
+
+	@Override
 	public Integer getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(Integer id) {
 		this.id = id;
 	}
@@ -159,44 +163,62 @@ public class WmInboundRecieve extends BaseModel{
 		this.remark = remark;
 	}
 
+	@Override
 	public Integer getCreator() {
 		return creator;
 	}
 
+	@Override
 	public void setCreator(Integer creator) {
 		this.creator = creator;
 	}
 
+	@Override
 	public Date getCreateTime() {
 		return createTime;
 	}
 
+	@Override
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
 
+	@Override
 	public Integer getModifier() {
 		return modifier;
 	}
 
+	@Override
 	public void setModifier(Integer modifier) {
 		this.modifier = modifier;
 	}
 
+	@Override
 	public Date getModifyTime() {
 		return modifyTime;
 	}
 
+	@Override
 	public void setModifyTime(Date modifyTime) {
 		this.modifyTime = modifyTime;
 	}
 
+	@Override
 	public Integer getRecVer() {
 		return recVer;
 	}
 
+	@Override
 	public void setRecVer(Integer recVer) {
 		this.recVer = recVer;
+	}
+
+	public Double getCost() {
+		return cost;
+	}
+
+	public void setCost(Double cost) {
+		this.cost = cost;
 	}
 
 	public Integer getCompanyId() {
@@ -215,5 +237,4 @@ public class WmInboundRecieve extends BaseModel{
 		this.warehouseId = warehouseId;
 	}
 
-    
 }

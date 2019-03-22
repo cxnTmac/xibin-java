@@ -11,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -209,5 +211,21 @@ public class FittingSkuController {
 		pageEntity.setList(list);
 		pageEntity.setSize((long) list.size());
 		return pageEntity;
+	}
+
+	@RequestMapping(value = "/importSkuCodesByExcel", consumes = "multipart/form-data", method = RequestMethod.POST)
+	@ResponseBody
+	public Message importSkuCodesByExcel(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
+		String skuCodeColumnName = request.getParameter("skuCodeColumnName");
+		try {
+			return fittingSkuService.importByExcel(file, skuCodeColumnName);
+		} catch (BusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			Message message = new Message();
+			message.setCode(0);
+			message.setMsg(e.getMessage());
+			return message;
+		}
 	}
 }

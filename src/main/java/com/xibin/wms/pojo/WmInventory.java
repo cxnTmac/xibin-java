@@ -4,41 +4,45 @@ import java.util.Date;
 
 import com.xibin.core.daosupport.BaseModel;
 
-public class WmInventory extends BaseModel{
-    private Integer id;
+public class WmInventory extends BaseModel {
+	private Integer id;
 
-    private String skuCode;
+	private String skuCode;
 
-    private String lot;
+	private String lot;
 
-    private String locCode;
+	private String locCode;
 
-    private Double allocNum;
+	private Double allocNum;
 
-    private Double invNum;
+	private Double invNum;
 
-    private Double invAvailableNum;
-    
-    private Double totalPrice;
+	private Double invAvailableNum;
 
-    private Integer creator;
+	private Double preAssembleNum;
 
-    private Date createTime;
+	private Double totalPrice;
 
-    private Integer modifier;
+	private Integer creator;
 
-    private Date modifyTime;
+	private Date createTime;
 
-    private Integer recVer;
+	private Integer modifier;
 
-    private Integer companyId;
+	private Date modifyTime;
 
-    private Integer warehouseId;
+	private Integer recVer;
 
+	private Integer companyId;
+
+	private Integer warehouseId;
+
+	@Override
 	public Integer getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(Integer id) {
 		this.id = id;
 	}
@@ -91,42 +95,52 @@ public class WmInventory extends BaseModel{
 		this.invAvailableNum = invAvailableNum;
 	}
 
+	@Override
 	public Integer getCreator() {
 		return creator;
 	}
 
+	@Override
 	public void setCreator(Integer creator) {
 		this.creator = creator;
 	}
 
+	@Override
 	public Date getCreateTime() {
 		return createTime;
 	}
 
+	@Override
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
 
+	@Override
 	public Integer getModifier() {
 		return modifier;
 	}
 
+	@Override
 	public void setModifier(Integer modifier) {
 		this.modifier = modifier;
 	}
 
+	@Override
 	public Date getModifyTime() {
 		return modifyTime;
 	}
 
+	@Override
 	public void setModifyTime(Date modifyTime) {
 		this.modifyTime = modifyTime;
 	}
 
+	@Override
 	public Integer getRecVer() {
 		return recVer;
 	}
 
+	@Override
 	public void setRecVer(Integer recVer) {
 		this.recVer = recVer;
 	}
@@ -155,7 +169,12 @@ public class WmInventory extends BaseModel{
 		this.totalPrice = totalPrice;
 	}
 
-	
+	public Double getPreAssembleNum() {
+		return preAssembleNum;
+	}
 
-    
+	public void setPreAssembleNum(Double preAssembleNum) {
+		this.preAssembleNum = preAssembleNum;
+	}
+
 }

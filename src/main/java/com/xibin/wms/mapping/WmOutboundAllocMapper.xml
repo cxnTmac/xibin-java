@@ -7,9 +7,11 @@
     <result column="line_no" property="lineNo" jdbcType="VARCHAR" />
     <result column="alloc_id" property="allocId" jdbcType="VARCHAR" />
     <result column="buyer_code" property="buyerCode" jdbcType="VARCHAR" />
+    <result column="alloc_type" property="allocType" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="VARCHAR" />
     <result column="sku_code" property="skuCode" jdbcType="VARCHAR" />
     <result column="outbound_num" property="outboundNum" jdbcType="DOUBLE" />
+    <result column="pick_num" property="pickNum" jdbcType="DOUBLE" />
     <result column="outbound_price" property="outboundPrice" jdbcType="DOUBLE" />
     <result column="alloc_loc_code" property="allocLocCode" jdbcType="VARCHAR" />
     <result column="to_loc_code" property="toLocCode" jdbcType="VARCHAR" />
@@ -34,11 +36,13 @@
     <result column="alloc_id" property="allocId" jdbcType="VARCHAR" />
     <result column="buyer_code" property="buyerCode" jdbcType="VARCHAR" />
     <result column="buyer_name" property="buyerName" jdbcType="VARCHAR" />
+    <result column="alloc_type" property="allocType" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="VARCHAR" />
     <result column="sku_code" property="skuCode" jdbcType="VARCHAR" />
     <result column="sku_name" property="skuName" jdbcType="VARCHAR" />
     <result column="model_code" property="modelCode" jdbcType="VARCHAR" />
     <result column="outbound_num" property="outboundNum" jdbcType="DOUBLE" />
+    <result column="pick_num" property="pickNum" jdbcType="DOUBLE" />
     <result column="outbound_price" property="outboundPrice" jdbcType="DOUBLE" />
     <result column="alloc_loc_code" property="allocLocCode" jdbcType="VARCHAR" />
     <result column="to_loc_code" property="toLocCode" jdbcType="VARCHAR" />
@@ -57,7 +61,7 @@
     <result column="warehouse_id" property="warehouseId" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    woa.id, woa.order_no, woa.line_no,woa.alloc_id,woa.status,woa.buyer_code, woa.sku_code, woa.outbound_num, woa.outbound_price, woa.alloc_loc_code,woa.to_loc_code,woa.pick_op,woa.pick_time,woa.ship_op,woa.ship_time,woa.cost, woa.remark, 
+    woa.id, woa.order_no, woa.line_no,woa.alloc_id,woa.status,woa.alloc_type,woa.buyer_code, woa.sku_code, woa.outbound_num,woa.pick_num, woa.outbound_price, woa.alloc_loc_code,woa.to_loc_code,woa.pick_op,woa.pick_time,woa.ship_op,woa.ship_time,woa.cost, woa.remark, 
     woa.creator, woa.create_time, woa.modifier, woa.modify_time, woa.rec_ver, woa.company_id, woa.warehouse_id
   </sql>
   
@@ -105,11 +109,11 @@
   <!-- 【固定】：插入记录（支持一条及多条） -->
   <insert id="insert" parameterType="java.util.Collection">
   	INSERT INTO wm_outbound_alloc
-          (id, order_no, line_no,alloc_id,status,buyer_code, sku_code, outbound_num,outbound_price, alloc_loc_code,to_loc_code, pick_op,pick_time,ship_op,ship_time,cost,remark, 
+          (id, order_no, line_no,alloc_id,status,alloc_type,buyer_code, sku_code, outbound_num,pick_num,outbound_price, alloc_loc_code,to_loc_code, pick_op,pick_time,ship_op,ship_time,cost,remark, 
     creator, create_time, modifier, modify_time, rec_ver, company_id, warehouse_id)
        VALUES
   		<foreach collection="list" item="item" index="index" separator=",">
-	   		(#{item.id}, #{item.orderNo},#{item.lineNo},#{item.allocId},#{item.status}, #{item.buyerCode},  #{item.skuCode},#{item.outboundNum},#{item.outboundPrice},
+	   		(#{item.id}, #{item.orderNo},#{item.lineNo},#{item.allocId},#{item.status}, #{item.allocType},#{item.buyerCode},  #{item.skuCode},#{item.outboundNum},#{item.pickNum},#{item.outboundPrice},
 	   		#{item.allocLocCode},#{item.toLocCode},#{item.pickOp},#{item.pickTime},#{item.shipOp},#{item.shipTime},#{item.cost},
       #{item.remark},#{item.creator},#{item.createTime}, #{item.modifier},  #{item.modifyTime},
       #{item.recVer}, #{item.companyId},#{item.warehouseId})
@@ -149,6 +153,11 @@
                      when (ID=#{item.id}) then #{item.status}
              </foreach>
 		</trim>
+		<trim prefix="alloc_type =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.allocType}
+             </foreach>
+		</trim>
 		<trim prefix="buyer_code =case"  suffix="end,"  >
              <foreach collection="list" item="item" index="index">
                      when (ID=#{item.id}) then #{item.buyerCode}
@@ -162,6 +171,11 @@
 		<trim prefix="outbound_num =case"  suffix="end,"  >
              <foreach collection="list" item="item" index="index">
                      when (ID=#{item.id}) then #{item.outboundNum}
+             </foreach>
+		</trim>
+		<trim prefix="pick_num =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.pickNum}
              </foreach>
 		</trim>
 		<trim prefix="outbound_price =case"  suffix="end,"  >
@@ -265,6 +279,7 @@
     bc.customer_code = woa.buyer_code
     and bc.company_id = woa.company_id
     <include refid="findByConditionWhere" />
+    <if test="orderByConditions!=null and orderByConditions!=''">${orderByConditions}</if>
   </select>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.xibin.wms.pojo.BdLoc">
     select 

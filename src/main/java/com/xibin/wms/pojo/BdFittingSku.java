@@ -39,6 +39,8 @@ public class BdFittingSku extends BaseModel {
 
 	private String isShow;
 
+	private String groupCode;
+
 	private String def1;
 
 	private String def2;
@@ -295,6 +297,14 @@ public class BdFittingSku extends BaseModel {
 
 	public void setQuickCode(String quickCode) {
 		this.quickCode = quickCode;
+	}
+
+	public String getGroupCode() {
+		return groupCode;
+	}
+
+	public void setGroupCode(String groupCode) {
+		this.groupCode = groupCode;
 	}
 
 }

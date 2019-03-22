@@ -29,6 +29,7 @@ import com.xibin.wms.pojo.WmInboundDetail;
 import com.xibin.wms.pojo.WmInboundHeader;
 import com.xibin.wms.pojo.WmInboundRecieve;
 import com.xibin.wms.query.WmInboundDetailQueryItem;
+import com.xibin.wms.query.WmInboundDetailSkuQueryItem;
 import com.xibin.wms.query.WmInboundHeaderQueryItem;
 import com.xibin.wms.query.WmInboundRecieveQueryItem;
 import com.xibin.wms.service.WmInboundDetailService;
@@ -235,13 +236,58 @@ public class InboundController {
 		return message;
 	}
 
+	@RequestMapping("/batchReceive")
+	@ResponseBody
+	public Message batchReceive(@RequestParam("orderNo") String orderNo, @RequestParam("lineNos") String lineNos,
+			@RequestParam("recLineNos") String recLineNos) {
+		Message message = new Message();
+		String[] lineNoArray = lineNos.split(",");
+		String[] recLineNoArray = recLineNos.split(",");
+		if (lineNoArray.length != recLineNoArray.length) {
+			message.setCode(0);
+			message.setMsg("数据有误，请刷新单据，尝试刷新后仍出现请联系管理员");
+			return message;
+		}
+		List<String> errors = new ArrayList<String>();
+		Message receiveReturnMsg = new Message();
+		for (int i = 0; i < lineNoArray.length; i++) {
+			try {
+				receiveReturnMsg = this.inboundReceiveService.receiveByLineNoAndRecLineNO(orderNo, lineNoArray[i],
+						recLineNoArray[i]);
+				if (receiveReturnMsg.getCode() == 0) {
+					errors.add(receiveReturnMsg.getMsg());
+				}
+			} catch (BusinessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				errors.add(e.getMessage());
+			}
+		}
+		if (errors.size() == 0) {
+			message.setCode(200);
+			message.setMsg("全部操作成功！");
+		} else {
+			message.setCode(100);
+			message.setMsgs(errors);
+			message.converMsgsToMsg("</br>");
+		}
+		return message;
+	}
+
 	@RequestMapping("/cancelReceive")
 	@ResponseBody
 	public Message cancelReceive(HttpServletRequest request, Model model) {
 		Message message = new Message();
 		String str = request.getParameter("receive");
 		WmInboundRecieve bean = JSON.parseObject(str, WmInboundRecieve.class);
-		message = this.inboundReceiveService.cancelReceiveByRecieve(bean);
+		try {
+			message = this.inboundReceiveService.cancelReceiveByRecieve(bean);
+		} catch (BusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			message.setCode(0);
+			message.setMsg(e.getMessage());
+		}
 		return message;
 	}
 
@@ -375,6 +421,23 @@ public class InboundController {
 		}
 	}
 
+	@RequestMapping("/accountCostByOrderNo")
+	@ResponseBody
+	public Message accountCostByOrderNo(HttpServletRequest request, Model model) {
+		String orderNo = request.getParameter("orderNo");
+		Message message = new Message();
+		try {
+			message = inboundHeaderService.accountForCostByOrderNo(orderNo);
+			return message;
+		} catch (BusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			message.setCode(0);
+			message.setMsg(e.getMessage());
+			return message;
+		}
+	}
+
 	@RequestMapping("/accountByOrderNos")
 	@ResponseBody
 	public Message accountByOrderNos(@RequestParam("orderNos") String orderNos,
@@ -396,4 +459,55 @@ public class InboundController {
 			return message;
 		}
 	}
+
+	@RequestMapping("/accountCostByOrderNos")
+	@ResponseBody
+	public Message accountCostByOrderNos(@RequestParam("orderNos") String orderNos,
+			@RequestParam("inboundType") String inboundType) {
+		List<String> orderNoList = new ArrayList<String>();
+		String[] orderArray = orderNos.split(",");
+		for (String orderNo : orderArray) {
+			orderNoList.add(orderNo);
+		}
+		Message message = new Message();
+		try {
+			message = inboundHeaderService.accountForCostByOrderNos(orderNoList, inboundType);
+			return message;
+		} catch (BusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			message.setCode(0);
+			message.setMsg(e.getMessage());
+			return message;
+		}
+	}
+
+	@RequestMapping("/queryWmInboundDetailByPage")
+	@ResponseBody
+	public PageEntity<WmInboundDetailSkuQueryItem> queryWmInboundDetailByPage(HttpServletRequest request, Model model) {
+		// 开始分页
+		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
+		PageEntity<WmInboundDetailSkuQueryItem> pageEntity = new PageEntity<WmInboundDetailSkuQueryItem>();
+		Page<?> page = new Page();
+		Map map = new HashMap<>();
+		// 配置分页参数
+		if (request.getParameter("page") != null && request.getParameter("size") != null) {
+			page.setPageNo(Integer.parseInt(request.getParameter("page")));
+			page.setPageSize(Integer.parseInt(request.getParameter("size")));
+			map = JSONObject.parseObject(request.getParameter("conditions"));
+			map.put("page", page);
+
+		} else {
+			map = JSONObject.parseObject(request.getParameter("conditions"));
+		}
+		if (userDetails != null) {
+			map.put("companyId", userDetails.getCompanyId());
+			map.put("warehouseId", userDetails.getWarehouseId());
+		}
+		List<WmInboundDetailSkuQueryItem> list = inboundDetailService.queryWmInboundDetailByPage(map);
+		pageEntity.setList(list);
+		pageEntity.setSize(page.getTotalRecord());
+		return pageEntity;
+	}
+
 }

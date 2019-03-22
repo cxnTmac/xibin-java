@@ -7,6 +7,7 @@
     <result column="password" property="password" jdbcType="VARCHAR" />
     <result column="is_enable" property="isEnable" jdbcType="VARCHAR" />
     <result column="role_code" property="roleCode" jdbcType="VARCHAR" />
+    <result column="open_id" property="openId" jdbcType="VARCHAR" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -21,6 +22,7 @@
     <result column="password" property="password" jdbcType="VARCHAR" />
     <result column="is_enable" property="isEnable" jdbcType="VARCHAR" />
     <result column="role_code" property="roleCode" jdbcType="VARCHAR" />
+     <result column="open_id" property="openId" jdbcType="VARCHAR" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -30,7 +32,7 @@
     <result column="company_id" property="companyId" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    su.id, su.user_name, su.password, su.is_enable, su.role_code, su.remark, su.creator, su.create_time, su.modifier, 
+    su.id, su.user_name, su.password, su.is_enable, su.role_code, su.open_id,su.remark, su.creator, su.create_time, su.modifier, 
     su.modify_time, su.rec_ver, su.company_id
   </sql>
   <!-- 条件 -->
@@ -45,6 +47,7 @@
       WHERE 1=1
           <if test="id!=null and id!=''"> AND su.id = #{id}</if>
           <if test="userName!=null and userName!=''"> AND su.user_name = #{userName}</if>
+          <if test="openId!=null and openId!=''"> AND su.open_id = #{openId}</if>
           <if test="companyId!=null and companyId!=''"> AND su.company_id = #{companyId}</if>
   </sql>
   
@@ -63,11 +66,11 @@
   <!-- 【固定】：插入记录（支持一条及多条） -->
   <insert id="insert" parameterType="java.util.Collection">
   	INSERT INTO sys_user
-          (id, user_name, password, is_enable, role_code, remark, creator, create_time, modifier, 
+          (id, user_name, password, is_enable, role_code,open_id, remark, creator, create_time, modifier, 
     modify_time, rec_ver, company_id)
        VALUES
   		<foreach collection="list" item="item" index="index" separator=",">
-	   		(#{item.id}, #{item.userName}, #{item.password}, #{item.isEnable},#{item.roleCode},
+	   		(#{item.id}, #{item.userName}, #{item.password}, #{item.isEnable},#{item.roleCode},#{item.openId},
       #{item.remark},#{item.creator},#{item.createTime}, #{item.modifier},  #{item.modifyTime},
       #{item.recVer}, #{item.companyId})
   		</foreach>
@@ -104,6 +107,11 @@
 		<trim prefix="role_code =case"  suffix="end,"  >
              <foreach collection="list" item="item" index="index">
                      when (ID=#{item.id}) then #{item.roleCode}
+             </foreach>
+		</trim>
+		<trim prefix="open_id =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.openId}
              </foreach>
 		</trim>
 		<trim prefix="remark =case"  suffix="end,"  >
@@ -175,5 +183,11 @@
     where su.user_name = #{userName,jdbcType=VARCHAR}
     and 
     su.company_id = #{companyId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByOpenId" resultMap="BaseResultMap" resultType="java.util.List"  parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_user su
+    where su.open_id = #{openId,jdbcType=VARCHAR}
   </select>
 </mapper>

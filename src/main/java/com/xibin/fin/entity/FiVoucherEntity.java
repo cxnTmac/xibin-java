@@ -1,30 +1,30 @@
 package com.xibin.fin.entity;
 
-import java.security.KeyStore.PrivateKeyEntry;
-import java.time.Period;
 import java.util.Date;
 
 import com.xibin.fin.pojo.FiVoucherDetail;
 
-public class FiVoucherEntity extends FiVoucherDetail{
-	
+public class FiVoucherEntity extends FiVoucherDetail {
+
 	private Integer voucherNum;
-	
+
 	private String voucherWord;
-	
+
 	private String period;
-	
+
 	private Date billDate;
-	
+
 	private String status;
-	
+
 	private Double bill;
-	
+
 	private String checkerName;
-	
+
 	private Date completeDate;
-	
+
 	private String courseName;
+
+	private String auxiliaryName;
 
 	public String getCourseName() {
 		return courseName;
@@ -97,7 +97,13 @@ public class FiVoucherEntity extends FiVoucherDetail{
 	public void setCompleteDate(Date completeDate) {
 		this.completeDate = completeDate;
 	}
-	
-	
-	
+
+	public String getAuxiliaryName() {
+		return auxiliaryName;
+	}
+
+	public void setAuxiliaryName(String auxiliaryName) {
+		this.auxiliaryName = auxiliaryName;
+	}
+
 }

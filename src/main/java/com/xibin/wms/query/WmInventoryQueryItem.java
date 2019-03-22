@@ -3,42 +3,42 @@ package com.xibin.wms.query;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.xibin.core.daosupport.BaseModel;
+public class WmInventoryQueryItem implements Serializable {
+	private Integer id;
 
-public class WmInventoryQueryItem implements Serializable{
-    private Integer id;
+	private String skuCode;
 
-    private String skuCode;
-    
-    private String skuName;
-    
-    private String modelCode;
+	private String skuName;
 
-    private String lot;
+	private String modelCode;
 
-    private String locCode;
+	private String lot;
 
-    private Double allocNum;
+	private String locCode;
 
-    private Double invNum;
+	private Double allocNum;
 
-    private Double invAvailableNum;
-    
-    private Double totalPrice;
+	private Double invNum;
 
-    private Integer creator;
+	private Double invAvailableNum;
 
-    private Date createTime;
+	private Double preAssembleNum;
 
-    private Integer modifier;
+	private Double totalPrice;
 
-    private Date modifyTime;
+	private Integer creator;
 
-    private Integer recVer;
+	private Date createTime;
 
-    private Integer companyId;
+	private Integer modifier;
 
-    private Integer warehouseId;
+	private Date modifyTime;
+
+	private Integer recVer;
+
+	private Integer companyId;
+
+	private Integer warehouseId;
 
 	public Integer getId() {
 		return id;
@@ -55,7 +55,7 @@ public class WmInventoryQueryItem implements Serializable{
 	public void setSkuCode(String skuCode) {
 		this.skuCode = skuCode;
 	}
-	
+
 	public String getSkuName() {
 		return skuName;
 	}
@@ -63,7 +63,7 @@ public class WmInventoryQueryItem implements Serializable{
 	public void setSkuName(String skuName) {
 		this.skuName = skuName;
 	}
-	
+
 	public String getModelCode() {
 		return modelCode;
 	}
@@ -176,7 +176,12 @@ public class WmInventoryQueryItem implements Serializable{
 		this.totalPrice = totalPrice;
 	}
 
-	
+	public Double getPreAssembleNum() {
+		return preAssembleNum;
+	}
 
-    
+	public void setPreAssembleNum(Double preAssembleNum) {
+		this.preAssembleNum = preAssembleNum;
+	}
+
 }

@@ -4,124 +4,147 @@ import java.util.Date;
 
 import com.xibin.core.daosupport.BaseModel;
 
-public class SysUser extends BaseModel{
-    private Integer id;
+public class SysUser extends BaseModel {
+	private Integer id;
 
-    private String userName;
+	private String userName;
 
-    private String password;
+	private String password;
 
-    private String isEnable;
+	private String isEnable;
 
-    private String roleCode;
+	private String roleCode;
 
-    private String remark;
+	private String openId;
 
-    private Integer creator;
+	private String remark;
 
-    private Date createTime;
+	private Integer creator;
 
-    private Integer modifier;
+	private Date createTime;
 
-    private Date modifyTime;
+	private Integer modifier;
 
-    private Integer recVer;
+	private Date modifyTime;
 
-    private Integer companyId;
+	private Integer recVer;
 
-    public Integer getId() {
-        return id;
-    }
+	private Integer companyId;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	@Override
+	public Integer getId() {
+		return id;
+	}
 
-    public String getUserName() {
-        return userName;
-    }
+	@Override
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public void setUserName(String userName) {
-        this.userName = userName == null ? null : userName.trim();
-    }
+	public String getUserName() {
+		return userName;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public void setUserName(String userName) {
+		this.userName = userName == null ? null : userName.trim();
+	}
 
-    public void setPassword(String password) {
-        this.password = password == null ? null : password.trim();
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public String getIsEnable() {
-        return isEnable;
-    }
+	public void setPassword(String password) {
+		this.password = password == null ? null : password.trim();
+	}
 
-    public void setIsEnable(String isEnable) {
-        this.isEnable = isEnable == null ? null : isEnable.trim();
-    }
+	public String getIsEnable() {
+		return isEnable;
+	}
 
-    public String getRoleCode() {
-        return roleCode;
-    }
+	public void setIsEnable(String isEnable) {
+		this.isEnable = isEnable == null ? null : isEnable.trim();
+	}
 
-    public void setRoleCode(String roleCode) {
-        this.roleCode = roleCode == null ? null : roleCode.trim();
-    }
+	public String getRoleCode() {
+		return roleCode;
+	}
 
-    public String getRemark() {
-        return remark;
-    }
+	public void setRoleCode(String roleCode) {
+		this.roleCode = roleCode == null ? null : roleCode.trim();
+	}
 
-    public void setRemark(String remark) {
-        this.remark = remark == null ? null : remark.trim();
-    }
+	public String getRemark() {
+		return remark;
+	}
 
-    public Integer getCreator() {
-        return creator;
-    }
+	public void setRemark(String remark) {
+		this.remark = remark == null ? null : remark.trim();
+	}
 
-    public void setCreator(Integer creator) {
-        this.creator = creator;
-    }
+	@Override
+	public Integer getCreator() {
+		return creator;
+	}
 
-    public Date getCreateTime() {
-        return createTime;
-    }
+	@Override
+	public void setCreator(Integer creator) {
+		this.creator = creator;
+	}
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
+	@Override
+	public Date getCreateTime() {
+		return createTime;
+	}
 
-    public Integer getModifier() {
-        return modifier;
-    }
+	@Override
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
 
-    public void setModifier(Integer modifier) {
-        this.modifier = modifier;
-    }
+	@Override
+	public Integer getModifier() {
+		return modifier;
+	}
 
-    public Date getModifyTime() {
-        return modifyTime;
-    }
+	@Override
+	public void setModifier(Integer modifier) {
+		this.modifier = modifier;
+	}
 
-    public void setModifyTime(Date modifyTime) {
-        this.modifyTime = modifyTime;
-    }
+	@Override
+	public Date getModifyTime() {
+		return modifyTime;
+	}
 
-    public Integer getRecVer() {
-        return recVer;
-    }
+	@Override
+	public void setModifyTime(Date modifyTime) {
+		this.modifyTime = modifyTime;
+	}
 
-    public void setRecVer(Integer recVer) {
-        this.recVer = recVer;
-    }
+	@Override
+	public Integer getRecVer() {
+		return recVer;
+	}
 
-    public Integer getCompanyId() {
-        return companyId;
-    }
+	@Override
+	public void setRecVer(Integer recVer) {
+		this.recVer = recVer;
+	}
 
-    public void setCompanyId(Integer companyId) {
-        this.companyId = companyId;
-    }
+	public Integer getCompanyId() {
+		return companyId;
+	}
+
+	public void setCompanyId(Integer companyId) {
+		this.companyId = companyId;
+	}
+
+	public String getOpenId() {
+		return openId;
+	}
+
+	public void setOpenId(String openId) {
+		this.openId = openId;
+	}
+
 }

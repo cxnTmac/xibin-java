@@ -22,11 +22,19 @@ public class WmInboundDetailQueryItem implements Serializable {
 
 	private String skuCode;
 
+	private String quickCode;
+
+	private String fittingSkuName;
+
+	private String modelCode;
+
 	private Double inboundPreNum;
 
 	private Double inboundNum;
 
 	private Double inboundPrice;
+
+	private Double cost;
 
 	private String planLoc;
 
@@ -232,6 +240,38 @@ public class WmInboundDetailQueryItem implements Serializable {
 
 	public void setIsCalculated(String isCalculated) {
 		this.isCalculated = isCalculated;
+	}
+
+	public Double getCost() {
+		return cost;
+	}
+
+	public void setCost(Double cost) {
+		this.cost = cost;
+	}
+
+	public String getFittingSkuName() {
+		return fittingSkuName;
+	}
+
+	public void setFittingSkuName(String fittingSkuName) {
+		this.fittingSkuName = fittingSkuName;
+	}
+
+	public String getQuickCode() {
+		return quickCode;
+	}
+
+	public void setQuickCode(String quickCode) {
+		this.quickCode = quickCode;
+	}
+
+	public String getModelCode() {
+		return modelCode;
+	}
+
+	public void setModelCode(String modelCode) {
+		this.modelCode = modelCode;
 	}
 
 }

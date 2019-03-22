@@ -15,6 +15,8 @@ public class WmOutboundAlloc extends BaseModel {
 
 	private String status;
 
+	private String allocType;
+
 	private String buyerCode;
 
 	private String skuCode;
@@ -22,6 +24,8 @@ public class WmOutboundAlloc extends BaseModel {
 	private Double outboundNum;
 
 	private Double outboundPrice;
+
+	private Double pickNum;
 
 	private String allocLocCode;
 
@@ -255,6 +259,22 @@ public class WmOutboundAlloc extends BaseModel {
 
 	public void setCost(Double cost) {
 		this.cost = cost;
+	}
+
+	public Double getPickNum() {
+		return pickNum;
+	}
+
+	public void setPickNum(Double pickNum) {
+		this.pickNum = pickNum;
+	}
+
+	public String getAllocType() {
+		return allocType;
+	}
+
+	public void setAllocType(String allocType) {
+		this.allocType = allocType;
 	}
 
 }

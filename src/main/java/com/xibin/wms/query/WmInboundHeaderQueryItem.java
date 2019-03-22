@@ -3,48 +3,50 @@ package com.xibin.wms.query;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.xibin.core.daosupport.BaseModel;
+public class WmInboundHeaderQueryItem implements Serializable {
+	private Integer id;
 
-public class WmInboundHeaderQueryItem implements Serializable{
-    private Integer id;
+	private String orderNo;
 
-    private String orderNo;
+	private String supplierCode;
 
-    private String supplierCode;
-    
-    private String supplierName;
-    
-    private String status;
+	private String supplierName;
 
-    private Date orderTime;
+	private String status;
 
-    private Integer auditOp;
-    
-    private String auditStatus;
+	private Date orderTime;
 
-    private Date auditTime;
+	private Integer auditOp;
 
-    private String inboundType;
-    
-    private String isCalculated;
-    
-    private Integer voucherId;
+	private String auditStatus;
 
-    private String remark;
+	private Date auditTime;
 
-    private Integer creator;
+	private String inboundType;
 
-    private Date createTime;
+	private String isCalculated;
 
-    private Integer modifier;
+	private String isCostCalculated;
 
-    private Date modifyTime;
+	private Integer voucherId;
 
-    private Integer recVer;
+	private Integer costVoucherId;
 
-    private Integer companyId;
+	private String remark;
 
-    private Integer warehouseId;
+	private Integer creator;
+
+	private Date createTime;
+
+	private Integer modifier;
+
+	private Date modifyTime;
+
+	private Integer recVer;
+
+	private Integer companyId;
+
+	private Integer warehouseId;
 
 	public Integer getId() {
 		return id;
@@ -206,5 +208,20 @@ public class WmInboundHeaderQueryItem implements Serializable{
 		this.voucherId = voucherId;
 	}
 
-   
+	public String getIsCostCalculated() {
+		return isCostCalculated;
+	}
+
+	public void setIsCostCalculated(String isCostCalculated) {
+		this.isCostCalculated = isCostCalculated;
+	}
+
+	public Integer getCostVoucherId() {
+		return costVoucherId;
+	}
+
+	public void setCostVoucherId(Integer costVoucherId) {
+		this.costVoucherId = costVoucherId;
+	}
+
 }

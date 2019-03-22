@@ -10,7 +10,7 @@
     <result column="balance" property="balance" jdbcType="DOUBLE" />
     <result column="is_parent" property="isParent" jdbcType="VARCHAR" />
     <result column="is_child" property="isChild" jdbcType="VARCHAR" />
-    <result column="auxiliary" property="auxiliary" jdbcType="INTEGER" />
+    <result column="auxiliary" property="auxiliary" jdbcType="VARCHAR" />
     <result column="book_id" property="bookId" jdbcType="INTEGER" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
@@ -36,7 +36,7 @@
       			#{item}  
      	  	</foreach>
           </if>
-          
+          <if test="courseNoStart!=null and courseNoStart!=''"> AND fc.course_no LIKE CONCAT('${courseNoStart}','%')</if>
           <if test="courseNo!=null and courseNo!=''"> AND fc.course_no = #{courseNo}</if>
           <if test="courseName!=null and courseName!=''"> AND fc.course_name = #{courseName}</if>
           <if test="isChild!=null and isChild!=''"> AND fc.is_child = #{isChild}</if>
@@ -51,6 +51,7 @@
       WHERE 1=1
           <if test="id!=null and id!=''"> AND fc.id = #{id}</if>
           <if test="courseNo!=null and courseNo!=''"> AND fc.course_no = #{courseNo}</if>
+          
           <if test="courseName!=null and courseName!=''"> AND fc.course_name = #{courseName}</if>
           <if test="isChild!=null and isChild!=''"> AND fc.is_child = #{isChild}</if>
           <if test="companyId!=null and companyId!=''"> AND fc.company_id = #{companyId}</if>
@@ -185,6 +186,13 @@
     <include refid="Base_Column_List" />
     from fi_course fc
     <include refid="findByConditionWhere" />
+    order by fc.course_no
+  </select>
+  <select id="selectAllByCondition" resultMap="BaseResultMap" parameterType="Map">
+    select 
+    <include refid="Base_Column_List" />
+    from fi_course fc
+    <include refid="findByConditionWhere" />
   </select>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.xibin.fin.pojo.FiCourse">
     select 
@@ -196,9 +204,11 @@
     select 
     <include refid="Base_Column_List" />
     from fi_course fc
-    where fv.course_no = #{courseNo,jdbcType=VARCHAR}
+    where fc.course_no = #{courseNo,jdbcType=VARCHAR}
     and
     fc.company_id = #{companyId,jdbcType=INTEGER}
+    and
+    fc.book_id = #{bookId,jdbcType=INTEGER}
   </select>
   
  

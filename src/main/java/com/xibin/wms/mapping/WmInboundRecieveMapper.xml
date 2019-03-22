@@ -12,6 +12,7 @@
     <result column="inbound_pre_num" property="inboundPreNum" jdbcType="DOUBLE" />
     <result column="inbound_num" property="inboundNum" jdbcType="DOUBLE" />
     <result column="inbound_price" property="inboundPrice" jdbcType="DOUBLE" />
+    <result column="cost" property="cost" jdbcType="DOUBLE" />
     <result column="plan_loc" property="planLoc" jdbcType="VARCHAR" />
     <result column="inbound_loc_code" property="inboundLocCode" jdbcType="VARCHAR" />
     <result column="rec_time" property="recTime" jdbcType="TIMESTAMP" />
@@ -33,9 +34,12 @@
     <result column="supplier_name" property="supplierName" jdbcType="VARCHAR" />
     <result column="rec_line_no" property="recLineNo" jdbcType="VARCHAR" />
     <result column="sku_code" property="skuCode" jdbcType="VARCHAR" />
+    <result column="fitting_sku_name" property="fittingSkuName" jdbcType="VARCHAR" />
+    <result column="model_code" property="modelCode" jdbcType="VARCHAR" />
     <result column="inbound_pre_num" property="inboundPreNum" jdbcType="DOUBLE" />
     <result column="inbound_num" property="inboundNum" jdbcType="DOUBLE" />
     <result column="inbound_price" property="inboundPrice" jdbcType="DOUBLE" />
+    <result column="cost" property="cost" jdbcType="DOUBLE" />
     <result column="plan_loc" property="planLoc" jdbcType="VARCHAR" />
     <result column="inbound_loc_code" property="inboundLocCode" jdbcType="VARCHAR" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
@@ -49,7 +53,7 @@
     <result column="warehouse_id" property="warehouseId" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    wir.id, wir.order_no, wir.line_no,wir.status,wir.rec_line_no,wir.supplier_code, wir.sku_code, wir.inbound_pre_num,wir.inbound_num, wir.inbound_price, wir.plan_loc,wir.inbound_loc_code, wir.rec_time,wir.remark, 
+    wir.id, wir.order_no, wir.line_no,wir.status,wir.rec_line_no,wir.supplier_code, wir.sku_code, wir.inbound_pre_num,wir.inbound_num, wir.inbound_price, wir.cost,wir.plan_loc,wir.inbound_loc_code, wir.rec_time,wir.remark, 
     wir.creator, wir.create_time, wir.modifier, wir.modify_time, wir.rec_ver, wir.company_id, wir.warehouse_id
   </sql>
   
@@ -94,11 +98,11 @@
   <!-- 【固定】：插入记录（支持一条及多条） -->
   <insert id="insert" parameterType="java.util.Collection">
   	INSERT INTO wm_inbound_recieve
-          (id, order_no, line_no,rec_line_no, status,supplier_code,sku_code, inbound_pre_num, inbound_num, inbound_price, plan_loc,inbound_loc_code, rec_time,remark, 
+          (id, order_no, line_no,rec_line_no, status,supplier_code,sku_code, inbound_pre_num, inbound_num, inbound_price, cost, plan_loc,inbound_loc_code, rec_time,remark, 
     creator, create_time, modifier, modify_time, rec_ver, company_id, warehouse_id)
        VALUES
   		<foreach collection="list" item="item" index="index" separator=",">
-	   		(#{item.id}, #{item.orderNo},#{item.lineNo},#{item.recLineNo},#{item.status}, #{item.supplierCode},#{item.skuCode},#{item.inboundPreNum},#{item.inboundNum},#{item.inboundPrice},#{item.planLoc},#{item.inboundLocCode},#{item.recTime},
+	   		(#{item.id}, #{item.orderNo},#{item.lineNo},#{item.recLineNo},#{item.status}, #{item.supplierCode},#{item.skuCode},#{item.inboundPreNum},#{item.inboundNum},#{item.inboundPrice},#{item.cost},#{item.planLoc},#{item.inboundLocCode},#{item.recTime},
       #{item.remark},#{item.creator},#{item.createTime}, #{item.modifier},  #{item.modifyTime},
       #{item.recVer}, #{item.companyId},#{item.warehouseId})
   		</foreach>
@@ -160,6 +164,11 @@
 		<trim prefix="inbound_price =case"  suffix="end,"  >
              <foreach collection="list" item="item" index="index">
                      when (ID=#{item.id}) then #{item.inboundPrice}
+             </foreach>
+		</trim>
+		<trim prefix="cost =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.cost}
              </foreach>
 		</trim>
 		<trim prefix="plan_loc =case"  suffix="end,"  >
@@ -226,11 +235,16 @@
   <select id="selectAllByPage" resultMap="QueryResultMap" parameterType="Map">
     select 
     <include refid="Base_Column_List" />
-    , bc.customer_name as supplier_name
+    , bc.customer_name as supplier_name,
+    bfs.fitting_sku_name,
+    bfs.model_code
     from wm_inbound_recieve wir
     left join bd_customer bc on
     wir.supplier_code = bc.customer_code
     and wir.company_id = bc.company_id
+    LEFT JOIN bd_fitting_sku bfs ON 
+    wir.sku_code = bfs.fitting_sku_code
+	and wir.company_id = bfs.company_id
     <include refid="findByConditionWhere" />
   </select>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.xibin.wms.pojo.BdLoc">
@@ -251,12 +265,29 @@
     where wir.order_no = #{orderNo,jdbcType=VARCHAR}
     and
     wir.line_no = #{lineNo,jdbcType=VARCHAR}
+    and
+    wir.rec_line_no = #{recLineNo,jdbcType=VARCHAR}
     and 
     wir.company_id = #{companyId,jdbcType=INTEGER}
     and
     wir.warehouse_id = #{warehouseId,jdbcType=INTEGER}
   </select>
-  
+  <select id="selectByOrderNoAndLineNo" resultMap="QueryResultMap" resultType="java.util.List"  parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    , bc.customer_name as supplier_name
+    from wm_inbound_recieve wir
+    left join bd_customer bc on
+    wir.supplier_code = bc.customer_code
+    and wir.company_id = bc.company_id
+    where wir.order_no = #{orderNo,jdbcType=VARCHAR}
+    and
+    wir.line_no = #{lineNo,jdbcType=VARCHAR}
+    and 
+    wir.company_id = #{companyId,jdbcType=INTEGER}
+    and
+    wir.warehouse_id = #{warehouseId,jdbcType=INTEGER}
+  </select>
   <select id="selectLastRecLineNo"   resultType="Integer"   parameterType="java.lang.String" >
     select
     max(wir.rec_line_no)
@@ -270,4 +301,27 @@
     wir.warehouse_id = #{warehouseId,jdbcType=INTEGER}
   </select>
   
+  <select id="querySumCostForAccount"   resultType="Double"   parameterType="Map" >
+	SELECT 
+		SUM(wir.cost*wir.inbound_num) as total
+	FROM wm_inbound_recieve wir
+	LEFT JOIN wm_inbound_header wih ON
+	wir.order_no = wih.order_no
+	AND wir.company_id = wih.company_id
+	AND wir.warehouse_id = wih.warehouse_id
+	WHERE
+		1 = 1   
+	<if test="orderNos!=null and orderNos!=''">
+	AND wir.order_no in 
+		<foreach item="item" index="index" collection="orderNos" open="(" separator="," close=")">  
+		#{item}
+		</foreach>
+	</if>
+	<if test="inboundType!=null and inboundType!=''">
+	AND wih.inbound_type = #{inboundType}
+	</if>
+	AND wih.status = '99'
+	AND wir.company_id = #{companyId,jdbcType=INTEGER}
+	AND wir.warehouse_id = #{warehouseId,jdbcType=INTEGER}
+ </select>
 </mapper>

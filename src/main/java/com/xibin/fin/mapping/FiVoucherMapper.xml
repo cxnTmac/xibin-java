@@ -31,6 +31,8 @@
       WHERE 1=1
           <if test="id!=null and id!=''"> AND fv.id = #{id}</if>
           <if test="companyId!=null and companyId!=''"> AND fv.company_id = #{companyId}</if>
+          <if test="billDateFm!=null and billDateFm!=''"> AND fv.bill_date &gt;= #{billDateFm}</if>
+          <if test="billDateTo!=null and billDateTo!=''"> AND fv.bill_date &lt;= #{billDateTo}</if>
           <if test="bookId!=null and bookId!=''"> AND fv.book_id = #{bookId}</if>
   </sql>
   <!-- 条件 -->
@@ -43,8 +45,7 @@
           <if test="billDate!=null and billDate!=''"> AND fv.bill_date = #{billDate}</if>
           <if test="status!=null and status!=''"> AND fv.status = #{status}</if>
           <if test="bill!=null and bill!=''"> AND fv.bill = #{bill}</if>
-          <if test="billDateFm!=null and billDateFm!=''"> AND fv.bill_date &gt;= #{billDateFm}</if>
-          <if test="billDateTo!=null and billDateTo!=''"> AND fv.bill_date &lt;= #{billDateTo}</if>
+          
           <if test="checker!=null and checker!=''"> AND fv.checker = #{checker}</if>
           <if test="companyId!=null and companyId!=''"> AND fv.company_id = #{companyId}</if>
           <if test="bookId!=null and bookId!=''"> AND fv.book_id = #{bookId}</if>
@@ -217,6 +218,14 @@
   <update id="updateStatus" parameterType="Map">
   	UPDATE fi_voucher fv
 		SET fv.status = #{toStatus}
+		WHERE 1=1
+		AND	fv.company_id = #{companyId}
+		AND fv.book_id = #{bookId}
+		AND fv.period = #{period}
+  </update>
+  <update id="updateForEndTerm" parameterType="Map">
+  	UPDATE fi_voucher fv
+		SET fv.status = '20'
 		WHERE 1=1
 		AND	fv.company_id = #{companyId}
 		AND fv.book_id = #{bookId}

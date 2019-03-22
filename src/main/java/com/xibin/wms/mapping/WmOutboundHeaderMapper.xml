@@ -244,6 +244,7 @@
     left join bd_customer bc on
     bc.customer_code = woh.buyer_code
     <include refid="findByConditionWhere" />
+    order by woh.order_time desc
   </select>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.xibin.wms.pojo.BdLoc">
     select 
@@ -255,7 +256,10 @@
   <select id="selectByKey" resultMap="QueryResultMap" resultType="java.util.List"  parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
+    ,bc.customer_name as buyer_name
     from wm_outbound_header woh
+    left join bd_customer bc on
+    bc.customer_code = woh.buyer_code
     where woh.order_no = #{orderNo,jdbcType=VARCHAR}
     and 
     woh.company_id = #{companyId,jdbcType=INTEGER}

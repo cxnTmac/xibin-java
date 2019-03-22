@@ -16,6 +16,7 @@ import com.xibin.core.costants.Constants;
 import com.xibin.core.daosupport.DaoUtil;
 import com.xibin.core.exception.BusinessException;
 import com.xibin.core.security.pojo.UserDetails;
+import com.xibin.core.utils.ComputeUtil;
 import com.xibin.wms.constants.WmsCodeMaster;
 import com.xibin.wms.dao.WmOutboundDetailMapper;
 import com.xibin.wms.dao.WmOutboundHeaderMapper;
@@ -27,7 +28,7 @@ import com.xibin.wms.service.WmOutboundDetailService;
 import com.xibin.wms.service.WmOutboundHeaderService;
 import com.xibin.wms.service.WmOutboundUpdateService;
 
-@Transactional(propagation = Propagation.REQUIRED)
+@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 @Service
 public class WmOutboundUpdateServiceImpl implements WmOutboundUpdateService {
 	@Autowired
@@ -79,14 +80,17 @@ public class WmOutboundUpdateServiceImpl implements WmOutboundUpdateService {
 				String status = "";
 				for (WmOutboundAlloc e : detailAllocs) {
 					if (e.getStatus().equals(WmsCodeMaster.SO_FULL_SHIPPING.getCode())) {
-						sumOfShip += e.getOutboundNum();
+						sumOfShip = ComputeUtil.add(sumOfShip, e.getOutboundNum());
+						// sumOfShip += e.getOutboundNum();
 					}
 					if (e.getStatus().equals(WmsCodeMaster.SO_FULL_PICKING.getCode())
 							|| e.getStatus().equals(WmsCodeMaster.SO_OVER_PICKING.getCode())) {
-						sumOfPick += e.getOutboundNum();
+						sumOfPick = ComputeUtil.add(sumOfPick, e.getOutboundNum());
+						// sumOfPick += e.getOutboundNum();
 					}
 					if (e.getStatus().equals(WmsCodeMaster.SO_FULL_ALLOC.getCode())) {
-						sumOfAlloc += e.getOutboundNum();
+						sumOfAlloc = ComputeUtil.add(sumOfAlloc, e.getOutboundNum());
+						// sumOfAlloc += e.getOutboundNum();
 					}
 				}
 				if (sumOfShip > 0) {
@@ -133,14 +137,17 @@ public class WmOutboundUpdateServiceImpl implements WmOutboundUpdateService {
 		double sumOfAlloc = 0.0;
 		for (WmOutboundAlloc e : allocs) {
 			if (e.getStatus().equals(WmsCodeMaster.SO_FULL_SHIPPING.getCode())) {
-				sumOfShip += e.getOutboundNum();
+				sumOfShip = ComputeUtil.add(sumOfShip, e.getOutboundNum());
+				// sumOfShip += e.getOutboundNum();
 			}
 			if (e.getStatus().equals(WmsCodeMaster.SO_FULL_PICKING.getCode())
 					|| e.getStatus().equals(WmsCodeMaster.SO_OVER_PICKING.getCode())) {
-				sumOfPick += e.getOutboundNum();
+				sumOfPick = ComputeUtil.add(sumOfPick, e.getOutboundNum());
+				// sumOfPick += e.getOutboundNum();
 			}
 			if (e.getStatus().equals(WmsCodeMaster.SO_FULL_ALLOC.getCode())) {
-				sumOfAlloc += e.getOutboundNum();
+				sumOfAlloc = ComputeUtil.add(sumOfAlloc, e.getOutboundNum());
+				// sumOfAlloc += e.getOutboundNum();
 			}
 		}
 		WmOutboundDetail detailQueryExample = new WmOutboundDetail();
@@ -199,9 +206,9 @@ public class WmOutboundUpdateServiceImpl implements WmOutboundUpdateService {
 		detailQueryExample.setCompanyId(userDetails.getCompanyId());
 		detailQueryExample.setWarehouseId(userDetails.getWarehouseId());
 		List<WmOutboundDetail> detailQueryResults = wmOutboundDetailService.selectByExample(detailQueryExample);
-		if (detailQueryResults.size() == 0) {
-			throw new BusinessException("数据有误，出库单[" + orderNo + "]明细不存在");
-		}
+		// if (detailQueryResults.size() == 0) {
+		// throw new BusinessException("数据有误，出库单[" + orderNo + "]明细不存在");
+		// }
 		int countOfFullShip = 0;
 		int countOfPartShip = 0;
 		int countOfFullPick = 0;

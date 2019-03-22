@@ -1,19 +1,17 @@
 package com.xibin.fin.entity;
 
-
-
 public class FiVoucherDetailSumQueryItem {
-	
-	private String  courseNo;
-	
+
+	private String courseNo;
+
 	private String type;
-	
+
 	private String toGo;
-	
+
 	private Double balance;
-	
+
 	private Double sumDebit;
-	
+
 	private Double sumCredit;
 
 	public String getCourseNo() {
@@ -22,14 +20,6 @@ public class FiVoucherDetailSumQueryItem {
 
 	public void setCourseNo(String courseNo) {
 		this.courseNo = courseNo;
-	}
-
-	public Double getBalance() {
-		return balance;
-	}
-
-	public void setBalance(Double balance) {
-		this.balance = balance;
 	}
 
 	public Double getSumDebit() {
@@ -64,6 +54,12 @@ public class FiVoucherDetailSumQueryItem {
 		this.toGo = toGo;
 	}
 
-	
-	
+	public Double getBalance() {
+		return balance;
+	}
+
+	public void setBalance(Double balance) {
+		this.balance = balance;
+	}
+
 }

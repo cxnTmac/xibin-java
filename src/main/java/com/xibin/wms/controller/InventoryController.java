@@ -93,4 +93,24 @@ public class InventoryController {
 			return message;
 		}
 	}
+
+	@RequestMapping("/transfer")
+	@ResponseBody
+	public Message transfer(HttpServletRequest request, Model model) {
+		String skuCode = request.getParameter("skuCode");
+		String locCode = request.getParameter("locCode");
+		String toLoc = request.getParameter("toLoc");
+		String toSku = request.getParameter("toSku");
+		double transferNum = Double.parseDouble(request.getParameter("transferNum"));
+		try {
+			return wmInventoryService.transfer(skuCode, locCode, toSku, toLoc, transferNum);
+		} catch (BusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			Message message = new Message();
+			message.setCode(0);
+			message.setMsg(e.getMessage());
+			return message;
+		}
+	}
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.xibin.core.exception.BusinessException;
+import com.xibin.core.pojo.Message;
 import com.xibin.fin.pojo.FiCourse;
 
 public interface FiCourseService {
@@ -18,4 +19,6 @@ public interface FiCourseService {
 	public List<FiCourse> selectByKey(String courseNo);
 
 	public void saveCourseBalance(List<FiCourse> courses) throws BusinessException;
+
+	public Message addChildCourse(FiCourse model, String parentCourseNo) throws BusinessException;
 }

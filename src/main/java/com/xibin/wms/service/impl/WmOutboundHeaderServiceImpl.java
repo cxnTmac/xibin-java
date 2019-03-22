@@ -34,7 +34,7 @@ import com.xibin.wms.query.WmOutboundHeaderQueryItem;
 import com.xibin.wms.service.WmOutboundHeaderService;
 import com.xibin.wms.service.WmToFinService;
 
-@Transactional(propagation = Propagation.REQUIRED)
+@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 @Service
 public class WmOutboundHeaderServiceImpl extends BaseManagerImpl implements WmOutboundHeaderService {
 	@Autowired
@@ -270,11 +270,11 @@ public class WmOutboundHeaderServiceImpl extends BaseManagerImpl implements WmOu
 		List<WmOutboundHeaderQueryItem> results = this.selectByKey(orderNo);
 		if (results.isEmpty()) {
 			message.setCode(0);
-			message.setMsg("出库单[" + orderNo + "]不存在");
+			message.setMsg("入库单[" + orderNo + "]不存在");
 			return message;
 		} else if (results.get(0).getIsCostCalculated().equals("Y")) {
 			message.setCode(0);
-			message.setMsg("出库单[" + orderNo + "]已经生成了成本凭证！");
+			message.setMsg("入库单[" + orderNo + "]已经生成了成本凭证！");
 			return message;
 		}
 		WmOutboundHeaderQueryItem headerQueryItem = results.get(0);

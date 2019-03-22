@@ -16,6 +16,8 @@ public interface FiVoucherService {
 
 	public List<FiVoucher> selectByKey(String voucherNum, String voucherWord, String period);
 
+	public List<FiVoucher> selectByExample(FiVoucher example);
+
 	public Integer getMaxVoucherNum(String voucherWord, String period);
 
 	public Message checkVoucher(FiVoucher voucher) throws BusinessException;
@@ -23,4 +25,5 @@ public interface FiVoucherService {
 	public Message cancelCheckVoucher(FiVoucher voucher) throws BusinessException;
 
 	public Message removeVoucher(int id);
+
 }

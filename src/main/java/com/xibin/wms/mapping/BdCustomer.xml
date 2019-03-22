@@ -106,8 +106,8 @@
     remark,creator,create_time, modifier, modify_time,rec_ver, company_id)
        VALUES
   		<foreach collection="list" item="item" index="index" separator=",">
-	   		(#{item.id}, #{item.customerCode},#{item.customerName}, #{item.status},#{item.customerType},#{item.customerTel},#{item.province},#{item.city},#{item.county},#{item.auxiId},
-      #{item.customerAddress},#{item.contactName},#{item.contactTel},#{item.contactEmail},
+	   		(#{item.id}, #{item.customerCode},#{item.customerName}, #{item.status},#{item.customerType},#{item.customerTel},#{item.province},#{item.city},#{item.county},
+      #{item.customerAddress},#{item.contactName},#{item.contactTel},#{item.contactEmail},#{item.auxiId},
       #{item.remark},#{item.creator},#{item.createTime}, #{item.modifier},  #{item.modifyTime},#{item.recVer}, #{item.companyId})
   		</foreach>
   </insert>

@@ -27,7 +27,11 @@
   <listener>
     <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
   </listener>
-  
+  <listener> 
+2 
+3    <listener-class>com.xibin.core.utils.InitializingBeanImpl </listener-class> 
+4 
+5 </listener> 
   <servlet>
     <servlet-name>SpringMVC</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>

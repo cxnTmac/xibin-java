@@ -29,4 +29,7 @@ public interface WmInventoryService {
 
 	public Message move(String skuCode, String locCode, String toLoc, Double moveNum) throws BusinessException;
 
+	public Message transfer(String skuCode, String locCode, String toSku, String toLoc, Double transferNum)
+			throws BusinessException;
+
 }

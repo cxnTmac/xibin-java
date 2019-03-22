@@ -28,6 +28,7 @@
           <if test="id!=null and id!=''"> AND fa.id = #{id}</if>
           <if test="fid!=null and fid!=''"> AND fa.fid = #{fid}</if>
           <if test="companyId!=null and companyId!=''"> AND fa.company_id = #{companyId}</if>
+          <if test="name!=null and name!=''"> AND fa.name LIKE CONCAT('%','${name}','%')</if>
   </sql>
   <!-- 条件 -->
   <sql id="findByExampleWhere">
@@ -54,9 +55,9 @@
     company_id)
        VALUES
   		<foreach collection="list" item="item" index="index" separator=",">
-	   		(#{item.id}, #{item.fid}, #{item.name},#{item.type}, #{item.status},#{item.bookId},
-      #{item.remark},#{item.creator},#{item.createTime}, #{item.modifier},  #{item.modifyTime},
-      #{item.recVer}, #{item.companyId})
+	   		(#{item.id},#{item.fid},#{item.code},#{item.name},#{item.type},#{item.status},#{item.bookId},
+      #{item.remark},#{item.creator},#{item.createTime},#{item.modifier},#{item.modifyTime},
+      #{item.recVer},#{item.companyId})
   		</foreach>
   </insert>
   

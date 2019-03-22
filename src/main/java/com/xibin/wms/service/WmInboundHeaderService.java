@@ -30,4 +30,8 @@ public interface WmInboundHeaderService {
 	public Message accountByOrderNo(String orderNo) throws BusinessException;
 
 	public Message accountByOrderNos(List<String> orderNos, String inboundType) throws BusinessException;
+
+	public Message accountForCostByOrderNo(String orderNo) throws BusinessException;
+
+	public Message accountForCostByOrderNos(List<String> orderNos, String inboundType) throws BusinessException;
 }

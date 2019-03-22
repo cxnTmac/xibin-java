@@ -171,9 +171,17 @@ public enum WmsCodeMaster {
 	 */
 	ACT_REC("REC"),
 	/**
-	 * 收货
+	 * 取消收货
 	 */
 	ACT_CANCEL_REC("CANCEL_REC"),
+	/**
+	 * 销售退货单收货
+	 */
+	ACT_RE_REC("RE_REC"),
+	/**
+	 * 销售退货单取消收货
+	 */
+	ACT_RE_CANCEL_REC("RE_CANCEL_REC"),
 	/**
 	 * 发货
 	 */
@@ -187,14 +195,30 @@ public enum WmsCodeMaster {
 	 */
 	ACT_PICK("PICK"),
 	/**
-	 * 拣货
+	 * 预组装分配拣货
+	 */
+	ACT_PRE_ASSEMBLE_PICK("PRE_ASSEMBLE_PICK"),
+
+	/**
+	 * 超量拣货
 	 */
 	ACT_OVER_PICK("OVER_PICK"),
-
+	/**
+	 * 预组装超量拣货
+	 */
+	ACT_OVER_PRE_ASSEMBLE_PICK("OVER_PRE_ASSEMBLE_PICK"),
 	/**
 	 * 取消拣货
 	 */
 	ACT_CANCEL_PICK("CANCEL_PICK"),
+	/**
+	 * 预组装取消超量拣货
+	 */
+	ACT_CANCEL_OVER_PRE_ASSEMBLE_PICK("CANCEL_OVER_PRE_ASSEMBLE_PICK"),
+	/**
+	 * 取消预组装拣货
+	 */
+	ACT_CANCEL_PRE_ASSEMBLE_PICK("CANCEL_PRE_ASSEMBLE_PICK"),
 	/**
 	 * 取消超量拣货
 	 */
@@ -204,9 +228,17 @@ public enum WmsCodeMaster {
 	 */
 	ACT_ALLOC("ALLOC"),
 	/**
+	 * 预加工分配
+	 */
+	ACT_PRE_ASSEMBLE_ALLOC("PRE_ASSEMBLE_ALLOC"),
+	/**
 	 * 取消分配
 	 */
 	ACT_CANCEL_ALLOC("CANCEL_ALLOC"),
+	/**
+	 * 取消预加工分配
+	 */
+	ACT_CANCEL_PRE_ASSEMBLE_ALLOC("CANCEL_PRE_ASSEMBLE_ALLOC"),
 	/**
 	 * 组装消耗子件
 	 */
@@ -219,6 +251,10 @@ public enum WmsCodeMaster {
 	 * 库存移动
 	 */
 	ACT_MOVE("MOVE"),
+	/**
+	 * 库存转变
+	 */
+	ACT_TRANSFER("TRANSFER"),
 	/****************************************
 	 * 功能权限类型 SYS_FUNCTION_TYPE *
 	 ****************************************
@@ -246,7 +282,31 @@ public enum WmsCodeMaster {
 	/**
 	 * 发货
 	 */
-	ORDER_OUB("OUB");
+	ORDER_OUB("OUB"),
+	/****************************************
+	 * 分配类型 WM_ALLOC_TYPE *
+	 ****************************************
+	 */
+	/**
+	 * 自动分配
+	 */
+	ALLOC_AUTO("AUTO"),
+	/**
+	 * 预加工分配
+	 */
+	ALLOC_ASS("ASS"),
+	/****************************************
+	 * 固定库位 WM_LOC_CODE *
+	 ****************************************
+	 */
+	/**
+	 * 工作台
+	 */
+	LOC_WORKBENCH("WORKBENCH"),
+	/**
+	 * 发货区
+	 */
+	LOC_SORTATION("SORTATION");
 	private String code;
 
 	public String getCode() {

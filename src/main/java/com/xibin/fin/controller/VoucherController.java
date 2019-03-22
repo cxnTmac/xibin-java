@@ -74,15 +74,13 @@ public class VoucherController {
 		FiVoucher voucher = JSONObject.parseObject(request.getParameter("voucher"), FiVoucher.class);
 		try {
 			message = fiVoucherService.checkVoucher(voucher);
-			return message;
 		} catch (BusinessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			message.setCode(0);
 			message.setMsg(e.getMessage());
-			return message;
 		}
-
+		return message;
 	}
 
 	@RequestMapping("/removeVoucher")

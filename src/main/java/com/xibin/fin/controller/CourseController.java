@@ -48,6 +48,46 @@ public class CourseController {
 		return pageEntity;
 	}
 
+	@RequestMapping("/addChildCourse")
+	@ResponseBody
+	public Message addChildCourse(HttpServletRequest request, Model model) {
+		Message errorMsg = new Message();
+		// 开始分页
+		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
+		String courseNo = request.getParameter("courseNo");
+		FiCourse fiCourse = JSONObject.parseObject(request.getParameter("fiCourse"), FiCourse.class);
+		try {
+			return fiCourseService.addChildCourse(fiCourse, courseNo);
+
+		} catch (BusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			errorMsg.setCode(0);
+			errorMsg.setMsg(e.getMessage());
+			return errorMsg;
+		}
+	}
+
+	@RequestMapping("/saveCourse")
+	@ResponseBody
+	public Message saveCourse(HttpServletRequest request, Model model) {
+		Message message = new Message();
+		FiCourse fiCourse = JSONObject.parseObject(request.getParameter("course"), FiCourse.class);
+		try {
+			fiCourseService.saveCourse(fiCourse);
+
+		} catch (BusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			message.setCode(0);
+			message.setMsg(e.getMessage());
+			return message;
+		}
+		message.setCode(200);
+		message.setMsg("保存成功");
+		return message;
+	}
+
 	@RequestMapping("/saveCourseBalance")
 	@ResponseBody
 	public Message saveVoucherAndDetail(@RequestParam("courses") String courses) {

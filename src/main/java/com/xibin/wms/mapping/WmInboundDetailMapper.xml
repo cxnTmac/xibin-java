@@ -11,6 +11,7 @@
     <result column="inbound_pre_num" property="inboundPreNum" jdbcType="DOUBLE" />
     <result column="inbound_num" property="inboundNum" jdbcType="DOUBLE" />
     <result column="inbound_price" property="inboundPrice" jdbcType="DOUBLE" />
+    <result column="cost" property="cost" jdbcType="DOUBLE" />
     <result column="plan_loc" property="planLoc" jdbcType="VARCHAR" />
     <result column="supplier_code" property="supplierCode" jdbcType="VARCHAR" />
     <result column="is_created_voucher" property="isCreatedVoucher" jdbcType="VARCHAR" />
@@ -34,9 +35,13 @@
     <result column="supplier_code" property="supplierCode" jdbcType="VARCHAR" />
     <result column="supplier_name" property="supplierName" jdbcType="VARCHAR" />
     <result column="sku_code" property="skuCode" jdbcType="VARCHAR" />
+    <result column="quick_code" property="quickCode" jdbcType="VARCHAR" />
+    <result column="fitting_sku_name" property="fittingSkuName" jdbcType="VARCHAR" />
+    <result column="model_code" property="modelCode" jdbcType="VARCHAR" />
     <result column="inbound_pre_num" property="inboundPreNum" jdbcType="DOUBLE" />
     <result column="inbound_num" property="inboundNum" jdbcType="DOUBLE" />
     <result column="inbound_price" property="inboundPrice" jdbcType="DOUBLE" />
+    <result column="cost" property="cost" jdbcType="DOUBLE" />
     <result column="plan_loc" property="planLoc" jdbcType="VARCHAR" />
     <result column="is_created_voucher" property="isCreatedVoucher" jdbcType="VARCHAR" />
     <result column="voucher_no" property="voucherNo" jdbcType="VARCHAR" />
@@ -49,14 +54,41 @@
     <result column="company_id" property="companyId" jdbcType="INTEGER" />
     <result column="warehouse_id" property="warehouseId" jdbcType="INTEGER" />
   </resultMap>
+  <resultMap id="SkuQueryItem" type="com.xibin.wms.query.WmInboundDetailSkuQueryItem" >
+    <result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+    <result column="header_status" property="headerStatus" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="supplier_code" property="supplierCode" jdbcType="VARCHAR" />
+    <result column="supplier_name" property="supplierName" jdbcType="VARCHAR" />  
+    <result column="inbound_type" property="inboundType" jdbcType="VARCHAR" /> 
+    <result column="line_no" property="lineNo" jdbcType="VARCHAR" />
+    <result column="fitting_sku_code" property="fittingSkuCode" jdbcType="VARCHAR" />
+    <result column="quick_code" property="quickCode" jdbcType="VARCHAR" />
+    <result column="fitting_sku_name" property="fittingSkuName" jdbcType="VARCHAR" />
+	<result column="model_code" property="modelCode" jdbcType="VARCHAR" />
+    <result column="inbound_pre_num" property="inboundPreNum" jdbcType="DOUBLE" />
+    <result column="inbound_num" property="inboundNum" jdbcType="DOUBLE" />
+    <result column="inbound_price" property="inboundPrice" jdbcType="DOUBLE" />
+    <result column="plan_loc" property="planLoc" jdbcType="VARCHAR" />
+
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="INTEGER" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="rec_ver" property="recVer" jdbcType="INTEGER" />
+    <result column="company_id" property="companyId" jdbcType="INTEGER" />
+    <result column="warehouse_id" property="warehouseId" jdbcType="INTEGER" />
+  </resultMap>
   <resultMap id="SumPriceResultMap" type="com.xibin.wms.query.WmInboundDetailSumPriceQueryItem" >
     <result column="total" property="total" jdbcType="DOUBLE" />
     <result column="supplier_code" property="supplierCode" jdbcType="VARCHAR" />
+    <result column="customer_name" property="customerName" jdbcType="VARCHAR" />
     <result column="auxi_id" property="auxiId" jdbcType="INTEGER" />
 
   </resultMap>
   <sql id="Base_Column_List" >
-    wid.id, wid.order_no, wid.line_no,wid.status,wid.supplier_code, wid.sku_code, wid.inbound_pre_num,wid.inbound_num, wid.inbound_price, wid.plan_loc,wid.is_created_voucher,wid.voucher_no,wid.remark, wid.creator, wid.create_time, 
+    wid.id, wid.order_no, wid.line_no,wid.status,wid.supplier_code, wid.sku_code, wid.inbound_pre_num,wid.inbound_num, wid.inbound_price, wid.cost, wid.plan_loc,wid.is_created_voucher,wid.voucher_no,wid.remark, wid.creator, wid.create_time, 
     wid.modifier, wid.modify_time, wid.rec_ver, wid.company_id, wid.warehouse_id
   </sql>
   
@@ -105,11 +137,11 @@
   <!-- 【固定】：插入记录（支持一条及多条） -->
   <insert id="insert" parameterType="java.util.Collection">
   	INSERT INTO wm_inbound_detail
-          (id, order_no, line_no,status,supplier_code,sku_code, inbound_pre_num,inbound_num, inbound_price, plan_loc,is_created_voucher,voucher_no,remark, creator, create_time, 
+          (id, order_no, line_no,status,supplier_code,sku_code, inbound_pre_num,inbound_num, inbound_price, cost, plan_loc,is_created_voucher,voucher_no,remark, creator, create_time, 
     modifier, modify_time, rec_ver, company_id, warehouse_id)
        VALUES
   		<foreach collection="list" item="item" index="index" separator=",">
-	   		(#{item.id}, #{item.orderNo},#{item.lineNo},#{item.status}, #{item.supplierCode},#{item.skuCode},#{item.inboundPreNum},#{item.inboundNum},#{item.inboundPrice},#{item.planLoc},#{item.isCreatedVoucher},#{item.voucherNo},
+	   		(#{item.id}, #{item.orderNo},#{item.lineNo},#{item.status}, #{item.supplierCode},#{item.skuCode},#{item.inboundPreNum},#{item.inboundNum},#{item.inboundPrice},#{item.cost},#{item.planLoc},#{item.isCreatedVoucher},#{item.voucherNo},
       #{item.remark},#{item.creator},#{item.createTime}, #{item.modifier},  #{item.modifyTime},
       #{item.recVer}, #{item.companyId},#{item.warehouseId})
   		</foreach>
@@ -166,6 +198,11 @@
 		<trim prefix="inbound_price =case"  suffix="end,"  >
              <foreach collection="list" item="item" index="index">
                      when (ID=#{item.id}) then #{item.inboundPrice}
+             </foreach>
+		</trim>
+		<trim prefix="cost =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.cost}
              </foreach>
 		</trim>
 		<trim prefix="plan_loc =case"  suffix="end,"  >
@@ -245,11 +282,17 @@
   <select id="selectAllByPage" resultMap="QueryResultMap" parameterType="Map">
     select 
     <include refid="Base_Column_List" />
-    ,bc.customer_name as supplier_name
+    ,bc.customer_name as supplier_name,
+    bfs.fitting_sku_name,
+    bfs.model_code,
+    bfs.quick_code
     from wm_inbound_detail wid
     left join bd_customer bc on
     bc.customer_code = wid.supplier_code
     and bc.company_id = wid.company_id
+    LEFT JOIN bd_fitting_sku bfs ON 
+    wid.sku_code = bfs.fitting_sku_code
+	and wid.company_id = bfs.company_id
     <include refid="findByConditionWhere" />
   </select>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.xibin.wms.pojo.BdLoc">
@@ -277,7 +320,7 @@
   </select>
   <select id="selectLastLineNo"   resultType="Integer"   parameterType="java.lang.String" >
     select
-    max(wid.line_no)
+    max(cast(wid.line_no as signed))
     from wm_inbound_detail wid 
     where wid.order_no = #{orderNo,jdbcType=VARCHAR}
     and 
@@ -314,9 +357,10 @@
   <select id="querySumPriceGroupBySupplierForAccount"   resultMap="SumPriceResultMap"   parameterType="Map" >
   SELECT
 	sum(
-		wid.inbound_price * wid.inbound_num
+		round(wid.inbound_price * wid.inbound_num,2)
 	)as total,
 	wid.supplier_code,
+	bc.customer_name,
 	bc.auxi_id
 	FROM
 		wm_inbound_detail wid
@@ -341,5 +385,43 @@
 	AND wid.warehouse_id = #{warehouseId}
 	GROUP BY
 		wid.supplier_code	
+ </select>
+ 
+ 
+ <select id="queryWmInboundDetailByPage"   resultMap="SkuQueryItem"   parameterType="Map" >
+ SELECT
+	wih.order_no,
+	wih.status as header_status,
+	wid.status,
+	wih.supplier_code,
+	bc.customer_name as supplier_name,
+	wih.inbound_type,
+	wid.line_no,
+	bfs.fitting_sku_code,
+	bfs.quick_code,
+	bfs.fitting_sku_name,
+	bfs.model_code,
+	wid.inbound_pre_num,
+	wid.inbound_num,
+	wid.inbound_price,
+	wid.plan_loc
+	FROM
+		wm_inbound_detail wid
+	LEFT JOIN wm_inbound_header wih ON wid.order_no = wih.order_no
+	AND wih.company_id = wid.company_id
+	LEFT JOIN bd_fitting_sku bfs ON wid.sku_code = bfs.fitting_sku_code
+	AND wid.company_id = bfs.company_id
+	LEFT JOIN bd_customer bc ON bc.customer_code = wid.supplier_code
+	AND bc.company_id = wid.company_id
+	WHERE 1=1
+	<if test="fittingSkuName!=null and fittingSkuName!=''">AND bfs.fitting_sku_name LIKE CONCAT('%','${fittingSkuName}','%')</if>
+	<if test="fittingSkuCode!=null and fittingSkuCode!=''">AND bfs.fitting_sku_code = #{fittingSkuCode}</if>
+	<if test="supplierCode!=null and supplierCode!=''">AND wih.supplier_code = #{supplierCode}</if>
+	<if test="headerStatus!=null and headerStatus!=''">AND wih.status = #{headerStatus}</if>
+	<if test="companyId!=null and companyId!=''"> AND wid.company_id = #{companyId}</if>
+    <if test="warehouseId!=null and warehouseId!=''"> AND wid.warehouse_id = #{warehouseId}</if>
+    order by wid.order_no,
+    wih.order_time,
+    wid.line_no+0
  </select>
 </mapper>

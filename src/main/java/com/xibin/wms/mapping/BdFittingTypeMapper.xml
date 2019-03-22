@@ -22,17 +22,21 @@
   <sql id="findByExampleWhere">
       WHERE 1=1
           <if test="id!=null and id!=''"> AND id = #{id}</if>
-          <if test="fittingTypeCode!=null and fittingTypeCode!=''"> AND fitting_type_code LIKE CONCAT('%','${fittingTypeCode}','%')</if>
-          <if test="fittingTypeName!=null and fittingTypeName!=''"> AND fitting_type_name LIKE CONCAT('%','${fittingTypeName}','%')</if>
+          <if test="fittingTypeCode!=null and fittingTypeCode!=''"> AND fitting_type_code = #{fittingTypeCode}</if>
+          <if test="fittingTypeName!=null and fittingTypeName!=''"> AND fitting_type_name = #{fittingTypeName}</if>
+          
           <if test="companyId!=null and companyId!=''"> AND company_id = #{companyId}</if>
+          
   </sql>
   <!-- 条件 -->
   <sql id="findByConditionWhere">
       WHERE 1=1
           <if test="id!=null and id!=''"> AND id = #{id}</if>
-          <if test="fittingTypeCode!=null and fittingTypeCode!=''"> AND fitting_type_code = ${fittingTypeCode}</if>
-          <if test="fittingTypeName!=null and fittingTypeName!=''"> AND fitting_type_name = ${fittingTypeName}</if>
+          <if test="fittingTypeCode!=null and fittingTypeCode!=''"> AND fitting_type_code LIKE CONCAT('%','${fittingTypeCode}','%')</if>
+          <if test="fittingTypeName!=null and fittingTypeName!=''"> AND fitting_type_name LIKE CONCAT('%','${fittingTypeName}','%')</if>
           <if test="companyId!=null and companyId!=''"> AND company_id = #{companyId}</if>
+          <if test="fuzzyCondition!=null and fuzzyCondition!=''">AND (fitting_type_code LIKE CONCAT('%','${fuzzyCondition}','%')
+          OR fitting_type_name LIKE CONCAT('%','${fuzzyCondition}','%'))</if>
   </sql>
   <!-- 【固定】：按主键查询 -->
   <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.String">

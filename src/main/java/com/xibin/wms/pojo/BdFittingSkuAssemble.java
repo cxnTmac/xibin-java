@@ -4,36 +4,38 @@ import java.util.Date;
 
 import com.xibin.core.daosupport.BaseModel;
 
-public class BdFittingSkuAssemble extends BaseModel{
-    private Integer id;
+public class BdFittingSkuAssemble extends BaseModel {
+	private Integer id;
 
-    private String fSkuCode;
+	private String fSkuCode;
 
-    private String sSkuCode;
+	private String sSkuCode;
 
-    private Integer num;
+	private Double num;
 
-    private String remark;
+	private String remark;
 
-    private Date createTime;
+	private Date createTime;
 
-    private Integer creator;
+	private Integer creator;
 
-    private Date modifyTime;
+	private Date modifyTime;
 
-    private Integer modifier;
+	private Integer modifier;
 
-    private Integer recVer;
+	private Integer recVer;
 
-    private Integer companyId;
+	private Integer companyId;
 
-    public Integer getId() {
-        return id;
-    }
+	@Override
+	public Integer getId() {
+		return id;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	@Override
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
 	public String getfSkuCode() {
 		return fSkuCode;
@@ -51,11 +53,11 @@ public class BdFittingSkuAssemble extends BaseModel{
 		this.sSkuCode = sSkuCode;
 	}
 
-	public Integer getNum() {
+	public Double getNum() {
 		return num;
 	}
 
-	public void setNum(Integer num) {
+	public void setNum(Double num) {
 		this.num = num;
 	}
 
@@ -67,42 +69,52 @@ public class BdFittingSkuAssemble extends BaseModel{
 		this.remark = remark;
 	}
 
+	@Override
 	public Date getCreateTime() {
 		return createTime;
 	}
 
+	@Override
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
 
+	@Override
 	public Integer getCreator() {
 		return creator;
 	}
 
+	@Override
 	public void setCreator(Integer creator) {
 		this.creator = creator;
 	}
 
+	@Override
 	public Date getModifyTime() {
 		return modifyTime;
 	}
 
+	@Override
 	public void setModifyTime(Date modifyTime) {
 		this.modifyTime = modifyTime;
 	}
 
+	@Override
 	public Integer getModifier() {
 		return modifier;
 	}
 
+	@Override
 	public void setModifier(Integer modifier) {
 		this.modifier = modifier;
 	}
 
+	@Override
 	public Integer getRecVer() {
 		return recVer;
 	}
 
+	@Override
 	public void setRecVer(Integer recVer) {
 		this.recVer = recVer;
 	}
@@ -115,9 +127,4 @@ public class BdFittingSkuAssemble extends BaseModel{
 		this.companyId = companyId;
 	}
 
-
-
-    
-    
-    
 }

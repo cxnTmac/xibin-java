@@ -3,52 +3,56 @@ package com.xibin.wms.query;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.xibin.core.daosupport.BaseModel;
-
-public class WmInboundRecieveQueryItem implements Serializable{
+public class WmInboundRecieveQueryItem implements Serializable {
 	private Integer id;
 
-    private String orderNo;
+	private String orderNo;
 
-    private String lineNo;
-    
-    private String status;
-    
-    private String recLineNo;
-    
-    private String supplierCode;
-    
-    private String supplierName;
+	private String lineNo;
 
-    private String skuCode;
-    
-    private Double inboundPreNum;
+	private String status;
 
-    private Double inboundNum;
+	private String recLineNo;
 
-    private Double inboundPrice;
-    
-    private String planLoc;
+	private String supplierCode;
 
-    private String inboundLocCode;
-    
-    private Date recTime;
+	private String supplierName;
 
-    private String remark;
+	private String skuCode;
 
-    private Integer creator;
+	private String fittingSkuName;
 
-    private Date createTime;
+	private String modelCode;
 
-    private Integer modifier;
+	private Double inboundPreNum;
 
-    private Date modifyTime;
+	private Double inboundNum;
 
-    private Integer recVer;
+	private Double inboundPrice;
 
-    private Integer companyId;
+	private Double cost;
 
-    private Integer warehouseId;
+	private String planLoc;
+
+	private String inboundLocCode;
+
+	private Date recTime;
+
+	private String remark;
+
+	private Integer creator;
+
+	private Date createTime;
+
+	private Integer modifier;
+
+	private Date modifyTime;
+
+	private Integer recVer;
+
+	private Integer companyId;
+
+	private Integer warehouseId;
 
 	public Integer getId() {
 		return id;
@@ -85,7 +89,7 @@ public class WmInboundRecieveQueryItem implements Serializable{
 	public String getRecLineNo() {
 		return recLineNo;
 	}
-	
+
 	public void setRecLineNo(String recLineNo) {
 		this.recLineNo = recLineNo;
 	}
@@ -97,7 +101,7 @@ public class WmInboundRecieveQueryItem implements Serializable{
 	public void setSupplierCode(String supplierCode) {
 		this.supplierCode = supplierCode;
 	}
-	
+
 	public String getSupplierName() {
 		return supplierName;
 	}
@@ -226,6 +230,28 @@ public class WmInboundRecieveQueryItem implements Serializable{
 		this.warehouseId = warehouseId;
 	}
 
+	public String getFittingSkuName() {
+		return fittingSkuName;
+	}
 
-    
+	public void setFittingSkuName(String fittingSkuName) {
+		this.fittingSkuName = fittingSkuName;
+	}
+
+	public Double getCost() {
+		return cost;
+	}
+
+	public void setCost(Double cost) {
+		this.cost = cost;
+	}
+
+	public String getModelCode() {
+		return modelCode;
+	}
+
+	public void setModelCode(String modelCode) {
+		this.modelCode = modelCode;
+	}
+
 }

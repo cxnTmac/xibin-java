@@ -21,6 +21,7 @@ import com.xibin.core.exception.BusinessException;
 import com.xibin.core.pojo.Message;
 import com.xibin.core.security.pojo.UserDetails;
 import com.xibin.core.utils.CodeGenerator;
+import com.xibin.core.utils.ComputeUtil;
 import com.xibin.wms.constants.WmsCodeMaster;
 import com.xibin.wms.dao.WmOutboundAllocMapper;
 import com.xibin.wms.dao.WmOutboundDetailMapper;
@@ -31,13 +32,14 @@ import com.xibin.wms.pojo.WmOutboundDetail;
 import com.xibin.wms.pojo.WmOutboundHeader;
 import com.xibin.wms.query.WmOutboundAllocQueryItem;
 import com.xibin.wms.query.WmOutboundDetailQueryItem;
+import com.xibin.wms.query.WmOutboundHeaderQueryItem;
 import com.xibin.wms.service.WmInventoryService;
 import com.xibin.wms.service.WmOutboundAllocService;
 import com.xibin.wms.service.WmOutboundDetailService;
 import com.xibin.wms.service.WmOutboundHeaderService;
 import com.xibin.wms.service.WmOutboundUpdateService;
 
-@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
+@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 @Service
 public class WmOutboundAllocServiceImpl extends BaseManagerImpl implements WmOutboundAllocService {
 	@Autowired
@@ -86,6 +88,7 @@ public class WmOutboundAllocServiceImpl extends BaseManagerImpl implements WmOut
 	@Override
 	public WmOutboundAlloc saveOutboundAlloc(WmOutboundAlloc model) {
 		// TODO Auto-generated method stub
+		// 只用于更新 成本
 		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
 		model.setCompanyId(userDetails.getCompanyId());
 		model.setWarehouseId(userDetails.getWarehouseId());
@@ -94,6 +97,71 @@ public class WmOutboundAllocServiceImpl extends BaseManagerImpl implements WmOut
 			model.setAllocId(CodeGenerator.getCodeByCurrentTimeAndRandomNum("ACT"));
 		}
 		return (WmOutboundAlloc) this.save(model);
+	}
+
+	private Message newOperateBeforeCheck(String orderNo) {
+		Message message = new Message();
+		List<WmOutboundHeaderQueryItem> headerList = wmOutboundHeaderService.selectByKey(orderNo);
+		if (headerList.size() > 0) {
+			WmOutboundHeaderQueryItem header = headerList.get(0);
+			// 关闭定单不能编辑明细
+			if (WmsCodeMaster.INB_CLOSE.getCode().equals(header.getStatus())) {
+				message.setCode(0);
+				message.setMsg("出库单[" + orderNo + "]不是创建状态,不能对明细进行编辑");
+				return message;
+			} else {
+				message.setCode(200);
+				return message;
+			}
+		}
+		message.setCode(0);
+		message.setMsg("出库单[" + orderNo + "]数据丢失,请联系管理员");
+		return message;
+	}
+
+	@Override
+	public WmOutboundAlloc saveOutboundAllocForEditCost(WmOutboundAlloc model) throws BusinessException {
+		// TODO Auto-generated method stub
+		// 只用于更新 成本
+		Message message = newOperateBeforeCheck(model.getOrderNo());
+		if (message.getCode() == 0) {
+			throw new BusinessException(message.getMsg());
+		}
+		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
+		model.setCompanyId(userDetails.getCompanyId());
+		model.setWarehouseId(userDetails.getWarehouseId());
+		this.save(model);
+		// 分配明细成本被修改后，更新出库明细的成本数据
+		updateOutboundDetailForEditCost(model);
+		return this.getOutboundAllocById(model.getId());
+	}
+
+	private void updateOutboundDetailForEditCost(WmOutboundAlloc model) throws BusinessException {
+		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
+		WmOutboundDetail queryExample = new WmOutboundDetail();
+		queryExample.setCompanyId(userDetails.getCompanyId());
+		queryExample.setWarehouseId(userDetails.getWarehouseId());
+		queryExample.setOrderNo(model.getOrderNo());
+		queryExample.setLineNo(model.getLineNo());
+		List<WmOutboundDetail> queryResults = wmOutboundDetailService.selectByExample(queryExample);
+		if (queryResults.size() > 0) {
+			WmOutboundDetail detail = queryResults.get(0);
+			WmOutboundAlloc allocQueryExample = new WmOutboundAlloc();
+			allocQueryExample.setCompanyId(userDetails.getCompanyId());
+			allocQueryExample.setWarehouseId(userDetails.getWarehouseId());
+			allocQueryExample.setOrderNo(model.getOrderNo());
+			allocQueryExample.setLineNo(model.getLineNo());
+			List<WmOutboundAlloc> allocQueryResults = this.selectByExample(allocQueryExample);
+			double sumCost = 0.0;
+			for (WmOutboundAlloc alloc : allocQueryResults) {
+				sumCost = ComputeUtil.add(sumCost, ComputeUtil.mul(alloc.getCost(), alloc.getOutboundNum()));
+			}
+			double cost = ComputeUtil.div(sumCost, detail.getOutboundAllocNum(), 2);
+			detail.setCost(cost);
+			DaoUtil.save(detail, wmOutboundDetailMapper, session);
+		} else {
+			throw new BusinessException("订单号[" + model.getOrderNo() + "]行号[" + model.getLineNo() + "]的出库明细不存在，数据有误！");
+		}
 	}
 
 	private int[] idListToArray(List<Integer> ids) {
@@ -206,9 +274,10 @@ public class WmOutboundAllocServiceImpl extends BaseManagerImpl implements WmOut
 	@Override
 	public void shipByAlloc(WmOutboundAlloc alloc, boolean isUpdateOrder) throws BusinessException {
 		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
-		if (!alloc.getStatus().equals(WmsCodeMaster.SO_FULL_PICKING.getCode())) {
+		if (!alloc.getStatus().equals(WmsCodeMaster.SO_FULL_PICKING.getCode())
+				&& !alloc.getStatus().equals(WmsCodeMaster.SO_OVER_PICKING.getCode())) {
 			throw new BusinessException(
-					"出库单[" + alloc.getOrderNo() + "]分配明细[" + alloc.getAllocId() + "]不是完全拣货状态，不能发货！");
+					"出库单[" + alloc.getOrderNo() + "]分配明细[" + alloc.getAllocId() + "]不是完全拣货/超量状态，不能发货！");
 		}
 		InventoryUpdateEntity entityFm = new InventoryUpdateEntity();
 		entityFm.setActionCode(WmsCodeMaster.ACT_SHIP.getCode());
@@ -263,6 +332,53 @@ public class WmOutboundAllocServiceImpl extends BaseManagerImpl implements WmOut
 	}
 
 	@Override
+	public Message pickByOrderNo(String orderNo) throws BusinessException {
+		Message message = new Message();
+		List<String> errors = new ArrayList<String>();
+		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
+		WmOutboundHeader headerQueryExample = new WmOutboundHeader();
+		headerQueryExample.setOrderNo(orderNo);
+		headerQueryExample.setCompanyId(userDetails.getCompanyId());
+		headerQueryExample.setWarehouseId(userDetails.getWarehouseId());
+		List<WmOutboundHeader> headers = wmOutboundHeaderService.selectByExample(headerQueryExample);
+		if (headers.size() > 0) {
+			WmOutboundHeader header = headers.get(0);
+			if (header.getStatus().equals(WmsCodeMaster.SO_NEW.getCode())
+					|| header.getStatus().equals(WmsCodeMaster.SO_FULL_PICKING.getCode())
+					|| header.getStatus().equals(WmsCodeMaster.SO_FULL_SHIPPING.getCode())) {
+				throw new BusinessException("数据有误，出库单[" + orderNo + "]为创建/完全拣货/完全发货状态,不能拣货");
+			} else {
+				WmOutboundAlloc queryExample = new WmOutboundAlloc();
+				queryExample.setOrderNo(orderNo);
+				queryExample.setCompanyId(userDetails.getCompanyId());
+				queryExample.setStatus(WmsCodeMaster.SO_FULL_ALLOC.getCode());
+				List<WmOutboundAlloc> queryResults = this.selectByExample(queryExample);
+				for (WmOutboundAlloc alloc : queryResults) {
+					try {
+						this.pickByAlloc(alloc, alloc.getPickNum());
+					} catch (BusinessException e) {
+						// TODO: handle exception
+						errors.add(e.getMessage());
+					}
+				}
+				// wmOutboundUpdateService.updateOutboundStatusByOrderNo(orderNo);
+				if (errors.size() == 0) {
+					message.setCode(200);
+					message.setMsg("操作成功！");
+				} else {
+					message.setMsgs(errors);
+					message.converMsgsToMsg("</br>");
+					message.setCode(10);
+				}
+			}
+		} else {
+			throw new BusinessException("数据有误，出库单[" + orderNo + "]不存在");
+		}
+
+		return message;
+	}
+
+	@Override
 	public void pickByAlloc(WmOutboundAlloc alloc, double pickNum) throws BusinessException {
 		// TODO Auto-generated method stub
 		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
@@ -271,7 +387,12 @@ public class WmOutboundAllocServiceImpl extends BaseManagerImpl implements WmOut
 					"出库单[" + alloc.getOrderNo() + "]分配明细[" + alloc.getAllocId() + "]不是完全分配状态，不能拣货！");
 		}
 		InventoryUpdateEntity entityFm = new InventoryUpdateEntity();
-		entityFm.setActionCode(WmsCodeMaster.ACT_PICK.getCode());
+		// 根据分配类别，分别设置不同的动作，普通拣货和预组装分配拣货
+		if (WmsCodeMaster.ALLOC_AUTO.getCode().equals(alloc.getAllocType())) {
+			entityFm.setActionCode(WmsCodeMaster.ACT_PICK.getCode());
+		} else if (WmsCodeMaster.ALLOC_ASS.getCode().equals(alloc.getAllocType())) {
+			entityFm.setActionCode(WmsCodeMaster.ACT_PRE_ASSEMBLE_PICK.getCode());
+		}
 		entityFm.setLineNo(alloc.getLineNo());
 		entityFm.setLocCode(alloc.getAllocLocCode());
 		entityFm.setOrderNo(alloc.getOrderNo());
@@ -281,7 +402,12 @@ public class WmOutboundAllocServiceImpl extends BaseManagerImpl implements WmOut
 		entityFm.setCost(alloc.getCost());
 		entityFm.setPrice(alloc.getOutboundPrice());
 		InventoryUpdateEntity entityTo = new InventoryUpdateEntity();
-		entityTo.setActionCode(WmsCodeMaster.ACT_PICK.getCode());
+		// 根据分配类别，分别设置不同的动作，普通拣货和预组装分配拣货
+		if (WmsCodeMaster.ALLOC_AUTO.getCode().equals(alloc.getAllocType())) {
+			entityTo.setActionCode(WmsCodeMaster.ACT_PICK.getCode());
+		} else if (WmsCodeMaster.ALLOC_ASS.getCode().equals(alloc.getAllocType())) {
+			entityTo.setActionCode(WmsCodeMaster.ACT_PRE_ASSEMBLE_PICK.getCode());
+		}
 		entityTo.setLineNo(alloc.getLineNo());
 		entityTo.setLocCode(alloc.getToLocCode());
 		entityTo.setOrderNo(alloc.getOrderNo());
@@ -294,6 +420,7 @@ public class WmOutboundAllocServiceImpl extends BaseManagerImpl implements WmOut
 		wmInventoryService.updateInventory(entityFm, entityTo);
 		// 更新分配明细状态
 		alloc.setStatus(WmsCodeMaster.SO_FULL_PICKING.getCode());
+		alloc.setPickNum(alloc.getOutboundNum());
 		alloc.setPickOp(userDetails.getUserId());
 		alloc.setPickTime(new Date());
 		this.saveOutboundAlloc(alloc);
@@ -307,12 +434,14 @@ public class WmOutboundAllocServiceImpl extends BaseManagerImpl implements WmOut
 		if (wmOutboundDetails.size() > 0) {
 
 			WmOutboundDetail wmOutboundDetail = wmOutboundDetails.get(0);
-			wmOutboundDetail.setOutboundPickNum(alloc.getOutboundNum());
+			wmOutboundDetail
+					.setOutboundPickNum(ComputeUtil.add(wmOutboundDetail.getOutboundPickNum(), alloc.getOutboundNum()));
 			wmOutboundDetailService.saveOutboundDetailWithOutCheck(wmOutboundDetail);
 		}
 		// 如果是超量拣货
 		if (alloc.getOutboundNum().doubleValue() < pickNum) {
-			double overNum = pickNum - alloc.getOutboundNum().doubleValue();
+			double overNum = ComputeUtil.sub(pickNum, alloc.getOutboundNum().doubleValue());
+
 			// 创建商品明细
 			WmOutboundDetail wmOutboundDetail = new WmOutboundDetail();
 			wmOutboundDetail.setBuyerCode(alloc.getBuyerCode());
@@ -323,6 +452,7 @@ public class WmOutboundAllocServiceImpl extends BaseManagerImpl implements WmOut
 			wmOutboundDetail.setOutboundPrice(alloc.getOutboundPrice());
 			wmOutboundDetail.setPlanShipLoc(alloc.getToLocCode());
 			wmOutboundDetail.setSkuCode(alloc.getSkuCode());
+			wmOutboundDetail.setCost(alloc.getCost());
 			wmOutboundDetail.setStatus(WmsCodeMaster.SO_FULL_PICKING.getCode());
 			wmOutboundDetail.setWarehouseId(userDetails.getWarehouseId());
 			wmOutboundDetail.setCompanyId(userDetails.getCompanyId());
@@ -335,6 +465,7 @@ public class WmOutboundAllocServiceImpl extends BaseManagerImpl implements WmOut
 			wmOutboundAlloc.setLineNo(queryItem.getLineNo());
 			wmOutboundAlloc.setOrderNo(alloc.getOrderNo());
 			wmOutboundAlloc.setOutboundNum(overNum);
+			wmOutboundAlloc.setPickNum(overNum);
 			wmOutboundAlloc.setOutboundPrice(alloc.getOutboundPrice());
 			wmOutboundAlloc.setSkuCode(alloc.getSkuCode());
 			wmOutboundAlloc.setToLocCode(alloc.getToLocCode());
@@ -362,6 +493,7 @@ public class WmOutboundAllocServiceImpl extends BaseManagerImpl implements WmOut
 			// 更新库存
 			WmActTran actTran = wmInventoryService.updateInventory(entityFmForOverPick, entityToForOverPick);
 			wmOutboundAlloc.setCost(actTran.getCost());
+
 			wmOutboundAlloc.setStatus(WmsCodeMaster.SO_OVER_PICKING.getCode());
 			wmOutboundAlloc.setPickOp(userDetails.getUserId());
 			wmOutboundAlloc.setPickTime(new Date());
@@ -381,7 +513,13 @@ public class WmOutboundAllocServiceImpl extends BaseManagerImpl implements WmOut
 		}
 		if (alloc.getStatus().equals(WmsCodeMaster.SO_FULL_PICKING.getCode())) {
 			InventoryUpdateEntity entityFm = new InventoryUpdateEntity();
-			entityFm.setActionCode(WmsCodeMaster.ACT_CANCEL_PICK.getCode());
+			// 根据分配类别，分别设置不同的动作，普通拣货和预组装分配拣货
+			if (WmsCodeMaster.ALLOC_AUTO.getCode().equals(alloc.getAllocType())) {
+				entityFm.setActionCode(WmsCodeMaster.ACT_CANCEL_PICK.getCode());
+			} else if (WmsCodeMaster.ALLOC_ASS.getCode().equals(alloc.getAllocType())) {
+				entityFm.setActionCode(WmsCodeMaster.ACT_CANCEL_PRE_ASSEMBLE_PICK.getCode());
+			}
+
 			entityFm.setLineNo(alloc.getLineNo());
 			entityFm.setLocCode(alloc.getToLocCode());
 			entityFm.setOrderNo(alloc.getOrderNo());
@@ -391,7 +529,12 @@ public class WmOutboundAllocServiceImpl extends BaseManagerImpl implements WmOut
 			entityFm.setCost(alloc.getCost());
 			entityFm.setPrice(alloc.getOutboundPrice());
 			InventoryUpdateEntity entityTo = new InventoryUpdateEntity();
-			entityTo.setActionCode(WmsCodeMaster.ACT_CANCEL_PICK.getCode());
+			// 根据分配类别，分别设置不同的动作，普通拣货和预组装分配拣货
+			if (WmsCodeMaster.ALLOC_AUTO.getCode().equals(alloc.getAllocType())) {
+				entityTo.setActionCode(WmsCodeMaster.ACT_CANCEL_PICK.getCode());
+			} else if (WmsCodeMaster.ALLOC_ASS.getCode().equals(alloc.getAllocType())) {
+				entityTo.setActionCode(WmsCodeMaster.ACT_CANCEL_PRE_ASSEMBLE_PICK.getCode());
+			}
 			entityTo.setLineNo(alloc.getLineNo());
 			entityTo.setLocCode(alloc.getAllocLocCode());
 			entityTo.setOrderNo(alloc.getOrderNo());
@@ -416,7 +559,8 @@ public class WmOutboundAllocServiceImpl extends BaseManagerImpl implements WmOut
 			List<WmOutboundDetail> wmOutboundDetails = wmOutboundDetailService.selectByExample(queryExample);
 			if (wmOutboundDetails.size() > 0) {
 				WmOutboundDetail wmOutboundDetail = wmOutboundDetails.get(0);
-				wmOutboundDetail.setOutboundPickNum(0.0);
+				wmOutboundDetail.setOutboundPickNum(
+						ComputeUtil.sub(wmOutboundDetail.getOutboundPickNum(), alloc.getOutboundNum()));
 				wmOutboundDetailService.saveOutboundDetailWithOutCheck(wmOutboundDetail);
 			}
 		} else if (alloc.getStatus().equals(WmsCodeMaster.SO_OVER_PICKING.getCode())) {

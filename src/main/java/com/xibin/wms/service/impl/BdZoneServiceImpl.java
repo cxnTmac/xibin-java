@@ -20,7 +20,7 @@ import com.xibin.wms.pojo.BdZone;
 import com.xibin.wms.query.BdZoneQueryItem;
 import com.xibin.wms.service.BdZoneService;
 
-@Transactional(propagation = Propagation.REQUIRED)
+@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 @Service
 public class BdZoneServiceImpl extends BaseManagerImpl implements BdZoneService {
 	@Autowired

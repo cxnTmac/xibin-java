@@ -1,17 +1,16 @@
 package com.xibin.wms.query;
 
 import java.io.Serializable;
-import java.util.Date;
 
-import com.xibin.core.daosupport.BaseModel;
+public class WmInboundDetailSumPriceQueryItem implements Serializable {
 
-public class WmInboundDetailSumPriceQueryItem implements Serializable{
-    
-    private Double total;
-    
-    private String supplierCode;
-    
-    private Integer auxiId;
+	private Double total;
+
+	private String supplierCode;
+
+	private String customerName;
+
+	private Integer auxiId;
 
 	public Double getTotal() {
 		return total;
@@ -37,5 +36,12 @@ public class WmInboundDetailSumPriceQueryItem implements Serializable{
 		this.auxiId = auxiId;
 	}
 
-   
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
 }

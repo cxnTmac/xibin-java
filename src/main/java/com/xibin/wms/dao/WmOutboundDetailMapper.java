@@ -10,6 +10,7 @@ import com.xibin.wms.pojo.WmOutboundDetail;
 import com.xibin.wms.query.WmOutboundDetailPriceQueryItem;
 import com.xibin.wms.query.WmOutboundDetailQueryItem;
 import com.xibin.wms.query.WmOutboundDetailSaleHistoryQueryItem;
+import com.xibin.wms.query.WmOutboundDetailSkuQueryItem;
 import com.xibin.wms.query.WmOutboundDetailSumPriceQueryItem;
 
 public interface WmOutboundDetailMapper extends BaseMapper {
@@ -32,4 +33,6 @@ public interface WmOutboundDetailMapper extends BaseMapper {
 			@Param("warehouseId") String warehouseId);
 
 	List<WmOutboundDetailSumPriceQueryItem> querySumPriceGroupByBuyerForAccount(Map map);
+
+	List<WmOutboundDetailSkuQueryItem> queryWmOutboundDetailByPage(Map map);
 }

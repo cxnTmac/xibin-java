@@ -27,8 +27,12 @@ public interface WmOutboundAllocService {
 
 	public WmOutboundAlloc saveOutboundAlloc(WmOutboundAlloc model) throws BusinessException;
 
+	public WmOutboundAlloc saveOutboundAllocForEditCost(WmOutboundAlloc model) throws BusinessException;
+
 	public Message shipByHeader(String orderNo) throws BusinessException;
 
 	public Message cancelShipByHeader(String orderNo) throws BusinessException;
+
+	public Message pickByOrderNo(String orderNo) throws BusinessException;
 
 }

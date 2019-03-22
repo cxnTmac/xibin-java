@@ -41,6 +41,8 @@ public class BdFittingSkuQueryItem implements Serializable {
 
 	private String isShow;
 
+	private String groupCode;
+
 	private String def1;
 
 	private String def2;
@@ -317,6 +319,14 @@ public class BdFittingSkuQueryItem implements Serializable {
 
 	public void setIsShow(String isShow) {
 		this.isShow = isShow;
+	}
+
+	public String getGroupCode() {
+		return groupCode;
+	}
+
+	public void setGroupCode(String groupCode) {
+		this.groupCode = groupCode;
 	}
 
 }

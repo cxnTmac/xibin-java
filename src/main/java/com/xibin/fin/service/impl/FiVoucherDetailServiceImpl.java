@@ -24,7 +24,7 @@ import com.xibin.fin.pojo.FiVoucherDetail;
 import com.xibin.fin.service.FiVoucherDetailService;
 import com.xibin.fin.service.FiVoucherService;
 
-@Transactional(propagation = Propagation.REQUIRED)
+@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 @Service
 public class FiVoucherDetailServiceImpl extends BaseManagerImpl implements FiVoucherDetailService {
 	@Autowired

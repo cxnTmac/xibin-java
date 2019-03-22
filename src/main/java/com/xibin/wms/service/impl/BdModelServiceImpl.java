@@ -21,7 +21,8 @@ import com.xibin.wms.dao.BdModelMapper;
 import com.xibin.wms.pojo.BdFittingSku;
 import com.xibin.wms.pojo.BdModel;
 import com.xibin.wms.service.BdModelService;
-@Transactional(propagation = Propagation.REQUIRED)
+
+@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 @Service
 public class BdModelServiceImpl extends BaseManagerImpl implements BdModelService {
 	@Autowired
@@ -30,6 +31,7 @@ public class BdModelServiceImpl extends BaseManagerImpl implements BdModelServic
 	private BdModelMapper bdModelMapper;
 	@Resource
 	private BdFittingSkuMapper bdFittingSkuMapper;
+
 	@Override
 	public BdModel getModelById(int id) {
 		// TODO Auto-generated method stub
@@ -43,12 +45,12 @@ public class BdModelServiceImpl extends BaseManagerImpl implements BdModelServic
 	}
 
 	@Override
-	public int removeModel(int id,String modelCode) throws BusinessException{
+	public int removeModel(int id, String modelCode) throws BusinessException {
 		// TODO Auto-generated method stub
-		if(!deleteBeforeCheck(modelCode)){
-			throw new BusinessException("该车型编码["+modelCode+"]已被引用，不能删除");
-		}else{
-			int []ids = {id};
+		if (!deleteBeforeCheck(modelCode)) {
+			throw new BusinessException("该车型编码[" + modelCode + "]已被引用，不能删除");
+		} else {
+			int[] ids = { id };
 			return this.delete(ids);
 		}
 	}
@@ -56,20 +58,20 @@ public class BdModelServiceImpl extends BaseManagerImpl implements BdModelServic
 	@Override
 	public BdModel saveModel(BdModel model) throws BusinessException {
 		// TODO Auto-generated method stub
-		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
+		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
 		model.setCompanyId(userDetails.getCompanyId());
-		List<BdModel> list = bdModelMapper.selectByKey(model.getModelCode(),model.getCompanyId().toString());
-		if(list.size()>0&&model.getId()==0){
-			throw new BusinessException("编码：["+model.getModelCode()+"] 已存在，不能重复！");
+		List<BdModel> list = bdModelMapper.selectByKey(model.getModelCode(), model.getCompanyId().toString());
+		if (list.size() > 0 && model.getId() == 0) {
+			throw new BusinessException("编码：[" + model.getModelCode() + "] 已存在，不能重复！");
 		}
 		return (BdModel) this.save(model);
 	}
 
 	@Override
-	public List<BdModel> selectByKey(String modelCode) { 
+	public List<BdModel> selectByKey(String modelCode) {
 		// TODO Auto-generated method stub
-		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
-		return bdModelMapper.selectByKey(modelCode,userDetails.getCompanyId().toString());
+		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
+		return bdModelMapper.selectByKey(modelCode, userDetails.getCompanyId().toString());
 	}
 
 	@Override
@@ -77,15 +79,16 @@ public class BdModelServiceImpl extends BaseManagerImpl implements BdModelServic
 		// TODO Auto-generated method stub
 		return bdModelMapper;
 	}
-	private boolean deleteBeforeCheck(String modelCode){
+
+	private boolean deleteBeforeCheck(String modelCode) {
 		BdFittingSku bdFittingSku = new BdFittingSku();
-		UserDetails userDetails = (UserDetails)session.getAttribute(Constants.SESSION_USER_KEY);
+		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
 		bdFittingSku.setCompanyId(userDetails.getCompanyId());
 		bdFittingSku.setModelCode(modelCode);
 		List<BdFittingSku> results = bdFittingSkuMapper.selectByExample(bdFittingSku);
-		if(results.size()>0){
+		if (results.size() > 0) {
 			return false;
-		}else{
+		} else {
 			return true;
 		}
 	}

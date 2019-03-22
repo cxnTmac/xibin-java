@@ -18,6 +18,7 @@ import com.xibin.core.costants.Constants;
 import com.xibin.core.exception.BusinessException;
 import com.xibin.core.pojo.Message;
 import com.xibin.core.security.pojo.UserDetails;
+import com.xibin.core.utils.ComputeUtil;
 import com.xibin.fin.pojo.FiVoucher;
 import com.xibin.fin.pojo.FiVoucherDetail;
 import com.xibin.fin.service.FiVoucherDetailService;
@@ -29,7 +30,7 @@ import com.xibin.wms.query.WmInboundDetailSumPriceQueryItem;
 import com.xibin.wms.query.WmOutboundDetailSumPriceQueryItem;
 import com.xibin.wms.service.WmToFinService;
 
-@Transactional(propagation = Propagation.REQUIRED)
+@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 @Service
 public class WmToFinServiceImpl implements WmToFinService {
 	@Autowired
@@ -147,27 +148,37 @@ public class WmToFinServiceImpl implements WmToFinService {
 	private String getOutboundCostSummery(String outboundType) throws BusinessException {
 		// 赊销出库
 		if (WmsCodeMaster.OUB_PO.getCode().equals(outboundType)) {
-			return "赊销出库";
+			return "赊销成本";
 		} else if (WmsCodeMaster.OUB_XX.getCode().equals(outboundType)) {
-			return "现销出库";
+			return "现销成本";
 		} else {
 			throw new BusinessException("未定义的出库单类型或不能生成成本凭证的出库类型：" + outboundType);
 		}
 	}
 
+	// 销售退后入库成本摘要
+	private String getInboundCostSummery(String inboundType) throws BusinessException {
+		// 赊销出库
+		if (WmsCodeMaster.INB_RI.getCode().equals(inboundType)) {
+			return "销售退货成本";
+		} else {
+			throw new BusinessException("未定义的出库单类型或不能生成成本凭证的出库类型：" + inboundType);
+		}
+	}
+
 	// 出库单贷方科目
 	private String getOutboundCreditCourse(String outboundType) throws BusinessException {
-		// 赊销售出库/现销出库
+
 		if (WmsCodeMaster.OUB_PO.getCode().equals(outboundType)
 				|| WmsCodeMaster.OUB_XX.getCode().equals(outboundType)) {
-			// 主营业务收入
-			return "6001";
-		} else if (WmsCodeMaster.OUB_RO.getCode().equals(outboundType)) {// 退货出库
-			// 应付账款
-			return "2202";
-		} else if (WmsCodeMaster.OUB_CO.getCode().equals(outboundType)) {// 盘亏出库
-			// 库存商品
-			return "1405";
+			// 主营业务收入 赊销售出库/现销出库-贷
+			return "5101";
+		} else if (WmsCodeMaster.OUB_RO.getCode().equals(outboundType)) {
+			// 应付账款 退货出库-贷
+			return "2121";
+		} else if (WmsCodeMaster.OUB_CO.getCode().equals(outboundType)) {
+			// 库存商品 盘亏出库-贷
+			return "1243";
 		} else {
 			throw new BusinessException("未定义的出库单类型：" + outboundType);
 		}
@@ -175,19 +186,18 @@ public class WmToFinServiceImpl implements WmToFinService {
 
 	// 出库单借方科目
 	private String getOutboundDebitCourse(String outboundType) throws BusinessException {
-		// 赊销出库
 		if (WmsCodeMaster.OUB_PO.getCode().equals(outboundType)) {
-			// 应收账款
-			return "1122";
+			// 应收账款 赊销出库-借
+			return "1131";
 		} else if (WmsCodeMaster.OUB_XX.getCode().equals(outboundType)) {
-			// 库存现金
+			// 库存现金 现销出库-借
 			return "1001";
 		} else if (WmsCodeMaster.OUB_RO.getCode().equals(outboundType)) {
-			// 库存商品
-			return "1405";
+			// 库存商品 赊销出库-借
+			return "1243";
 		} else if (WmsCodeMaster.OUB_CO.getCode().equals(outboundType)) {
-			// 待处理流动资产损益
-			return "190101";
+			// 待处理流动资产损益 盘亏出库-借
+			return "191101";
 		} else {
 			throw new BusinessException("未定义的出库单类型：" + outboundType);
 		}
@@ -196,17 +206,17 @@ public class WmToFinServiceImpl implements WmToFinService {
 	// 入库单贷方科目
 	private String getInboundCreditCourse(String inboundType) throws BusinessException {
 		if (WmsCodeMaster.INB_CI.getCode().equals(inboundType)) {
-			// 库存商品
-			return "2202";
+			// 应付账款 赊购入库-贷
+			return "2121";
 		} else if (WmsCodeMaster.INB_PI.getCode().equals(inboundType)) {
-			// 待处理流动资产损益
-			return "190101";
+			// 待处理流动资产损益 盘盈入库-贷
+			return "191101";
 		} else if (WmsCodeMaster.INB_XG.getCode().equals(inboundType)) {
-			// 库存现金
+			// 库存现金 现场购入库-贷
 			return "1001";
 		} else if (WmsCodeMaster.INB_RI.getCode().equals(inboundType)) {
-			// 应收账款
-			return "1122";
+			// 主营业务收入 退货入库-贷
+			return "5101";
 		} else {
 			throw new BusinessException("未定义的入库单类型：" + inboundType);
 		}
@@ -215,13 +225,13 @@ public class WmToFinServiceImpl implements WmToFinService {
 	// 入库单借方科目
 	private String getInboundDebitCourse(String inboundType) throws BusinessException {
 		if (WmsCodeMaster.INB_RI.getCode().equals(inboundType)) {
-			// 主营业务收入
-			return "6001";
+			// 应收账款 退货入库-借
+			return "1131";
 		} else if (WmsCodeMaster.INB_PI.getCode().equals(inboundType)
 				|| WmsCodeMaster.INB_XG.getCode().equals(inboundType)
 				|| WmsCodeMaster.INB_CI.getCode().equals(inboundType)) {
-			// 待处理流动资产损益
-			return "1405";
+			// 库存商品 现购入库 赊购入库 盘盈入库 - 借
+			return "1243";
 		} else {
 			throw new BusinessException("未定义的入库单类型：" + inboundType);
 		}
@@ -237,6 +247,17 @@ public class WmToFinServiceImpl implements WmToFinService {
 		updateMap.put("toVoucherId", "0");
 		updateMap.put("voucherId", voucherId);
 		wmInboundHeaderMapper.updateStatusByOrderNos(updateMap);
+	}
+
+	public void updateInboundForRemoveCostVoucher(Integer costVoucherId) {
+		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
+		Map updateMap = new HashMap<>();
+		updateMap.put("companyId", userDetails.getCompanyId());
+		updateMap.put("warehouseId", userDetails.getWarehouseId());
+		updateMap.put("isCostCalculated", "N");
+		updateMap.put("toCostVoucherId", "0");
+		updateMap.put("costVoucherId", costVoucherId);
+		wmInboundHeaderMapper.updateCostCalculateByOrderNos(updateMap);
 	}
 
 	@Override
@@ -281,8 +302,8 @@ public class WmToFinServiceImpl implements WmToFinService {
 		if (WmsCodeMaster.OUB_XX.getCode().equals(outboundType)) {
 			// 现销出库
 			for (WmOutboundDetailSumPriceQueryItem sumResult : sumResults) {
-
-				sum += sumResult.getTotal();
+				sum = ComputeUtil.add(sum, sumResult.getTotal());
+				// sum += sumResult.getTotal();
 			}
 			FiVoucherDetail detail = new FiVoucherDetail();
 			detail.setDebit(sum);
@@ -312,7 +333,8 @@ public class WmToFinServiceImpl implements WmToFinService {
 					detail.setSummary(getOutboundSaleSummery(outboundType));
 				}
 				details.add(detail);
-				sum += sumResult.getTotal();
+				sum = ComputeUtil.add(sum, sumResult.getTotal());
+				// sum += sumResult.getTotal();
 				i++;
 			}
 		}
@@ -347,14 +369,14 @@ public class WmToFinServiceImpl implements WmToFinService {
 		// 借方
 		detail.setDebit(sumResults);
 		detail.setCredit(0.0);
-		detail.setCourseNo("6401");// 主营业务成本
-		detail.setSummary("销售成本");
+		detail.setCourseNo("5401");// 主营业务成本
+		detail.setSummary(getOutboundCostSummery(outboundType));
 		detail.setLineNo(1);
 		detail.setEditable("N");
 		details.add(detail);
 		FiVoucherDetail detailTotal = new FiVoucherDetail();
 		// 贷方
-		detailTotal.setCourseNo("1405");// 库存商品
+		detailTotal.setCourseNo("1243");// 库存商品
 		detailTotal.setCredit(sumResults);
 		detailTotal.setDebit(0.0);
 		detailTotal.setLineNo(2);
@@ -364,4 +386,35 @@ public class WmToFinServiceImpl implements WmToFinService {
 
 	}
 
+	// 外购退货入库单需要核算成本
+	@Override
+	public Message accountInboundCost(Double sumResults, String inboundType) throws BusinessException {
+		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
+		FiVoucher voucher = new FiVoucher();
+		voucher.setVoucherWord("记");
+		voucher.setBillDate(new Date());
+		voucher.setPeriod(userDetails.getCurrentPeriod());
+		voucher.setStatus("00");
+		voucher.setFromOrderType("INB_COST");
+		List<FiVoucherDetail> details = new ArrayList<FiVoucherDetail>();
+		FiVoucherDetail detail = new FiVoucherDetail();
+		// 借方
+		detail.setDebit(-sumResults);
+		detail.setCredit(0.0);
+		detail.setCourseNo("5401");// 主营业务成本
+		detail.setSummary(getInboundCostSummery(inboundType));
+		detail.setLineNo(1);
+		detail.setEditable("N");
+		details.add(detail);
+		FiVoucherDetail detailTotal = new FiVoucherDetail();
+		// 贷方
+		detailTotal.setCourseNo("1243");// 库存商品
+		detailTotal.setCredit(-sumResults);
+		detailTotal.setDebit(0.0);
+		detailTotal.setLineNo(2);
+		detailTotal.setEditable("N");
+		details.add(detailTotal);
+		return voucherDetailService.saveVoucherAndDetail(voucher, details, new ArrayList<FiVoucherDetail>());
+
+	}
 }

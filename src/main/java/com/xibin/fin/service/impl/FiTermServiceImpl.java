@@ -35,7 +35,7 @@ import com.xibin.fin.service.FiTermService;
 import com.xibin.fin.service.FiVoucherDetailService;
 import com.xibin.fin.service.FiVoucherService;
 
-@Transactional(propagation = Propagation.REQUIRED)
+@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 @Service
 public class FiTermServiceImpl extends BaseManagerImpl implements FiTermService {
 	@Autowired
@@ -183,7 +183,7 @@ public class FiTermServiceImpl extends BaseManagerImpl implements FiTermService 
 		}
 		if (sumResults.size() != 0) {
 			FiVoucherDetail detailTotal = new FiVoucherDetail();
-			detailTotal.setCourseNo("4103");
+			detailTotal.setCourseNo("3131");// 本年利润
 			detailTotal.setCredit(-sum);
 			detailTotal.setDebit(0.0);
 			detailTotal.setLineNo(i);
@@ -214,7 +214,7 @@ public class FiTermServiceImpl extends BaseManagerImpl implements FiTermService 
 		}
 		if (lossSumResults.size() != 0) {
 			FiVoucherDetail detailTotal2 = new FiVoucherDetail();
-			detailTotal2.setCourseNo("4103");
+			detailTotal2.setCourseNo("3131");// 本年利润
 			detailTotal2.setDebit(-lossSum);
 			detailTotal2.setCredit(0.0);
 			detailTotal2.setLineNo(i);
@@ -278,12 +278,12 @@ public class FiTermServiceImpl extends BaseManagerImpl implements FiTermService 
 		// 更新所有凭证的状态，从已审核 更新为 已结账
 		UserDetails userDetails = (UserDetails) session.getAttribute(Constants.SESSION_USER_KEY);
 		Map map = new HashMap<>();
-		map.put("20", "toStatus");
+		// map.put("20", "toStatus");
 		map.put("companyId", userDetails.getCompanyId());
 		map.put("bookId", userDetails.getBookId());
 		map.put("period", userDetails.getCurrentPeriod());
-		fiVoucherMapper.updateStatus(map);
-		// 更新期间状态为已结账
+		// fiVoucherMapper.updateStatus(map);
+		fiVoucherMapper.updateForEndTerm(map); // 更新期间状态为已结账
 		FiTerm currentTerm = getCurrentTerm(null);
 		if (currentTerm == null) {
 			throw new BusinessException("没有当前期间的数据，无法结账，请联系管理员！");
@@ -341,6 +341,7 @@ public class FiTermServiceImpl extends BaseManagerImpl implements FiTermService 
 				result.setBookId(newBook.getId());
 			}
 			fiCourseMapper.insert(queryResults);
+
 			// 保存到科目余额记录表中
 			List<FiCourseBalance> courseBalances = new ArrayList<FiCourseBalance>();
 			for (FiCourse result : queryResults) {
@@ -355,10 +356,18 @@ public class FiTermServiceImpl extends BaseManagerImpl implements FiTermService 
 				newcourseBalance.setSumDebit(0.0);
 				newcourseBalance.setAccumulateCredit(0.0);
 				newcourseBalance.setAccumulateDebit(0.0);
+				newcourseBalance.setYearBalance(0.0);
 				// 期间设置为新的期间
 				newcourseBalance.setPeriod(newTerm.getPeriod());
 				// 账套ID设置为新的账套ID
 				newcourseBalance.setBookId(newBook.getId());
+				newcourseBalance.setCreator(userDetails.getUserId());
+				newcourseBalance.setModifier(userDetails.getUserId());
+				newcourseBalance.setCreateTime(new Date());
+				newcourseBalance.setModifyTime(new Date());
+				newcourseBalance.setRecVer(0);
+				newcourseBalance.setCompanyId(userDetails.getCompanyId());
+				newcourseBalance.setBookId(userDetails.getBookId());
 				courseBalances.add(newcourseBalance);
 			}
 			fiCourseBalanceMapper.insert(courseBalances);
@@ -369,7 +378,7 @@ public class FiTermServiceImpl extends BaseManagerImpl implements FiTermService 
 			// 新增下一个期间
 			Integer monthInt = Integer.parseInt(monthStr);
 			Integer yearInt = Integer.parseInt(yearStr);
-			yearInt++;
+			// yearInt++;
 			// 已经到达结束月份
 			if (monthStr.equals(this.endMonth)) {
 				monthInt = 1;

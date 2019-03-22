@@ -103,6 +103,7 @@ public class UserController {
 	@RequestMapping("/login")
 	@ResponseBody
 	public Message login(@RequestParam Map<String, String> params) {
+		// AccessTokenUtil.initAndSetAccessToken();
 		Message message = new Message();
 		SysUser user = JSON.parseObject(params.get("data"), SysUser.class);
 		List<SysUser> list = this.userService.selectByUserNameAndPassword(user.getUserName(), user.getPassword());

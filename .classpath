@@ -29,5 +29,7 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/iText-2.1.7.js2.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/iTextAsian.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

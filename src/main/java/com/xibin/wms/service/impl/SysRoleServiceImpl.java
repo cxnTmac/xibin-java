@@ -19,7 +19,7 @@ import com.xibin.wms.dao.SysRoleMapper;
 import com.xibin.wms.pojo.SysRole;
 import com.xibin.wms.service.SysRoleService;
 
-@Transactional(propagation = Propagation.REQUIRED)
+@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 @Service
 public class SysRoleServiceImpl extends BaseManagerImpl implements SysRoleService {
 	@Autowired

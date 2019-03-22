@@ -11,6 +11,7 @@
     <result column="sum_credit" property="sumCredit" jdbcType="DOUBLE" />
     <result column="accumulate_debit" property="accumulateDebit" jdbcType="DOUBLE" />
     <result column="accumulate_credit" property="accumulateCredit" jdbcType="DOUBLE" />
+    <result column="year_balance" property="yearBalance" jdbcType="DOUBLE" />
     <result column="book_id" property="bookId" jdbcType="INTEGER" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
@@ -21,7 +22,19 @@
     <result column="company_id" property="companyId" jdbcType="INTEGER" />
     
   </resultMap>
-  
+  <resultMap id="queryForBalanceSheetResultMap" type="com.xibin.fin.entity.FiCourseBalanceBSQueryItem" >
+  	<result column="course_no" property="courseNo" jdbcType="VARCHAR" />
+  	<result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="to_go" property="toGo" jdbcType="VARCHAR" />
+    <result column="is_child" property="isChild" jdbcType="VARCHAR" />
+    <result column="start_balance" property="startBalance" jdbcType="DOUBLE" />
+    <result column="end_balance" property="endBalance" jdbcType="DOUBLE" />
+    <result column="sum_debit" property="sumDebit" jdbcType="DOUBLE" />
+    <result column="sum_credit" property="sumCredit" jdbcType="DOUBLE" />
+    <result column="accumulate_debit" property="accumulateDebit" jdbcType="DOUBLE" />
+    <result column="accumulate_credit" property="accumulateCredit" jdbcType="DOUBLE" />
+    <result column="year_balance" property="yearBalance" jdbcType="DOUBLE" />
+  </resultMap>
   
   
   
@@ -60,7 +73,7 @@
   </resultMap>
   
   <sql id="Base_Column_List" >
-    fcb.id, fcb.period, fcb.course_no,fcb.start_balance, fcb.end_balance,fcb.sum_debit,fcb.sum_credit,fcb.accumulate_debit,fcb.accumulate_credit,fcb.remark, fcb.creator, fcb.create_time, fcb.modifier, fcb.modify_time, fcb.rec_ver, 
+    fcb.id, fcb.period, fcb.course_no,fcb.start_balance, fcb.end_balance,fcb.sum_debit,fcb.sum_credit,fcb.accumulate_debit,fcb.accumulate_credit,fcb.year_balance,fcb.remark, fcb.creator, fcb.create_time, fcb.modifier, fcb.modify_time, fcb.rec_ver, 
     fcb.company_id,fcb.book_id
   </sql>
   
@@ -94,10 +107,10 @@
   <!-- 【固定】：插入记录（支持一条及多条） -->
   <insert id="insert" parameterType="java.util.Collection">
   	INSERT INTO fi_course_balance
-          (id,course_no, period, start_balance,end_balance,sum_debit,sum_credit,accumulate_debit,accumulate_credit,book_id,remark,creator,create_time,modifier,modify_time,rec_ver,company_id)
+          (id,course_no, period, start_balance,end_balance,sum_debit,sum_credit,accumulate_debit,accumulate_credit,year_balance,book_id,remark,creator,create_time,modifier,modify_time,rec_ver,company_id)
        VALUES
   		<foreach collection="list" item="item" index="index" separator=",">
-	   		(#{item.id},#{item.courseNo},#{item.period},#{item.startBalance},#{item.endBalance},#{item.sumDebit},#{item.sumCredit},#{item.accumulateDebit},#{item.accumulateCredit},#{item.bookId},
+	   		(#{item.id},#{item.courseNo},#{item.period},#{item.startBalance},#{item.endBalance},#{item.sumDebit},#{item.sumCredit},#{item.accumulateDebit},#{item.accumulateCredit},#{item.yearBalance},#{item.bookId},
       #{item.remark},#{item.creator},#{item.createTime},#{item.modifier},#{item.modifyTime},
       #{item.recVer},#{item.companyId})
   		</foreach>
@@ -154,6 +167,11 @@
 		<trim prefix="accumulate_debit =case"  suffix="end,"  >
              <foreach collection="list" item="item" index="index">
                      when (ID=#{item.id}) then #{item.accumulateDebit}
+             </foreach>
+		</trim>
+		<trim prefix="year_balance =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.yearBalance}
              </foreach>
 		</trim>
 		<trim prefix="book_id =case"  suffix="end,"  >
@@ -255,13 +273,11 @@
 		LEFT JOIN fi_course fc on fcb.course_no = fc.course_no
 			and fcb.company_id = fc.company_id
 			and fcb.book_id = fc.book_id
-		WHERE fcb.course_no in(
-		  select DISTINCT(fvd.course_no) from fi_voucher_detail fvd 
-		  left join fi_voucher fv on fv.id= fvd.voucher_id
-		  and fv.company_id = fvd.company_id
-		  and fv.book_id = fvd.book_id
-			where fv.status IN('10','20')
-		)
+		WHERE 
+		1=1
+		<!--  AND
+		(fcb.sum_credit <![CDATA[<>]]> 0 OR fcb.sum_debit <![CDATA[<>]]> 0)-->
+		AND fc.is_parent = 1
 		<if test="companyId!=null and companyId!=''"> AND fcb.company_id = #{companyId}</if>
         <if test="bookId!=null and bookId!=''"> AND fcb.book_id = #{bookId}</if>
         <if test="courseNo!=null and courseNo!=''"> AND fcb.course_no = #{courseNo}</if>
@@ -291,7 +307,28 @@
 		AND fcb.company_id = #{companyId,jdbcType=INTEGER}
 	    AND fcb.book_id = #{bookId,jdbcType=INTEGER}
 	 </select>
-	 
+	 <select id="queryForBalanceSheet" resultMap="queryForBalanceSheetResultMap" resultType="java.util.List"  parameterType="Map" >
+		 SELECT 
+				fcb.course_no,
+				fc.type,fc.to_go,
+				fc.is_child,
+				fcb.start_balance,
+				fcb.end_balance,
+				fcb.sum_credit,
+				fcb.sum_debit,
+				fcb.accumulate_credit,
+				fcb.accumulate_debit,
+				fcb.year_balance
+		FROM fi_course_balance fcb
+		LEFT JOIN fi_course fc 
+		ON fc.course_no = fcb.course_no 
+		AND fc.company_id = fcb.company_id
+		WHERE 
+			1=1 
+			AND fcb.company_id = #{companyId}
+			AND fcb.book_id = #{bookId}
+			AND fcb.period = #{period}
+	 </select>
 	 
 	 
 </mapper>

@@ -9,6 +9,7 @@
     <result column="alloc_num" property="allocNum" jdbcType="DOUBLE" />
     <result column="inv_num" property="invNum" jdbcType="DOUBLE" />
     <result column="inv_available_num" property="invAvailableNum" jdbcType="VARCHAR" />
+    <result column="pre_assemble_num" property="preAssembleNum" jdbcType="VARCHAR" />
     <result column="total_price" property="totalPrice" jdbcType="DOUBLE" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -28,6 +29,7 @@
     <result column="alloc_num" property="allocNum" jdbcType="DOUBLE" />
     <result column="inv_num" property="invNum" jdbcType="DOUBLE" />
     <result column="inv_available_num" property="invAvailableNum" jdbcType="VARCHAR" />
+    <result column="pre_assemble_num" property="preAssembleNum" jdbcType="VARCHAR" />
     <result column="total_price" property="totalPrice" jdbcType="DOUBLE" />
     <result column="creator" property="creator" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -39,7 +41,7 @@
   </resultMap>
   
   <sql id="Base_Column_List" >
-    wi.id, wi.sku_code, wi.lot, wi.loc_code, wi.alloc_num, wi.inv_num, wi.inv_available_num,wi.total_price,wi.creator, wi.create_time, 
+    wi.id, wi.sku_code, wi.lot, wi.loc_code, wi.alloc_num, wi.inv_num, wi.inv_available_num,wi.pre_assemble_num,wi.total_price,wi.creator, wi.create_time, 
     wi.modifier, wi.modify_time, wi.rec_ver, wi.company_id, wi.warehouse_id
   </sql>
   
@@ -79,11 +81,11 @@
   <!-- 【固定】：插入记录（支持一条及多条） -->
   <insert id="insert" parameterType="java.util.Collection">
   	INSERT INTO wm_inventory
-          (id, sku_code, lot, loc_code, alloc_num, inv_num, inv_available_num,total_price,
+          (id, sku_code, lot, loc_code, alloc_num, inv_num, inv_available_num,pre_assemble_num,total_price,
           creator, create_time,modifier, modify_time, rec_ver, company_id, warehouse_id)
        VALUES
   		<foreach collection="list" item="item" index="index" separator=",">
-	   		(#{item.id}, #{item.skuCode},#{item.lot}, #{item.locCode},#{item.allocNum},#{item.invNum},#{item.invAvailableNum},#{item.totalPrice},
+	   		(#{item.id}, #{item.skuCode},#{item.lot}, #{item.locCode},#{item.allocNum},#{item.invNum},#{item.invAvailableNum},#{item.preAssembleNum},#{item.totalPrice},
       #{item.creator},#{item.createTime}, #{item.modifier},  #{item.modifyTime},#{item.recVer}, #{item.companyId},#{item.warehouseId})
   		</foreach>
   </insert>
@@ -129,6 +131,11 @@
 		<trim prefix="inv_available_num =case"  suffix="end,"  >
              <foreach collection="list" item="item" index="index">
                      when (ID=#{item.id}) then #{item.invAvailableNum}
+             </foreach>
+		</trim>
+		<trim prefix="pre_assemble_num =case"  suffix="end,"  >
+             <foreach collection="list" item="item" index="index">
+                     when (ID=#{item.id}) then #{item.preAssembleNum}
              </foreach>
 		</trim>
 		<trim prefix="total_price =case"  suffix="end,"  >
@@ -222,7 +229,7 @@
     and bl.warehouse_id = wi.warehouse_id
     <include refid="findByExampleWhere" />
     and wi.inv_available_num>0
-    and bl.use_type not in('SS','KT')
+    <!--  and bl.use_type not in('SS','KT') -->
   </select>
   <select id="selectByKey" resultMap="QueryResultMap" resultType="java.util.List"  parameterType="Map" >
     select 

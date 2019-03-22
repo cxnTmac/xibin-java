@@ -1,5 +1,7 @@
 package com.xibin.wms.controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,23 +10,38 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xibin.core.costants.Constants;
 import com.xibin.core.page.pojo.Page;
 import com.xibin.core.page.pojo.PageEntity;
+import com.xibin.core.pojo.AccessToken;
+import com.xibin.core.pojo.Message;
+import com.xibin.core.security.pojo.UserDetails;
+import com.xibin.core.utils.CheckUtil;
+import com.xibin.core.utils.WXUtil;
+import com.xibin.fin.pojo.FiBook;
+import com.xibin.fin.pojo.FiTerm;
+import com.xibin.fin.service.FiBookService;
+import com.xibin.fin.service.FiTermService;
 import com.xibin.wms.pojo.BdFittingSkuPic;
 import com.xibin.wms.pojo.BdFittingType;
 import com.xibin.wms.pojo.BdModel;
+import com.xibin.wms.pojo.SysUser;
 import com.xibin.wms.query.BdFittingSkuQueryItem;
 import com.xibin.wms.service.BdFittingSkuPicService;
 import com.xibin.wms.service.BdFittingSkuService;
 import com.xibin.wms.service.BdFittingTypeService;
 import com.xibin.wms.service.BdModelService;
+import com.xibin.wms.service.UserService;
 
 @Controller
 @RequestMapping(value = "/wx", produces = { "application/json;charset=UTF-8" })
@@ -37,6 +54,14 @@ public class WxProgramController {
 	private BdFittingTypeService fittingTypeService;
 	@Resource
 	private BdModelService bdModelService;
+	@Resource
+	private UserService userService;
+	@Resource
+	private FiTermService termService;
+	@Resource
+	private FiBookService bookService;
+	@Autowired
+	private HttpSession session;
 
 	@RequestMapping("/showAllFittingSku")
 	@ResponseBody
@@ -74,6 +99,31 @@ public class WxProgramController {
 			jsonList.add(jsonObject);
 		}
 		return jsonList;
+	}
+
+	@RequestMapping("/getWx")
+	public void getWx(HttpServletRequest request, HttpServletResponse response, Model model) {
+		PrintWriter print;
+		// 微信加密签名
+		String signature = request.getParameter("signature");
+		// 时间戳
+		String timestamp = request.getParameter("timestamp");
+		// 随机数
+		String nonce = request.getParameter("nonce");
+		// 随机字符串
+		String echostr = request.getParameter("echostr");
+		System.out.println(
+				"signature:" + signature + "  timestamp:" + timestamp + "  nonce:" + nonce + "  echostr:" + echostr);
+		// 通过检验signature对请求进行校验，若校验成功则原样返回echostr，表示接入成功，否则接入失败
+		if (signature != null && CheckUtil.checkSignature(signature, timestamp, nonce)) {
+			try {
+				print = response.getWriter();
+				print.write(echostr);
+				print.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@RequestMapping("/getFittingTypeSkuBySkuCode")
@@ -121,4 +171,79 @@ public class WxProgramController {
 		return jsonList;
 	}
 
+	@RequestMapping("/getAccessTokenForLogin")
+	@ResponseBody
+	public Message getAccessTokenForLogin(HttpServletRequest request, Model model) {
+		Message message = new Message();
+		String code = request.getParameter("code");
+		System.out.println("code = " + code);
+		try {
+			AccessToken token = WXUtil.getAccessToken(code);
+			if (token.getOpenid() == null) {
+				message.setMsg("获取微信账号失败，请重新从公众号进入或点击微信登陆按钮");
+				message.setCode(0);
+			} else {
+				// 登陆流程
+				return loginByOpenId(token.getOpenid());
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			message.setMsg(e.getMessage());
+			message.setCode(0);
+		}
+		return message;
+	}
+
+	private Message loginByOpenId(String openId) {
+		Message message = new Message();
+		List<SysUser> list = this.userService.selectByWXOpenId(openId);
+		if (list.size() > 0) {
+			if (list.get(0).getIsEnable().equals("Y")) {
+				UserDetails userDetails = new UserDetails();
+				userDetails.setUserName(list.get(0).getUserName());
+				userDetails.setCompanyId(list.get(0).getCompanyId());
+				userDetails.setWarehouseId(1);
+				FiBook defaultBook = getDefaultBook(list.get(0).getCompanyId());
+				if (defaultBook != null) {
+					userDetails.setBookId(defaultBook.getId());
+					userDetails.setBookName(defaultBook.getBookName());
+					userDetails.setBeginYear(defaultBook.getBeginYear());
+					userDetails.setPeriod(defaultBook.getPeriod());
+				}
+				userDetails.setCurrentPeriod(getCurrentPeriod(list.get(0).getCompanyId()));
+				userDetails.setUserId(list.get(0).getId());
+				session.setAttribute(Constants.SESSION_USER_KEY, userDetails);
+				message.setCode(200);
+				message.setData(userDetails);
+				message.setMsg("登陆成功！");
+			} else {
+				message.setCode(0);
+				message.setMsg("用户未启用！");
+			}
+		} else {
+			message.setCode(0);
+			message.setMsg("你的微信尚未绑定账号，openId:" + openId);
+		}
+		return message;
+	}
+
+	private String getCurrentPeriod(Integer companyId) {
+		FiTerm term = termService.getCurrentTerm(companyId);
+		if (term != null) {
+			return term.getPeriod();
+		}
+		return null;
+	}
+
+	private FiBook getDefaultBook(Integer companyId) {
+		FiBook example = new FiBook();
+		example.setCompanyId(companyId);
+		example.setIsDefault("Y");
+		List<FiBook> results = bookService.findByExample(example);
+		if (!results.isEmpty()) {
+			return results.get(0);
+		}
+		return null;
+	}
 }

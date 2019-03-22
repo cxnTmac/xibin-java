@@ -110,5 +110,21 @@
         </list>  
     </property>  
   </bean>
-    
+  <bean id="propertiesReader" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <list>
+                <value>classpath:jasperreports.properties</value>
+            </list>
+        </property>
+  </bean>
+  <bean id="jasperReportResolver" class="org.springframework.web.servlet.view.XmlViewResolver">  
+    <property name="order">  
+        <value>0</value>  
+    </property>  
+    <property name="location">  
+        <value>WEB-INF/jasper/jasper-defs.xml</value>
+    </property>  
+   </bean>
+   
+   <bean class="com.xibin.core.utils.JobForWXAccessTokenListener"/>
 </beans>

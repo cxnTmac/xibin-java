@@ -3,56 +3,70 @@ package com.xibin.wms.query;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.xibin.core.daosupport.BaseModel;
-
-public class WmOutboundDetailQueryItem implements Serializable{
+public class WmOutboundDetailQueryItem implements Serializable {
 	private Integer id;
 
-    private String orderNo;
+	private String orderNo;
 
-    private String lineNo;
-    
-    private String buyerCode;
-    
-    private String buyerName;
+	private String lineNo;
 
-    private String skuCode;
-    
-    private String skuName;
-    
-    private String modelCode;
-    
-    private String status;
-    
-    private String headerStatus;
+	private String buyerCode;
 
-    private Double outboundNum;
-    
-    private Double outboundAllocNum;
-    
-    private Double outboundPickNum;
-    
-    private Double outboundShipNum;
+	private String buyerName;
 
-    private Double outboundPrice;
-    
-    private String planShipLoc;
+	private String skuCode;
 
-    private String remark;
+	private String skuName;
 
-    private Integer creator;
+	private String modelCode;
 
-    private Date createTime;
+	private String quickCode;
 
-    private Integer modifier;
+	private String status;
 
-    private Date modifyTime;
+	private String headerStatus;
 
-    private Integer recVer;
+	private Double outboundNum;
 
-    private Integer companyId;
+	private Double outboundAllocNum;
 
-    private Integer warehouseId;
+	private Double outboundPickNum;
+
+	private Double outboundShipNum;
+
+	private Double outboundPrice;
+
+	private Double cost;
+
+	private String isCreateVoucher;
+
+	private String voucherNo;
+
+	private String isCreateCostVoucher;
+
+	private String costVoucherNo;
+
+	private String planShipLoc;
+
+	private String groupCode;
+
+	private String needToAssemble;
+
+	private String remark;
+
+	private Integer creator;
+
+	private Date createTime;
+
+	private Integer modifier;
+
+	private Date modifyTime;
+
+	private Integer recVer;
+
+	private Integer companyId;
+
+	private Integer warehouseId;
 
 	public Integer getId() {
 		return id;
@@ -246,5 +260,68 @@ public class WmOutboundDetailQueryItem implements Serializable{
 		this.headerStatus = headerStatus;
 	}
 
-	
+	public Double getCost() {
+		return cost;
+	}
+
+	public void setCost(Double cost) {
+		this.cost = cost;
+	}
+
+	public String getIsCreateVoucher() {
+		return isCreateVoucher;
+	}
+
+	public void setIsCreateVoucher(String isCreateVoucher) {
+		this.isCreateVoucher = isCreateVoucher;
+	}
+
+	public String getVoucherNo() {
+		return voucherNo;
+	}
+
+	public void setVoucherNo(String voucherNo) {
+		this.voucherNo = voucherNo;
+	}
+
+	public String getIsCreateCostVoucher() {
+		return isCreateCostVoucher;
+	}
+
+	public void setIsCreateCostVoucher(String isCreateCostVoucher) {
+		this.isCreateCostVoucher = isCreateCostVoucher;
+	}
+
+	public String getCostVoucherNo() {
+		return costVoucherNo;
+	}
+
+	public void setCostVoucherNo(String costVoucherNo) {
+		this.costVoucherNo = costVoucherNo;
+	}
+
+	public String getGroupCode() {
+		return groupCode;
+	}
+
+	public void setGroupCode(String groupCode) {
+		this.groupCode = groupCode;
+	}
+
+	public String getNeedToAssemble() {
+		return needToAssemble;
+	}
+
+	public void setNeedToAssemble(String needToAssemble) {
+		this.needToAssemble = needToAssemble;
+	}
+
+	public String getQuickCode() {
+		return quickCode;
+	}
+
+	public void setQuickCode(String quickCode) {
+		this.quickCode = quickCode;
+	}
+
 }

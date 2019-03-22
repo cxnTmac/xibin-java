@@ -16,7 +16,11 @@ public interface WmToFinService {
 
 	public Message accountOutboundCost(Double sumResults, String outboundType) throws BusinessException;
 
+	public Message accountInboundCost(Double sumResults, String inboundType) throws BusinessException;
+
 	public void updateInboundForRemoveVoucher(Integer voucherId);
+
+	public void updateInboundForRemoveCostVoucher(Integer costVoucherId);
 
 	public void updateOutboundForRemoveVoucher(Integer voucherId);
 
